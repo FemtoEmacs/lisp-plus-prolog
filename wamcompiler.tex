@@ -1,0 +1,5405 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{menukeys}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{upquote}
+\usepackage{wrapfig}
+\usepackage{makeidx}
+\usepackage{tikz, pgf}
+\usepackage{listing}
+\usepackage{fancyvrb}
+
+
+\usetikzlibrary{backgrounds, positioning, %% Draw Y-chart
+snakes, fit,                            %% Draw Y-chart
+3d,  arrows, automata, shapes.gates.logic.US,
+shapes.gates.logic.IEC, calc, 
+circuits.logic.US}
+\usepackage{circuitikz}
+
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+           {\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
+           {\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+
+\addto\captionsenglish{\renewcommand{\figurename}{Listing}}
+
+\makeindex
+
+\title{An introduction to Prolog and wamcompiler\\
+{\normalsize (Content not (yet) checked for grammar and spelling errors)}}
+\author{Vernon Sipple \and ed500ac \and Marcus \and Lucas}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\mainmatter
+
+\chapter{Emacs commands}
+Emacs is the text editor that Lisp programmers prefer.
+To give you a head start, this chapter lists the basic
+commands you need to edit a file.
+
+In the following cheat sheet, \verb|Spc| denotes
+the space bar, \verb|C-| is the \keys{Ctrl} prefix, \verb|M-| represents 
+the  \keys{Alt} prefix and  $\kappa$ can be any key. 
+
+\paragraph{Basic commands.} \verb|C-|$\kappa$ -- Press and release \keys{Ctrl}
+and \keys{$\kappa$} simultaneously
+\begin{quote}
+ \verb|C-s| then type some text, and press \verb|C-s| again 
+  -- search a text.\\
+ \verb|C-r| then type some text, and press \verb|C-r| again 
+  -- reverse search.\\
+ \verb|C-k| -- kill a line.\\
+ \verb|C-h| -- backspace.\\
+ \verb|C-d| -- delete char forward.\\ 
+ \verb|C-Spc| then move the cursor -- select a region.\\
+ \verb|M-w| -- save selected region into the kill ring. \\
+ \verb|C-w| -- kill region.\\
+ \verb|C-y| -- insert killed or saved region.\\
+ \verb|C-g| -- cancel minibuffer reading.\\
+ \verb|C-a| -- go to beginning of line.\\
+ \verb|C-e| -- go to end of line.\\
+ \verb|C-b| -- move backward one character.\\
+ \verb|C-f| -- move forward one character.\\
+ \verb|C-n| -- move cursor to the next line.\\
+ \verb|C-p| -- move cursor to the previous line.\\
+ \verb|C-l| -- refresh screen.\\
+ \verb|C-u| -- undo. \\
+ \verb|C-v| -- forward page.\\
+ \keys{INS} -- toggle overwrite mode.\\
+ \keys{$\leftarrow$} \keys{$\rightarrow$} \keys{$\uparrow$} \keys{$\downarrow$} -- arrows move cursor.\\
+\end{quote}
+\paragraph{Control-x commands.} \verb|C-x C-|$\kappa$ -- Keep \keys{Ctrl}
+down and press \keys{x} and  \keys{$\kappa$}
+\begin{quote}
+  \verb|C-x C-f| -- open a file into a new buffer.\\
+  \verb|C-x C-w| -- write file with new name.\\
+\verb|C-x C-s| -- save file.\\
+\verb|C-x C-c| -- exit Emacs.\\
+\verb|C-x i| -- insert file at the cursor.\\
+\verb|C-h b| -- lists all key strokes.\\
+\end{quote}
+
+
+
+\paragraph{Window commands.} One can have more
+than one window on the screen. Below, you will
+find commands that deal with this situation.
+\begin{itemize}
+\item \verb|C-x |$\kappa$ -- Press and release \keys{Ctrl}
+and \keys{x} together, then press \keys{$\kappa$} 
+\begin{quote}
+\verb|C-x b| -- next buffer.\\
+\verb|C-x C-b| -- list buffers.\\
+\verb|C-x k| -- kill current buffer.\\
+\verb|C-x =| -- code for char under the cursor.\\
+\verb|C-x 2| -- split window into cursor window and other window.\\
+\verb|C-x o| -- jump to the other window.\\
+\verb|C-x 1| -- close the other window.\\
+\verb|C-x 0| -- close the cursor window.
+\end{quote}
+\item \verb|Esc| $\kappa$ -- Press and release the \keys{Esc} key,
+then press the \keys{$\kappa$} key.
+\begin{quote}
+\verb|Esc >| -- go to the end of buffer.\\
+\verb|Esc <| -- go to the beginning of buffer.\\ 
+\verb|Esc f| -- word forward.\\
+\verb|Esc b| -- word backward.\\
+\end{quote}
+\item \verb|M|-$\kappa$ -- Keep the \keys{Alt} key
+down and press the \keys{$\kappa$} key.
+\begin{quote}
+\verb|M-b| -- move backward one word.\\
+\verb|M-f| -- move forward one word.\\
+\verb|M-g| -- go to the line given in the minibuffer.\\
+\verb|M-n| -- activate the next buffer.\\
+\verb|M-r| -- query replace.
+\end{quote}
+\end{itemize}
+
+\paragraph{Query replace.} If you press \keys{Esc}\keys{\%},
+the computer enters into the query replace mode.
+First, Emacs prompts for the text snippet S
+that you want to replace. Then it prompts for
+the replacement R. When you type the R text and
+press the \keys{Enter} key, the cursor jumps to
+the first occurence of S, and Emacs asks whether
+you want to replace it. If the answer is \verb|y|,
+Emacs will replace S with \verb|R| and jump to
+the next occurence. If the answer is \verb|n|,
+Emacs will jump to the next occurrence of S without
+performing the replacement.
+
+\paragraph{Go to line.} When you try to compile
+code containing errors, the compiler
+usually reports the line number where the error occurred.
+If you press \verb|C-u 3| \keys{Esc}\keys{g}\keys{Esc}\keys{g},
+the cursor jumps to the line where the error occurred,
+for instance, to line 3.
+
+In order to know the position of the cursor, press
+the \verb|C-x =| command, and Emacs gives information
+concerning the character under the cursor, the corresponding
+code, the line, and the character position in the text.
+
+\paragraph{List bindings.} If you press
+the \verb|C-h b| command, the computer
+lists all Emacs commands. Then you
+can check whether I forgot one or other keybinding in this
+tutorial. In order to issue this command, keep
+the \keys{Ctrl} key down and press \keys{x}, then release
+both keys and press the \keys{?} key.
+
+\paragraph{Nia Vardalos.}
+In order to get acquainted with editing and scripting,
+let us accompany the Canadian programmer Nia Vardalos,
+while she explores Emacs. Disclaimer: Nia, the coder,
+is not related to Nia, the actress.
+
+When text is needed for carrying out a command,
+it is read from the minibuffer, a one line
+window at the bottom of the screen. For instance, 
+if Nia presses \verb|C-s| for finding a text, 
+the text is read from the minibuffer, and while Nia is
+still typing, Emacs starts the search. When she finds
+what she is looking for, Nia strikes the \keys{Enter}
+key to stop the interactive search. Nia can press
+\verb|C-s| again to find other instances of the text. 
+
+To transport a region from one place to another,
+Nia presses \verb|C-Spc| to start
+ the selection process and move the cursor to select
+ a region.  Then she presses \verb|C-w| to kill her
+ selection. Finally, she moves the cursor to the
+ insertion place, and presses the \verb|C-y| shortcut.
+To copy a region, Nia presses \verb|C-Spc| and moves
+the cursor to select the region. Then she presses
+\verb|M-w| to save the selection into the kill ring. Finally,
+she takes the cursor to the destination, where the copy is to
+be inserted and issues the \verb|C-y| command.
+
+Nia noticed that there are two equivalent ways to
+issue an \verb|M-|$\kappa$ command. She can
+press and release the \keys{Esc} key, then
+strike the  $\kappa$ key. Alternatively, she
+can keep the \keys{Alt} key down and press
+the \keys{$\kappa$} key.
+
+\paragraph{Calculations with Lisp.} Emacs
+offers a Lisp dialect to perform calculations
+and text processing. Let us assume that you
+want to find out how many students graduate from
+medical schools in California. You type the Lisp
+addition command, then press \verb|C-x C-e| with
+the cursor in front of it:
+\begin{quote}
+\verb|> (+ 190 180 170 160 120 100 100 90)|\keys{C-x C-e}
+\end{quote}
+In the above expression, the first thing that follows
+the open parenthesis is the \verb|+| sum
+operation identifier. After the name of
+the operation, there is a list of
+the arguments to be added together.
+Emacs shows the result of the addition as soon as
+Nia presses the \keys{C-x C-e} command:
+\begin{quote}
+\verb|1110|
+\end{quote}
+The rule that worked for  the $\verb|(+ | x_1\;x_2\ldots\verb|)|$
+sum operation also works for the  other arithmetic function too.
+\begin{itemize}
+  \item{Multiplication} is performed
+by the \verb|*| operation.
+\begin{quote}
+\verb|> (* 1 2 3 4 5)|\keys{C-x C-e}\\
+120
+\end{quote}
+\item{Division} is obtained through the \verb|/| operation.
+\begin{quote}
+\verb|> (* 1 2 4)|\keys{C-x C-e}\\
+0.125
+\end{quote}
+The above operation performed the chain
+division \verb|1/2/3|.
+\item{Subtraction} has the syntax shown below.
+\begin{quote}
+\verb|> (- 1 2 4)|\keys{C-x C-e}\\
+-5
+\end{quote}
+\item Mixed operations. One can nest subexpressions
+  within an outer expression. For instance,
+  to get the average student number graduating
+  from medical school in California, one can
+  calculate the expression:
+\begin{quote}
+\verb|> (/ (+ 190 180 170 160 120 100 100 90) 8)|\keys{C-x C-e}
+\end{quote}
+
+\end{itemize}
+
+\paragraph{Command execution.} When you press 
+shortcut keys, Emacs calls a command written in
+C or in Lisp. You can get a complete list of all
+Emacs commands by pressing the \verb|C-x ?| shortcut.
+
+There are commands that are not associated to
+ shortcut keys. For instance, the \verb|lisp-mode|
+function tells Emacs that you are editing Lisp code. 
+In order to issue such a command, keep the \keys{Alt}
+key down and press the \keys{~x~} key. The \verb|M-x|
+prompt will be placed on the minibuffer. Type 
+\verb|lisp-mode| in front of the prompt:
+\begin{quote}
+\verb|M-x lisp-mode|
+\end{quote}
+When typing a command at the \verb|M-x| prompt, you
+often don't remember the complete name of the operation.
+In this case, type press the \keys{Tab} key, and Lisp will
+list the options available to complete the name.
+
+\begin{verbatim}
+backspace        backspace
+C-a              move-beginning-of-line
+C-b              backward-char
+C-d              delete-char
+C-e              move-end-of-line
+C-f              forward-char
+C-h              help-command
+C-k              kill-line
+C-l              recenter-top-bottom
+C-n              next-line
+C-p              previous-line
+C-r              isearch-backward
+C-space          set-mark
+C-s              isearch-forward
+C-/              undo
+C-v              scroll-up-command
+C-w              kill-region
+C-x 1            delete-other-windows
+C-x 2            split-window-below
+C-x C-b          list-buffers
+C-x C-c          save-buffers-kill-terminal
+C-x C-f          find-file
+C-x C-s          save-buffer
+C-x =            cursor-position
+C-x C-w          write-file
+C-x i            insert-file
+C-x k            kill-buffer
+C-x o            other-window
+C-y              yank
+down             next-line
+esc a            apropos
+esc B            backward-word
+esc b            backward-word
+esc <            beginning-of-buffer
+esc d            kill-line
+esc >            end-of-buffer
+esc esc          show-version
+esc F            forward-word
+esc f            forward-word
+esc G            goto-line
+esc g            goto-line
+esc i            yank
+esc k            kill-region
+esc l            list-bindings
+esc m            set-mark
+esc n            next-buffer
+esc o            delete-other-windows
+right            forward-character
+up               previous-line
+\end{verbatim}
+
+\chapter{Installation}  
+In order to program in Prolog, you will need
+to install three programs:\index{wamcompiler}
+\begin{enumerate}
+\item Emacs -- a text editor\index{wamcompiler!Emacs}
+\item Steel Bank Common Lisp, or sbcl for
+ short\index{wamcompiler!sbcl}
+\item A Prolog compiler that works in tandem with Lisp,
+  such as \verb|cl-prolog| that links Lisp with a
+  popular implementation of Prolog, or
+  a Lisp based Prolog, such as  the \verb|wamcompiler.lisp|
+  virtual machine.
+\end{enumerate}
+
+However, you must learn many things before actually being
+able to make these three pieces of software work together. 
+Unless you are well versed in programming, I suggest that
+you call a geek who has majored in Computer Science to perform
+the installations for you.
+
+Installation of Emacs is quite easy. You will find binary
+distributions for practically any machine. Even so, you
+will need help to configure the editor and perform the
+setup of useful plug-ins, such as slime, which will help
+you with Lisp programming.
+
+Installation of sbcl is slightly more difficult. The
+best approach is to install roswell, which is a Lisp
+implementation installer/manager and launcher. Search
+the Internet for the roswell page  and follow the
+instructions with the help of the Computer Science major.
+Use the keywords {\em Common Lisp roswell} to find 
+the github repository for roswell.
+
+Finally you will need to download the \verb|wamcompiler.lisp|
+file. The \verb|wamcompiler| was developed by Daiki Matsunaga,
+who publish under the nickname of \verb|matsud224|. Therefore,
+a search with the following keywords should land on the
+wamcompiler page: \verb|matsud224 wamcompiler|.
+\index{wamcompiler!github}
+
+Besides Prolog, this book will deal with Common
+Lisp and shell script, thus if you go through the whole
+text, you will not need help from the Computer Science
+major pretty soon.
+
+\section{Ready}
+If you installed Emacs and sbcl, then performed the download
+of the wamcompiler, you are now ready for action!
+
+\includegraphics{figs-prefix/readyforaction.jpg}
+
+It seems that people prefer money to sex.
+After all, almost everybody says no to
+sex on one occasion or another.
+But I have never seen a single
+person refusing money. Therefore, let us
+start this tutorial talking about money.
+
+If one wants to calculate a running
+total of bank deposits, she will make
+a column of numbers and perform the
+addition.
+
+\index{Arithmetic!Elemetary School}  
+\begin{wrapfigure}[10]{i}{5cm}
+\renewcommand\figurename{Fig.}
+\includegraphics[scale=0.5]{figs-prefix/firemen.png}
+\caption{Running total}
+\end{wrapfigure}
+What I mean to say is that, if you
+need to perform the addition
+$8 + 26 + 85 + 3$ with pencil and paper,
+you will probably stack the numbers the
+same way you did before taking pre-algebra
+classes in highschool:
+\begin{quote}
+\begin{tabular}{p{0.5cm}p{1cm}}
++ &\verb|  8|\\
+&\verb| 26|\\
+&\verb| 85|\\
+&\verb|  3|\\
+\hline
+&\verb|122|
+\end{tabular}
+\end{quote}
+Subtraction is not treated differently:
+\begin{quote}
+\begin{tabular}{p{0.5cm}p{1.5cm}}
+\Large\bf -&   358\\
+&   216\\
+\hline
+& 142
+\end{tabular}
+\end{quote}
+
+This chapter contains an introduction to
+the Cambridge prefix notation, 
+which is only slightly different from that
+learned in elementary school: The operation
+and its arguments are put between parentheses.
+In doing so, one does not need to draw a line
+under the bottom number, as you can see below:
+\begin{quote}
+\begin{tabular}{p{0.5cm}p{1cm}}
+(+ &\verb|  8|\\
+&\verb| 26|\\
+&\verb| 85|\\
+&\verb|  3|)\\
+&\verb|122|
+\end{tabular}
+\end{quote}
+The Cambridge prefix notation can be applied
+to any operation, not only to the four arithmetic
+functions. 
+
+\section{Cambridge prefix notation}
+\index{Prefix notation}
+\index{Prefix notation!Cambridge}
+Let us summarize what we have learned
+until now. In pre-algebra, students
+learn to place arithmetic operators (+, -, × and ÷)
+between their operands; e.g. 347+45.
+However, when doing additions and subtractions
+on paper, they stack the operands.
+
+\includegraphics{figs-prefix/stackshark.jpg}
+
+
+Lisp programmers put operation and operands
+between parentheses. The right parenthesis
+separate the operands from the result,
+instead of drawing a line under the last operand.
+
+\includegraphics{figs-prefix/neatsum.jpg}
+
+\section{Pictures}
+Here is the story of a Texan who went on
+vacation to a beach in Mexico. While he was
+freely dallying with the local beauties,
+unbeknowest to him a blackmailer took some
+rather incriminating photos.
+After a week long gallivanting, the Texan
+returns to his ranch in a small town near Austin.
+Arriving at his door shortly after is the blackmailer
+full of bad intentions.
+
+Unaware of any malice, the Texan allows the so
+called photographer to enter and sit in front
+of his desk. Without delay, the blackmailer spread
+out a number of photos on the desk, along with his
+demands: “For the photo in front of the hotel,
+that will cost you \$~25320.00. Well, the one
+on the beach that's got to be \$~56750.00.
+Finally, this definitively I can't let
+go for less than \$~136000.00.”
+
+Once finished with his presentation,
+the blackmailer snaps up the photos,
+and looks to the Texan with a sinister
+grin, awaiting his reply.
+
+Delighted with the selection of pics,
+the Texan in an elated voice says:
+“I thought I would have no recollection
+of my wonderful time. I want 3 copies
+of the hotel shot, half a dozen of the beach.
+And the last one, I need two copies for myself,
+and please, send one to my ex-wife.
+Make sure you leave me your contact
+details; I might need some more.
+
+\paragraph{Mixed calculations.}
+In order to calculate how much the
+Texan must pay his supposed blackmailer,
+his bookkeeper needs to perform the
+following operations:
+$$3\times 25320+6\times 56750 + 2\times 136000+136000$$
+It should be remembered that multiplications
+within an expression take priority over additions
+and subtractions. The bookkeeper must therefore
+calculate the first two products $3\times 25320$
+and $6\times 56750$, before performing the first
+addition. In the Cambridge prefix notation,
+the internal parentheses pass priority over
+to the multiplications.
+
+The Texan's bookkeeper started Emacs
+in order to perform the calculations.
+The text editor creates a memory
+buffer that mirrors the file contents.
+By convention, the file and the buffer
+have the same name.
+
+Initially, Emacs will place the bookkeeper
+on a *scratch* buffer. The bookkeeper issues
+the \verb|M-x| command by keeping the \keys{Alt}
+key down and pressing the \verb|x| key.
+Emacs will put the bookkeeper in the minibuffer
+with the \verb|M-x| prompt. Then, the bookkeeper
+will type the \verb|shell| command, which we
+will study in one of the future chapters.
+Here is how to start the shell:
+\begin{quote}
+\verb|M-x shell| \keys{Enter}
+\end{quote}
+The above command will create a kind of chat
+box between the bookkeeper and the computer.
+The bookkeeper types the \verb|ros run| command
+to start Lisp.  Listing~\ref{texan:photos} shows
+what an interaction with shell and sbcl looks
+like. After typing an expression, while obeying the
+Cambridge prefix notation syntax,
+the bookkeeper moves the cursor to the front
+of the most external right parenthesis.
+To perform the calculation, she presses
+the \keys{Enter} key. Then, the sbcl Read Eval
+Print Loop transforms the command to machine
+language, evaluates it, and inserts the result into
+the buffer.
+
+To save the buffer, the bookkeeper
+keeps the \keys{Ctrl} key down, and presses
+the \keys{~x~} and \keys{~s~} keys in sequence.
+To exit the editor, she maintains the \keys{Ctrl}
+key pressed and hits the \keys{~x~} and \keys{~c~}
+keys one after the other. If there are unsaved files,
+the editor warns that modified buffers exist,
+and requires confirmation before quitting. But wait,
+if you are shadowing the actions of the bookkeeper,
+don't leave the editor yet. Let us test the wamcompiler
+before doing so.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.8\textwidth}
+\verb|~/wamcompiler/wamdocs master ×|\\
+\verb|› ros run|\\
+\verb|* (+  (* 3 25320)|\\
+\verb|      (* 6 56750)|\\
+\verb|      (* 2 136000)|\\
+\verb|    136000 )|\keys{Enter}\\ 
+824460
+\end{fmpage}
+\begin{fmpage}{0.8\textwidth}
+\verb| |
+\end{fmpage}
+\caption{Chat with Lisp}
+\label{texan:photos}
+\end{figure}
+
+
+
+The Texan's accountant decided to check whether
+the wamcompiler is working on her machine. Therefore,
+she loads the \verb|wamcompiler.lisp| file and
+starts a Prolog Read Eval Print Loop, or repl for
+short.
+\begin{quote}
+\begin{verbatim}
+* (load "~/wamcompiler/wamcompiler.lisp")
+(load "~/wamcompiler/wamcompiler.lisp")
+T
+* (repl)
+(repl)
+> ?- X is 3*25320 + 6*56750+ 2* 136000 + 136000.
+?- X is 3*25320 + 6*56750+ 2* 136000 + 136000.
+X = 824460
+
+yes.
+> ?- halt.
+
+yes.
+\end{verbatim}
+\end{quote}
+
+The Lisp prompt is usually an asterisk, therefore
+be careful not to confuse the prompt with the
+multiplication symbol. The wamcompiler prompt is
+the {\em greater-than} \verb|>| character, but you need to prefix
+all queries with the \verb|?-| symbol, as you
+can see in the example.
+
+\section{Time value of money}
+Suppose that you wanted to buy a \$ 100,000 red Ferrari,
+and the forecourt salesperson in his eagerness to
+close a deal gives you the following two payment options:  
+\begin{itemize}
+\item Pay \$ 100,000 now {\bf or}
+\item pay the full \$ 100,000 after a three year grace period.
+\end{itemize}
+
+I am sure that you would choose to pay the \$ 100,000 after
+three years of grace has finished, although you have the
+money in a savings account waiting for a business
+opportunity. But why is this? After all, you will need
+to pay the debt one way or the other. However, if you
+keep the money in your power during the grace period,
+you can earn a few months of fuel from the interest.
+
+You may not know for sure how much interest you
+will earn in three years, but since the salesperson
+is not charging you for deferring the payment,
+whatever you gain is yours to keep.
+
+Unfortunately for you, the above scenario would
+more than probably not happen in real life.
+The right to delay payment until some future
+date is a merchandise with a price tag,
+which {\em is called interest by those who
+think it lawful, and usury by those who
+do not} (William Blackstone's Commentaries
+on the Laws of England). Therefore, unless
+the salesperson is your favorite aunt,
+the actual offer is like jumping into a tank
+full of sharks as in the classic James Bond films.
+It requires a little forethought and understanding
+of how interest works, before making a decision.
+Here is a more realistic real estate sales offer:
+
+\begin{itemize}
+\item \$ 100,000 now {\bf or}
+\item \$ 115,000 at the end of three years.
+\end{itemize}
+
+What to do when facing an increase in price
+to cover postponement of payment? The best
+policy is to ask your banker how much interest
+she is willing to pay you over your
+granted grace period.
+
+Since the economy performance is far
+from spectacular, your banker offers you
+an interest rate of 2.5\%, compound annually.
+She explains that compound interest arises
+when interest is paid on both the principal
+and also on any interest from past years.
+
+\section{Future value}\index{Future Value}
+
+\includegraphics{figs-prefix/piggy.jpg}
+
+The value of money changes with time. Therefore,
+the longer you keep control of your money,
+the higher its value becomes, as it can earn
+interest. Time Value of Money, or TVM for short,
+is a concept that conveys the idea that money
+available now is worth more than the same
+amount in the future.
+
+If you have \$ 100,000.00 in a savings account
+now, that amount is called {\em present value},
+since it is what your investment would give you,
+if you were to spend it today.
+
+Future value of an investment is the amount
+you have today plus the interest that your
+investment will bring at the end of a
+specified period.
+
+The relationship between the present value
+and the future value is given by the
+following expression:
+\begin{equation}
+FV= PV\times (1+i)^n
+\label{eq:future-value}
+\end{equation}
+where $FV$ is the future value, $PV$ is the present
+value, $i$ is the interest rate divided by 100,
+and $n$ is the number of periods.
+
+In the case of postponing the payment of a \$ 100,000.00 car
+for 3 years, at an interest rate of 0.025, the future
+value of the money would be 107,689.06; therefore,
+I strongly recommend against postponing the payment.
+
+\section{Compound interest}
+
+Our Texan decides he needs a break. Thus he walks into
+a New York City bank and asks for the loan officer.
+He tells a story of how through his doctor's recommendation
+he was taking it easy at his property in the south of
+France for two whole years and for such an 
+emergency he needs a \$ 10,000.00 loan.
+
+The loan officer said that the interest was a compound 8\%
+a year, but the bank would need some collateral for the loan.
+
+“Well, I have a 60 year old car that I like very much.
+Of course, I cannot take it with me to France.
+Would you accept it as collateral?”
+
+Unsure whether or not the old car was worth the
+amount of the loan, the officer summons the bank manager.
+The manager inspects the vehicle that was parked on the
+street in front of the bank. After a close examination,
+he gives a nod of approval: “It’s a Tucker Torpedo.
+Give him the loan.”
+
+The Texan quite willingly signed his heirloom over.
+An employee then drove the old car into the bank’s
+underground garage and parked it. From time to time,
+the employee would go, and turn over the engine, to keep
+the car in good running condition, and gave it an
+occasional waxing just to maintain it in pristine condition.
+Two years later the Texan returned, and asked how
+much he owed the bank. The loan officer started Emacs and
+Lisp, and calculated the total debt as \$ 11,664.00.
+
+\paragraph{Interest Calculation.}
+\index{Interest!Compound}
+Let us follow the calculation of the value accumulated
+in the first year of compound interest at an 8\% rate
+over \$ 10,000.00. Enter formula~\ref{eq:future-value} in
+the Lisp Read Eval Print Loop:
+\begin{quote}
+\begin{verbatim}
+* (* (expt (+ 1.0 0.08) 2) 10000)
+11644.00
+\end{verbatim}
+\end{quote}
+Observe that it was necessary to divide the
+interest rate by 100, which produces 0.08.
+
+\begin{figure}[!h]\index{define}
+\begin{fmpage}{0.8\textwidth}
+\begin{verbatim}
+;; File: fvalue.lisp
+
+(defun  future-value(pv i n)
+   (* (expt (+ (/ i 100.0) 1) n) 
+      pv)
+);;end defun
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\textwidth}
+\verb|* (load "fvalue.lisp")|\keys{Enter}\\
+\verb|T|\\
+\verb|* (future-value 10000 8 2)|\\
+11664.001
+\end{fmpage}
+\caption{Future Value Program}
+\label{Texan:parking}
+\end{figure}
+
+It is possible to define an operation that
+calculates formula~\ref{eq:future-value}
+given the arguments \verb|fv|, \verb|i|
+and \verb|n|. The definition is given
+in listing~\ref{Texan:parking}.
+
+After typing the definition shown in listing~\ref{Texan:parking},
+you must issue the \verb|C-x C-s| command to save the buffer.
+In order to do this, keep the \keys{Ctrl} key pressed down and
+hit the \keys{~x~} and \keys{~s~} keys in sequence.
+
+In order to load the program into Lisp, keep the \keys{Alt} down
+and press the \verb|x| key. The prompt \verb|M-x| will appear
+in the minibuffer; type \verb|shell| at this prompt, as shown below.\\
+
+\begin{fmpage}{0.8\textwidth}
+\begin{verbatim}
+;; File: fvalue.lisp
+
+(defun  future-value(pv i n)
+   (* (expt (+ (/ i 100.0) 1) n) 
+      pv)
+);;end defun
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\textwidth}
+\verb|M-x shell|\keys{Enter}\\
+\end{fmpage}
+
+\verb||\\
+When the shell chat starts, run the \verb|ros run| command
+to start the Common Lisp compiler:
+\begin{verbatim}
+› ros run
+* (load "fvalue.lisp")
+T
+* (future-value 10000 8 2)
+11664.001y
+\end{verbatim}
+
+In listing~\ref{Texan:parking}, any text
+between a semicolon and the end of
+a line is considered a comment.
+Therefore, \verb|;; File: fvalue.lisp|
+is a comment. Likewise, \verb|;;end defun|
+is a comment. Comments are ignored by
+Lisp, and have the simple function of
+helping users and programmers.
+
+Now, let us see what Prolog adds to Common Lisp,
+I mean, what Lisp programmers will gain by
+having a Prolog compiler embedded into Common
+Lisp. Here one can see a Prolog program for
+calculating future values:
+\index{Prolog!future value}
+\begin{verbatim}
+%% File: ?- consult('fvalue.pl')
+
+period_of_time(2).
+period_of_time(4).
+period_of_time(8).
+period_of_time(10).
+
+futval(PV, I, N, FV) :- period_of_time(N),
+                 FV is PV*(1+I/100)**N.
+\end{verbatim}
+
+\index{Prolog!comments}
+In Prolog, comments are introduced by the \%
+percent symbol, not by a semicolon, as in Lisp.
+Variables are capitalized; thus, in the definition
+of \verb|futval/4|, the symbols \verb|PV|, \verb|I|,
+\verb|N|, and \verb|FV| are variables. Below you will
+see an example of how to compile and execute
+the \verb|'fvalue.pl'| program. The predicate
+\verb|period_of_time/1| has four clauses. When
+this predicate is called from \verb|futval/4| with the 
+\verb|period_of_time(N)| pattern, it unifies \verb|N|
+with the first pattern, which makes \verb|N= 2|.
+To make a long story short, there are many
+options for the period of time \verb|N|, and Prolog
+starts with the first choice.
+
+The \verb|FV| future value is calculated for this choice
+of \verb|N|, and the result is shown to the user. If the
+first result is satisfactory, the user types
+\verb|yes|, and Prolog stops searching for
+solutions. If the user presses the semicolon
+key, Prolog backtracks to the \verb|period_of_time(N)|
+predicate, and chooses \verb|N=4|, which is
+the second option. By repeatedly pressing
+the semicolon, the user is able to obtain all solutions.
+
+\begin{verbatim}
+› rlwrap ros run
+* (load "wamcompiler.lisp")
+T
+* (repl)
+> ?- consult('fvalue.pl').
+
+yes.
+> ?- futval(10000, 8, N, FV).
+N = 2
+FV = 11664.001
+?;
+N = 4
+FV = 13604.892
+?;
+N = 8
+FV = 18509.309
+?;
+N = 10
+FV = 21589.258
+
+yes.
+\end{verbatim}
+
+\section{Mortgage}
+A man with horns, legs and tail of a goat,
+thick beard, snub nose and pointed ears entered
+a real estate agency, and expressed his intention
+of closing a deal. People fled in all directions,
+thinking that Satan himself was paying them a visit.
+Deardry seemed to be the only person who remained
+calm. “What a ignorant, narrow minded, prejudiced
+lot! I know you are not the devil. You are the
+Great God Pan! What can I do for you?”
+
+“I would like to buy a house in London.
+I know that the city is made up of 32 Boroughs
+and where I buy will make an enormous difference
+to price, quality of life, and chances of increase
+in capital value of the property.”
+
+“Well, Sir, with our experience you can rest
+assured that you will secure your ideal property.
+Firstly we must decide on what type of property
+fits your needs and where you want to be. You
+may consider somewhere like Fulham, Chelsea,
+Knightsbridge, Kensington or Mayfair.
+I have properties in all these places. ”
+
+“Chelsea! I like the name.”
+
+“Chelsea is arguably one of the best residential
+areas in London. It has benefited from it’s close
+proximity to the west end of the city and is highly
+sought after by overseas buyers looking to be located
+in one of the most popular areas in central London.
+At the moment, I can offer you a fantastic living
+space in a four bedroomed flat situated behind
+King's Road. The price is £10,500,000.”
+
+“I don't have this kind of cash with me right now,
+but can get it in a few months of working in a
+circus. Meanwhile, can you arrange a mortgage for me? ”
+
+“Yes, Yes I can help arrange mortgages in all 32 Boroughs
+of London. Non-residents can have mortgages up to 70\% of
+the purchase price. Do you have £3,150,000 pounds for the
+down payment? In mortgage agreements, down payment is
+the difference between the purchase price of a property
+and the mortgage loan amount.”
+
+“I know what down payment is. And yes, I can dispose
+of £3,150,000 pounds.”
+
+“A mortgage insurance is required for borrowers with
+a down payment of less than 20\% of the home's purchase
+price. That is not your case. Therefore, the balance of
+the purchase price after the down payment is deducted
+is the amount of your mortgage. Let us write a program
+in Lisp to find out your estimated monthly payment.
+The loan amount is £7,350,000 pounds. The interest rate
+is 10\% a year. The length of the mortgage is 20 years.
+That is the best I can do for you, I am afraid.
+You are going to pay £97131.00 pounds a month for
+ten years. After that, the balance of your debt
+will be zero. But your visit is a surprise!”
+The broker exclaimed. “ I never thought I would
+ever see a true living god wanting to do property
+deals in London.”
+
+With that, Pan replied: “If property prices
+were not so high, and interest rate so steep,
+we would definitely be up for business more often.”
+
+\includegraphics[scale=0.5]{figs-prefix/deuspan.jpg}
+
+\paragraph{Loan Amortization.}
+Amortization refers to the gradual reduction
+of the loan principal through periodic payments.
+
+\includegraphics{figs-prefix/agingshark.jpg}
+
+Suppose you obtained a 20-year mortgage
+for a \$ 100,000.00 principal at the interest
+rate of 6\% a year. Calculate the monthly payments.
+
+\paragraph{Amortization Formula.} Let $p$ be the
+present value, $n$ the number of periods,
+and $r$ be the
+interest rate, i.e., the interest divided by 100.
+In this case, the monthly payment for full
+amortization is given by~\ref{eq:amortization}.
+This formula is implemented in
+listing~\ref{Pan:mortgage}.
+\begin{equation}
+\frac{r\times p\times(1+r)^n}{(1+r)^n - 1}
+\label{eq:amortization}
+\end{equation}
+
+\begin{figure}[!h]\index{define}
+\begin{fmpage}{0.9\textwidth}
+\begin{verbatim}
+;; File: (load "pmt.lisp")
+
+(defun pmt( 
+         p ;; present value
+         i ;; interest 
+         n ;; number of periods
+         ;; optional parameters
+         &optional  (r (/ i 100.0)) 
+              (rn (expt (+ 1.0 r) n)) 
+    );;end of parameter list
+(/ (* r p rn)
+ (- rn 1))
+);;end of defun
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\textwidth}
+\verb|(load "pmt.list")|\keys{Enter}\\
+\verb|T|\\
+\verb|(pmt (* 10500000.00 0.7) (/ 10.0 12) (* 20 12))|\keys{Enter}\\
+70929.00
+\end{fmpage}
+\caption{Mortgage for a God}
+\label{Pan:mortgage}
+\end{figure}
+
+You certainly noticed that the
+\verb|pmt| function, defined
+in listing~\ref{Pan:mortgage},
+has two parameters \verb|r| and \verb|rn|,
+which the user does not need
+to express. Lisp itself
+assigns \verb|(/ i 100.0)| to \verb|r|
+and \verb|(expt (+ 1.0 r) n)| to \verb|rn|.
+Now, let us repeat the magic in Prolog. Here is
+the program:\\
+
+
+\begin{fmpage}{0.9\textwidth}
+\begin{verbatim}
+%% File: ?- consult("pmt.lisp").
+
+property(fulham, 6500000).
+property(chelsea, 10500000).
+property(mayfair, 9000000).
+property(kensington, 4000000).
+
+pmt(Local, Price, Down, I, NY, Payment) :-
+     property(Local, Price),
+     P is 0.7 * Price,
+     Down is 0.3 * Price,
+     R is I/1200,
+     N is NY * 12,
+     RN is (1 + R)** N,
+     Payment is R * P * RN / (RN - 1).
+
+\end{verbatim}
+\end{fmpage}
+
+\verb||\\
+The Prolog program will consult a data base of
+property prices, calculate the down payment and
+the monthly payments needed to be made, and present the
+values to the appreciation of the client. By pressing the
+semicolon key, the client can refuse an offer and
+ask to see another option.
+
+\begin{verbatim}
+› rlwrap ros run
+* (load "wamcompiler.lisp")
+T
+* (repl)
+> ?- consult('pmt.pl').
+
+yes.
+> ?- pmt(Local, Price, Down, 10, 20, Payment).
+Local = fulham
+Price = 6500000
+Down = 1950000.1
+Payment = 43908.496
+?;
+Local = chelsea
+Price = 10500000
+Down = 3150000.3
+Payment = 70929.12
+?
+\end{verbatim}
+
+\section{Functions}\index{function!mathematics}
+I am sure that you know what a function is. It is
+possible that you do not know the mathematical
+definition of function, but you have a feeling
+for functions, acquired by the use of calculators
+and computer programs or by attending one of
+those Pre-Algebra courses.
+
+A function has a functor, which is the name of the
+function, and arguments,e.g., \verb|S is sin(X)| is
+a function. Another function is \verb|M is mod(X,Y)|
+that gives the remainder of the division of \verb|X|
+by \verb|Y|.  When you want to use a function, you
+substitute constant values for the variables, or arguments.
+For instance, if you want to find the remainder
+of 13 divided by 2, you can type
+\begin{quote}
+	\verb|?- X is mod(13,2).|
+\end{quote}
+in the Prolog read eval print loop to get the
+answer. One could say that functions are maps
+between possible values for the argument and
+a value in the set of calculation results.
+
+The domain is the set of possible values for the
+argument, whereas the image is the set of calculation
+results. In the case of the sinus function,
+the elements of the domain are real numbers
+between $-\pi/2$ and $\pi/2$ radians. There
+is an important thing to remember: 
+Mathematicians insist that a function must produce
+only one value for a given argument. Therefore,
+if a calculation produces more than one value,
+it is not a function. For instance, $\sqrt{4}$
+can be 2 or -2. Then the square root of a number
+cannot be a function. 
+
+What about functions of many arguments? For example,
+the function \verb|max(X,Y)| takes two arguments,
+and returns the greatest one. In this case, you can
+consider that it has only one argument, that being a
+tuple of values. Thus, the argument of \verb|max(5,2)|
+is the \verb|(5,2)| pair. Mathematicians say that the
+argument of such a function is the Cartesian product
+$R\times R$. The Cartesian product was named after
+René Descartes, a French philosopher and scientist.
+In Latin, the family name of Descartes translates
+as Cartesius, therefore, the adjective Cartesian.
+
+There are functions whose functor is placed between
+its arguments. This is the case of the arithmetic
+operations, where one often writes \verb|5+7|, instead
+of \verb|+(5,7)|. At this point, it is necessary to
+praise Lisp, since the designers of this elegant language
+chose a uniform syntax for all operations, including
+application of functions. In Lisp, the \verb|sin(X)|
+function is represented by \verb|(sin X)|, and 
+addition is notated as \verb|(+ X Y Z ...)|. In other
+words, all well formed formulas in Lisp are lists, where
+the operator is the first element.
+
+\section{Predicates}\index{predicates}
+Predicates are functions whose domain is the set
+\verb|{true,false}|. There are a few predicates
+that are well known to any person who tried his/her
+hand at programming, or even by a student who is
+taking Pre-Algebra:
+\begin{itemize}
+\item $X>Y$ is true if $X$ is greater than $Y$, false otherwise.
+\item $X<Y$ is true if $X$ is less than $Y$, false otherwise.
+8\item $X=Y$ is true if $X$ is equal to $Y$, false otherwise.
+\end{itemize}
+A predicate with one argument tells of an attribute or feature
+of its argument. One can tell that this predicate acts like
+an adjective. In Lisp, \verb|(not X)| is true if \verb|X| is
+false, and \verb|false| otherwise. In other computer languages
+there are predicates equivalent to this one.
+
+\pagebreak
+In the story of the Texan, you have seen an example of a one slot predicate:
+\begin{quote}
+\begin{verbatim}
+period_of_time(2).
+period_of_time(4).
+period_of_time(8).
+period_of_time(10).
+\end{verbatim}
+\end{quote}
+A predicate with more than one argument shows that there
+exists a relationship between its arguments. In the case of
+\verb|X=Y|, the relationship is {\em equal}.
+
+Prolog predicates have a feature that one cannot see in
+other computer languages: they not only check whether
+constant arguments have a feature or obey a relationship,
+but they actively search for values that satisfy a
+set of requisites. For example, the \verb|futval(PV, 8, N, FV)|
+searches for values of \verb|N| and \verb|FV| that satisfy
+the definition of a future value.
+
+\begin{verbatim}
+› rlwrap ros run
+* (load "wamcompiler.lisp")
+T
+* (repl)
+> ?- consult('fvalue.pl').
+
+yes.
+> ?- futval(10000, 8, N, FV).
+N = 2
+FV = 11664.001
+?;
+N = 4
+FV = 13604.892
+?;
+N = 8
+FV = 18509.309
+?;
+N = 10
+FV = 21589.258
+
+yes.
+\end{verbatim}
+
+%% Vernon stopped here on 17/12/2019
+\pagebreak
+\section{Lists}
+Every human and computer language
+has syntax, i.e., rules for combining
+components of sentences.
+In general, a computer language
+syntax is complex, and the programmer
+must study it for years before
+becoming proficient.
+
+Lisp has the simplest syntax
+of any language. All
+Lisp constructions are expressed
+in Cambridge prefix notation:
+$\verb|(operation|\;x_1\;x_2\;x_3\ldots x_n\verb|)|$.
+This means that all Lisp procedures  can be written 
+as a pair of parentheses enclosing an operation
+followed by its arguments. 
+
+A linked list is a representation for
+a \verb|xs| sequence  in such a way
+that it is easy and efficient to
+push a new object to the top of \verb|xs|.
+\begin{quote}
+\begin{verbatim}
+> (defparameter aList '(S P Q R))
+(S P Q R)
+> (cons 'Rome aList)
+(Rome S P Q R)
+> aList
+(S P Q R)
+\end{verbatim}
+\end{quote}
+The \verb|'(S P Q R)| list of letters
+is prefixed by a quotation mark because
+in Lisp lists and programs have the
+same syntax: The Cambridge prefix notation.
+The single quotation mark
+tags the list so the computer will
+take it at face-value, and thus will
+not try to be evaluated.
+
+Through the repeated application of the
+\verb|cons| function, one can
+build lists of any length
+by adding new elements to
+a core.
+\begin{quote}
+\begin{verbatim}
+> (defparameter xs '(S P Q R))
+(S P Q R)
+> (cons 5 (cons 4 (cons 3 (cons 2 (cons 1 xs)) ) ))
+(5 4 3 2 1 S P Q R)
+> xs
+(S P Q R)
+\end{verbatim}
+\end{quote}
+In the above example, you have noted
+that repeated application of nested functions
+cause right parentheses accumulate
+at the tail of the expression.
+It is good practice in programming
+to group these bunches of right parentheses
+in easily distinguishable patterns.
+
+\begin{verbatim}
+> (cons 'S (cons 'P (cons 'Q '(R)) ))  ;4 right parentheses
+(1 2 3)
+> (+ 51 (* 9 (+ 2 (- 3 (+ 1 2 3)) ) )) ;5 right parentheses
+42 
+> (+ 6 (* 9 (+ 2 (- 3 (+ 4 (- 3))) ))) ;6 right parentheses
+42
+\end{verbatim}
+
+Another way to create easily recognizable patterns  is to
+reorganize the expression in order to interrupt the sequence
+of right parentheses:
+\begin{quote}
+\begin{verbatim}
+> (+ 51 (* (+ 2 (- 3 (+ 1 2 3))) 9))
+42
+\end{verbatim}
+\end{quote}
+
+The head of a list is its first element. For instance, the head of
+\verb|'(S P Q R)| is the \verb|'S| element. The tail is the sublist
+that comes after the head. In the case of \verb|'(S P Q R)|, the tail
+is \verb|'(P Q R)|. Lisp has two functions, \verb|(car xs)| and
+\verb|(cdr xs)| that selects the head and the tail respectively.
+\index{List!selector: car}
+\index{List!selector: cdr}
+
+As one can see below, it is possible to reach any element of a list
+with a sequence of \verb|car| and \verb|cdr|.
+\begin{verbatim}
+> (defparameter xs '(2 3 4 5 6.0))
+(2 3 4 5 6.0)
+> xs
+(2 3 4 5 6.0)
+> (car xs)
+2
+> (cdr xs)
+(3 4 5 6.0)
+> (car (cdr xs))
+3
+> (cdr (cdr xs))
+(4 5 6.0)
+> (car (cdr (cdr xs)))
+4
+> (car (cdr (cdr (cdr xs)) ))
+5
+> (car (cdr (cdr (cdr (cdr xs)) ) ))
+6.0
+\end{verbatim}
+
+\section{Going through a list}\label{sec:average}
+In listing~\ref{going-through-a-list},
+the \verb|avg| function can be used to
+calculate the average of a list of numbers.
+It reaches all elements of the list
+through successive applications
+of  \verb|(cdr s)|.
+The list elements are accumulated in
+\verb|acc|,
+while the \verb|n| parameter counts
+the number of \verb|(cdr s)| applications.
+When  \verb|s| becomes empty, the \verb|acc|
+accumulator contains the sum of \verb|s|, and \verb|n|
+contains the number of elements. The average
+is given by \verb|(/ acc n)|. 
+
+In order to fully understand the workings
+of the \verb|avg| function, we should have
+waited for the introduction to the \verb|cond-form|
+given on page~\pageref{page:cond-form}.
+The only reason for presenting
+a complex definition like \verb|avg|
+so early in this tutorial is
+to show a grouping pattern of five
+right parentheses. As was discussed
+previously, when the number of close
+parentheses is greater than 3, good
+programmers distribute these into small
+groups, so that an individual who is
+trying to understand the program
+can see that the expression is
+proprely closed at a glance.
+
+\paragraph{For the impatient learner.}
+However, for the sake of the impatient reader,
+let us give a preview on
+how the cond-form works.
+
+\index{Predicates!null}
+\begin{figure}[!h]
+\begin{fmpage}{0.9\textwidth}
+\begin{verbatim}
+(defun (avg s &optional (acc 0) (n 0))
+  (cond ( (and (null s) (= n 0)) 0)
+        ( (null s) (/ acc n) )
+        (T (avg (cdr s) 
+                (+ (car s) acc) 
+                (+ n 1.0)) ) ))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\textwidth}
+\verb|(load "average.lisp")|\keys{Enter}\\
+\verb|T|\\
+\verb|(avg '(3 4 5 6))|\keys{Enter}\\
+4.5
+\end{fmpage}
+\caption{Going through a list}
+\label{going-through-a-list}
+\end{figure}
+
+\index{Conditional execution!cond}
+The cond-form consists of a sequence
+of clauses, where each clause has two
+components: A condition and an expression.
+The value of the cond-form will be given by
+the first clause that has a true condition.
+In listing~\ref{going-through-a-list}, the
+clauses are:
+\begin{enumerate}
+\item \verb| ( (and (null s) (= n 0)) 0)| --
+The condition will be true when \verb|s| is the empty
+\verb|()| list and \verb|n=0|. This happens when the
+user types \verb|(avg ())|. In such a case, the cond-form
+returns 0.
+\item \verb|( (null s) (/ acc n) )| -- This clause
+will be activated when the \verb|s| list is
+\verb|()| empty, but \verb|n| is greater than 0.
+If \verb|n| were 0, the first clause would prevent
+the evaluator from reaching the second clause. The
+value of the second clause is \verb|(/ acc n)|,
+which is the average of the list.
+\item \verb|(T (avg (cdr s) (+ (car s) acc) (+ n 1.0)) )| --
+If the user executes the \verb|(avg '(4 5 6))| expression,
+the evaluator will visit this clause with \verb|s= (4 5 6)|,
+\verb|s= (5 6)| and \verb|s= (6)|. Every time the evaluation
+falls into the third clause, \verb|(cdr s)| is executed, and
+\verb|s| looses an element, until it becomes empty and is
+captured by the second clause, which produces the answer.
+\end{enumerate}
+
+\section{Prolog Lists}\index{Lists!Prolog}
+In his book about Lisp, Patrick Winston says: {\em A list is an
+ordered sequence of elements, where ordered means that the
+order matters.} In Prolog, a list is put between brackets,
+and is supposed to have a head and a tail.\\
+
+\begin{tabular}{p{5cm}p{3cm}p{3cm}}
+List &  Head & Tail\\
+\verb|[3,4,5,6,7]| & \verb|3| & \verb|[4,5,6,7]|\\ 
+\verb|[wo, ni, ta]| & \verb|wo| & \verb|[ni, ta]|\\
+\verb|[4]| & \verb|4| & \verb|[]|\\
+\verb|[3.4, 5.6, 2.3]| & \verb|3.4| &  \verb|[5.6, 2.3]|\\ 
+\end{tabular}
+
+\verb||\\
+You can match a pattern of variables with a list. For instance,
+if you match
+\begin{quote}
+\verb/[X|Xs]/
+\end{quote}
+with the list \verb|[42,666,13]|, you will get \verb|X=42| and
+\verb|Xs=[666,13]|, i.e., \verb|X| matches the head of the list,
+and \verb|Xs| matches the tail. Of course, you can use other
+variables instead of \verb|X| and \verb|Xs| in the pattern
+\verb/[X|Xs]/. Thus, \verb/[A|B]/, \verb/[X|L]/, \verb/[First|Rest]/
+and \verb/[P|Q]/ are equivalent patterns.\\
+\index{Prolog!list pattern}\index{Prolog!list head/tail}
+\verb||\\
+\begin{tabular}{p{3cm}p{3cm}p{3cm}p{3cm}}
+Pattern & List &  X & Xs\\
+\verb/[X|Xs]/ & \verb|[42,666,13]| & \verb|42| & \verb|[666,13]|\\ 
+\verb/[X|Xs]/ & \verb|[666,13]| & \verb|666| & \verb|[13]|\\
+\verb/[X|Xs]/ &  \verb|[13]| & \verb|13| & \verb|[]|\\
+\verb/[X|Xs]/ &  \verb|[]| & no match &  no match\\ 
+\end{tabular}
+
+\verb||\\
+Listing \ref{prolog:average} shows a Prolog program that calculates
+the average of a list. A Prolog definition is a set of clauses, not
+very different from the cond-form.
+
+As you learned previously, when Prolog finds a solution through
+one of the clauses, it offers the user another solution, obtained
+by the use of the next clause in the definition. Computer scientists
+say that Prolog backtracks to the point of choice, in order
+to find multiple solutions. However, in the definition of
+\verb|avg/4|, I know that if Prolog finds a solution through
+the second clause, it will be useless to try the third
+clause, since the empty \verb|[]| list will never unify
+with the \verb/[X|Xs]/ pattern of the third clause. Therefore,
+I cut\index{cut} the search tree by placing a exclamation mark
+in the first and in the second clause. This is equivalent
+to a declaration that \verb|avg/4| has only one solution.
+
+Whenever Prolog finds the exclamation mark, it interrupt
+the search for new solutions. The exclamation mark is
+called {\em cut} by computer scientists. Since mathematical
+functions have only one solution, the definition of a function
+often requires a cut.\index{cut!exclamation mark}
+
+\pagebreak
+Let us test the predicate \verb|avg/4| given in
+listing~\ref{prolog:average}. By the way, Prolog
+is not very efficient in numerical computations.
+Since we have Common Lisp available for number
+crunching, there is no meaning in using Prolog
+for arithmetic calculations.
+
+\begin{verbatim}
+› rlwrap ros run
+* (load "wamcompiler.lisp")
+T
+* (repl)
+> ?- consult('average.pl').
+
+yes.
+> ?- avg([3,4,5,6], 0, 0, Average).
+Average = 4.5
+
+yes.
+\end{verbatim}
+
+\index{cut!average of a list}
+\begin{figure}[!h]
+\begin{fmpage}{0.9\textwidth}
+\begin{verbatim}
+%% ?- consult('average.pl').
+
+avg([], Acc, 0, 0) :- !.
+avg([], Acc, N, A) :- N > 0, !, A is Acc/N.
+avg([X|Xs], Acc, N, A) :- S is Acc + X,
+          N1 is N + 1, avg(Xs, S, N1, A).
+\end{verbatim}
+\end{fmpage}
+\caption{Going through a list in Prolog}
+\label{prolog:average}
+\end{figure}
+
+\section{How to solve it in Prolog}
+The title of this section is a homage to Helder
+Coelho, the first author of the best book on
+Prolog ever written. This book was printed by
+the National Laboratory of Civil Engineering, where
+Helder Coelho works in Portugal. 
+
+Coelho's book is a collection of short problems,
+proposed and solved by great programmers and computer
+scientists. The whole thing is organized as a kind of
+FAQ. The problems are interesting, and the solutions
+are illuminating. The more important, the book provides
+a lot of fun. 
+
+\pagebreak
+\paragraph{PROBLEM 1.} Verbal statement: Check whether H
+is a member of a list L; search all members of a list L.
+
+Prolog is the only language, where two lines code can be
+interesting. The definition of \verb|memb| has two clauses.
+The first clause says that \verb|H| is member of any list that
+can be represented by the pattern \verb/[H|_]/, since it
+is the first element of the list. The second clause says that
+\verb|H| is a member of a list represented by the \verb/[_|T]/
+pattern, if it is member of the tail T.\index{Prolog!member}
+\begin{verbatim}
+%% ?- consult('utilities.pl').
+
+memb(H, [H|_]).
+memb(H, [_|T]) :- memb(H, T).
+\end{verbatim}
+
+As one would expect from the logic of the code,
+Prolog answers yes when confronted with the
+\verb|?-memb(2, [3,2,4])|, since 2 is member
+of the \verb/[3,2,4]/ list. What is magic in
+Prolog is that, when one submit the query
+\verb|?-memb(X,[3,2,4])|, the inference engine
+finds all members of the list.
+
+The inference engine starts at the first clause,
+and unify \verb|X| with the head of \verb|[3,2,4]|,
+what produces \verb|X=3|. If the user does not like
+this first solution, the second clause changes the
+goal to \verb|memb(X,[2,4])| by eliminating the
+refused answer. With the new goal, Prolog tries the
+first clause again, which produces \verb|X=2|, the
+second answer.
+\begin{verbatim}
+› ros run
+* (load "../../wamcompiler.lisp")
+T
+* (repl)
+> ?- consult('utilities.pl').
+
+yes.
+> ?- memb(3, [2,3,4]).
+
+yes.
+> ?- memb(X, [2,3,4]).
+X = 2
+?;
+X = 3
+?;
+X = 4
+?;
+
+no
+\end{verbatim}
+
+\paragraph{PROBLEM 7.} Specify the relation append (list
+concatenation) between three lists, which holds if the
+last one is the result of appending the first two.
+\begin{quote}\index{Prolog!append}
+\begin{verbatim}
+%% ?- consult('utilities.pl').
+
+app([], L, L).
+app([H|T], L, [H|U]) :- app(T, L, U).
+\end{verbatim}
+\end{quote}
+
+This problem is an all time favorite. If you run the
+goal \verb|?-app(X,Y,[2,3,4,5])|, Prolog will find and
+print all ways of cutting the list \verb|[2,3,4,5]|:
+\begin{quote}
+\begin{verbatim}
+› rlwrap ros run
+* (load "../../wamcompiler")
+T
+* (repl)
+> ?- consult('utilities.pl').
+
+yes.
+> ?-app(X,F,[2,3,4,5]).
+X = NIL
+F = [2,3,4,5]
+?;
+X = [2]
+F = [3,4,5]
+?;
+X = [2,3]
+F = [4,5]
+?;
+X = [2,3,4]
+F = [5]
+?;
+X = [2,3,4,5]
+F = NIL
+\end{verbatim}
+\end{quote}
+
+One can say that both Prolog and lisp use clauses to
+process alternatives and options. The difference is
+that, in Lisp, the choice is final. However, when
+the choice reveals itself as inadequate, Prolog can
+backtrack to the point of bifurcation and select
+another path.\index{backtrack}
+
+Consider the definition of app, for instance. The
+first alternative for the \verb|?-app(X,F,[2,3,4,5])|
+goal is the first clause, which makes \verb|X=[]|.
+However, if the user is not happy with this solution,
+Prolog backtracks to the point of choice, and selects
+the second clause, where the \verb/[X|T]/ pattern can
+accept lists of one or more elements, but not empty
+lists. Let us suppose that the tail of the second
+clause matches the first clause, i.e., \verb|app(T,L,U)|
+matches \verb|app([],L,L)|. In this case, the query
+will produce a second answer, \verb|X=[2]|. However,
+the predicate \verb|app(T,L,U)| can skip the first
+clause, and match the second, which would make
+\verb|T=[3]|, and \verb|X=[2,3]|, and so on.
+
+\paragraph{PROBLEM 65.} [EMDEN, 1980] Write a program for
+the game of Nim defined as follows.\index{Prolog!Game of Nim}
+
+A position of the game of Nim can be visualized as a set of
+heaps of matches. Two players, called {\em us} and {\em them},
+alternate making a move. As soon as a player, whose turn is to
+move, is unable to make a move, the game is over and that player
+has lost; the other player is said to have won. A move consists
+of taking at least one match from exactly one heap.
+
+Ten years ago, I published a book called {\em Visual Prolog for
+Tyros}, where I tackled this and a few other problems proposed
+by Coelho. Here is my solution for the Nim problem:
+\begin{quote}
+\begin{verbatim}
+%% ?-consult('nim.pl').
+
+ap([], L, L).
+ap([H|T], L, [H|U]) :- ap(T, L, U).
+
+tk([X],V,V).
+tk([X,X1|Y],V,[[X1|Y]|V]).
+tk([X|T],V,Y) :- tk(T,V,Y).
+
+mv(X,Y) :- ap(U,[X1|V],X),
+       tk(X1,V,R),ap(U,R,Y).
+
+us(X,Y) :- mv(X,Y), \+ them(Y,Z).
+them(X,Y) :- mv(X,Y), \+ us(Y,Z).
+\end{verbatim}
+\end{quote}
+Coelho wrote: {\em A position of the game of Nim can be
+visualized as a set of heaps of matches.} Let us represent
+each heap as a list of integers:
+\begin{quote}
+	\verb|[1,1,1,1,1]|
+\end{quote}
+Therefore, the set of heaps will be a list of lists; e.g.
+\begin{quote}
+\begin{verbatim}
+[  [1,1,1,1,1],
+   [1,1],
+   [1,1,1,1]]
+\end{verbatim}
+\end{quote}
+
+Two players, {\em us} and {\em them}, alternate making
+moves. As soon as a player is unable to make a move,
+the game is over, and that player has lost. A move consists
+of taking at least one match from exactly one heap. In the
+example, if you take three matches from the third heap,
+you make a valid move for us, and the board becomes:
+\begin{quote}
+\begin{verbatim}
+[  [1,1,1,1,1],
+   [1,1],
+   [1]]
+\end{verbatim}
+\end{quote}
+where you have removed three matches from the third heap.
+To implement this project, we will use a programming
+technique called {\em incremental development of systems}.
+This technique is discussed in the first chapter of
+{\em On Lisp}, a book by Paul Graham, that I strongly
+recommend for your edification. 
+
+First, you will implement and test a program that append
+two lists. Since you are going to use this program both
+to split and to concatenate lists, you need to test
+both possibilities. 
+\begin{quote}
+\begin{verbatim}
+> ?-ap([1,1,1],[2,2,2,2],L).
+L = [1,1,1,2,2,2,2]
+
+yes.
+> ?-ap(X,Y,[1,1,2,2]).
+X = NIL
+Y = [1,1,2,2]
+?;
+X = [1]
+Y = [1,2,2]
+?;
+X = [1,1]
+Y = [2,2]
+?;
+X = [1,1,2]
+Y = [2]
+?;
+X = [1,1,2,2]
+Y = NIL
+\end{verbatim}
+\end{quote}
+The first query gives the result of concatenating two
+lists. The lines that follow shows the many possibilities
+of splitting a list. Them the first program seems to be
+working properly. 
+
+The next step is to write and test a program that takes
+at least one match from a heap; of course, it can take
+more than one match. After remove one or more matches
+from the heap, \verb|tk/3| insert the modified heap into
+a set of heaps. If you test the program, it will produce
+the following solutions:
+\begin{quote}
+\begin{verbatim}
+> ?- tk([1,1,1,1],[[1,1]],Resp).
+Resp = [[1,1,1],[1,1]]
+?;
+Resp = [[1,1],[1,1]]
+?;
+Resp = [[1],[1,1]]
+?;
+Resp = [[1,1]]
+?;
+
+no.
+\end{verbatim}
+\end{quote}
+N.B. The first clause of \verb|tk/3| makes sure that the
+predicate will not insert an empty heap into the set of heaps.
+
+I will leave the test of \verb|mv/2| to your discretion.
+Below, you will find the result of a game between a human
+player and the computer.
+
+\begin{verbatim}
+› rlwrap ros run
+* (load "wamcompiler.lisp")
+T
+* (repl)
+> ?-consult('nim.pl').
+
+yes.
+> ?-us([[1,1,1],[1,1]],Move).
+Move = [[1,1],[1,1]]
+?y
+
+yes.
+> ?-us([[1],[1,1]],Move).
+Move = [[1],[1]]
+?y
+
+yes.
+> ?-us([[1]],Move).
+Move = NIL
+?y
+
+yes.
+\end{verbatim}
+
+\chapter{Ninety-Nine Prolog Programs}
+Werner Hett says in his article Ninety-Nine Prolog Programs:
+\begin{quotation}
+The purpose of this problem collection is to give you the
+opportunity to practice your skills in logic programming.
+Your goal should be to find the most elegant solution of
+the given problems. Efficiency is important, but logical
+clarity is even more crucial. Some of the (easy) problems
+can be trivially solved using built-in predicates. However,
+in these cases, you learn more if you try to find your own
+solution.
+
+Every predicate that you write should begin with a comment
+that describes the predicate in a declarative statement.
+Do not describe procedurally, what the predicate does, but
+write down a logical statement which includes the arguments
+of the predicate. You should also indicate the intended data
+types of the arguments and the allowed flow patterns.
+
+The problems have different levels of difficulty. Those marked
+with a single asterisk (*) are easy. If you have successfully
+solved the preceeding problems you should be able to solve
+them within a few (say 15) minutes. Problems marked with two
+asterisks (**) are of intermediate difficulty. If you are a
+skilled Prolog programmer it shouldn't take you more than
+30-90 minutes to solve them. Problems marked with three
+asterisks (***) are more difficult. You may need more
+time (i.e. a few hours or more) to find a good solution. 
+\end{quotation}
+
+I did not followed Hett's advice to the letter. In roder
+to check for bugs in the compiler, I used cuts everywhere
+to prevent backtracking. It is easy to restore the logic
+purity of the programs: Just eliminate the cuts.
+
+\pagebreak
+\begin{verbatim}
+%% ?- consult('p99.pl').
+
+%% P01 (*): Find the last element of a list
+%% > ?-mylast(X, [1,2,3,4,5]).
+%% X = 5
+
+mylast(X, [X]) :- !.
+mylast(X, [_|L]) :- mylast(X, L).
+
+%% P02 (*): Find the last but one element of a list
+%% > ?-last_but_one(X, [1,2,3,4,5]).
+%% X = 4
+
+last_but_one(X, [X,_]) :- !.
+last_but_one(X, [_,Y|Ys]) :- last_but_one(X, [Y|Ys]).
+
+% P03 (*): Find the K'th element of a list.
+% The first element in the list is number 1.
+%% > ?-element_at(X, [1,2,three,4,5], 3).
+%% X = three
+element_at(X,[X|_],1) :- !.
+element_at(X,[_|L],K) :- K > 1,
+   K1 is K - 1, element_at(X,L,K1).
+
+% P04 (*): Find the number of elements of a list.
+%% > ?-length([1,2,3,4,5], L).
+%% L = 5
+
+length([],0) :- !.
+length([_|L],N) :- length(L,N1),
+                  N is N1 + 1.
+
+% P05 (*): Reverse a list.
+%% > ?-reverse([1,2,3,4],L).
+%% L = [4,3,2,1]
+
+reverse(L1,L2) :- my_rev(L1,L2,[]).
+
+my_rev([],L2,L2) :- !.
+my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
+
+% P06 (*): Find out whether a list is a palindrome
+%% > ?-is_palindrome([s,u,b,i,d,u,r,a,a,r,u,d,i,b,u,s]).
+
+%% Ignore spaces in Latin palindromes: Romans didn't use them:
+%  subi dura a rudibus -- endure rudeness from peasants
+%  roma tibi subito motibus ibit amor -- 
+%    in Rome quickly with its bustle you will find love
+  
+is_palindrome(L) :- reverse(L,L).
+
+
+% P07 (**): Flatten a nested list structure.
+%% > ?-flatten([3,4,[a,[b]], 5], L).
+%% L = [3,4,a,b,5]
+
+append([],L,L) :- !.
+append([H|T], L, [H|U]) :- append(T,L,U).
+
+flatten([],[]) :- !.
+flatten([X|Xs],Zs) :- !, flatten(X,Y),
+   flatten(Xs,Ys), append(Y,Ys,Zs).
+flatten(X, [X]).
+
+% P08 (**): Eliminate consecutive duplicates of list elements.
+%% > ?-compress([2,3,3,3,4,4,5], L).
+%% L = [2,3,4,5]
+compress([],[]) :- !.
+compress([X],[X]) :- !.
+compress([X,Y|Xs],Zs) :-  X==Y, !, compress([X|Xs],Zs).
+compress([X,Y|Ys],[X|Zs]) :-  compress([Y|Ys],Zs).
+
+% P09 (**):  Pack consecutive duplicates of list elements.
+%% > ?-pack([2,3,3,3,4,4,5], L).
+%% L = [[2],[3,3,3],[4,4],[5]]
+
+pack([],[]) :- !.
+pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
+
+transfer(X,[],[],[X]) :- !.
+transfer(Y,[X|Xs],Ys,[X|Zs]) :- X == Y, !, transfer(X,Xs,Ys,Zs).
+transfer(X,[Y|Ys],[Y|Ys],[X]).
+\end{verbatim}
+
+\begin{verbatim}
+% P10 (*):  Run-length encoding of a list
+%% > ?-encode([a,a,a,b,b,b,b,b,c,d], Ans).
+%% Ans = [[3,a],[5,b],[1,c],[1,d]]
+
+encode(L1,L2) :- pack(L1,L),
+            transform(L,L2).
+
+transform([],[]) :- !.
+transform([[X|Xs]|Ys],[[N,X]|Zs]) :- length([X|Xs],N),
+                             transform(Ys,Zs).
+
+% P11 (*):  Modified run-length encoding
+%% > ?-encode_modified([1,1,2,2,2,2,2,3,3,4], G).
+%% G = [[2,1],[5,2],[2,3],4]
+
+encode_modified(L1,L2) :- encode(L1,L),
+                      strip(L,L2).
+
+strip([],[]) :- !.
+strip([[Num,X]|Ys],[X|Zs]) :- Num == 1, !,
+                       strip(Ys,Zs).
+strip([[N,X]|Ys],[[N,X]|Zs]) :- N > 1,
+                           strip(Ys,Zs).
+
+
+% P12 (**): Decode a run-length compressed list.
+%% > ?-encode([a,a,a,b,b,b,b,b,c,d], Ans), decode(Ans, G).
+%% Ans = [[3,a],[5,b],[1,c],[1,d]]
+%%G = [a,a,a,b,b,b,b,b,c,d]
+
+notlist(X) :- atom(X), !.
+notlist(X) :- number(X).
+
+decode([],[]) :- !.
+decode([[Num,X]|Ys],[X|Zs]) :- Num == 1, !, decode(Ys,Zs).
+decode([[N,X]|Ys],[X|Zs]) :- N > 1, !,
+           N1 is N - 1,
+           decode([[N1,X]|Ys],Zs).
+decode([X|Ys],[X|Zs]) :- notlist(X),
+                         decode(Ys,Zs).
+\end{verbatim}
+
+\pagebreak
+\begin{verbatim}
+% P13 (**): Run-length encoding of a list (direct solution) 
+%% > ?-encode_direct([1,1,2,2,2,2,2,3,3,4], G).
+%% G = [[2,1],[5,2],[2,3],4]
+
+encode_direct([],[]) :- !.
+encode_direct([X|Xs],[Z|Zs]) :- count(X,Xs,Ys,1,Z),
+                     encode_direct(Ys,Zs).
+
+count(X,[],[],1,X) :- !.
+count(X,[],[],N,[N,X]) :- N > 1, !.
+count(X,[Y|Ys],[Y|Ys],1,X) :- X \= Y.
+count(Y,[X|Xs],Ys,K,T) :- X == Y, !,
+   K1 is K + 1, count(X,Xs,Ys,K1,T).
+count(X,[Y|Ys],[Y|Ys],N,[N,X]) :- N > 1.
+
+% P14 (*): Duplicate the elements of a list
+%% > ?-dupli([1,2,2,3,3,3,5], L).
+%% L = [1,1,2,2,2,2,3,3,3,3,3,3,5,5]
+
+dupli([],[]) :- !.
+dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
+
+% P15 (**): Duplicate the elements of a list agiven number of times
+%% > ?-dupli([1,2,2,3,3,3,5], 4,  L).
+%% L = [1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,5,5,5,5]
+
+dupli(L1,N,L2) :- dupli(L1,N,L2,N).
+dupli([],_,[],_) :- !.
+dupli([_|Xs],N,Ys, K) :- K == 0, !, dupli(Xs,N,Ys,N).
+dupli([X|Xs],N,[X|Ys],K) :- K > 0, K1 is K - 1,
+                dupli([X|Xs],N,Ys,K1).
+
+% P16 (**):  Drop every N'th element from a list
+%% > ?-drop([1,2,3,4,5,6], 3, R).
+%% R = [1,2,4,5]
+
+drop(L1,N,L2) :- drop(L1,N,L2,N).
+drop([],_,[],_) :- !.
+drop([X|Xs],N,[X|Ys],K) :- K > 1, !,
+       K1 is K - 1, drop(Xs,N,Ys,K1).
+drop([_|Xs],N,Ys, K) :-  drop(Xs,N,Ys,N).
+
+% P17 (*): Split a list into two parts
+%% > ?-split([2,5,3,8,1], 3, X, Y).
+%% X = [2,5,3]
+%% Y = [8,1]
+
+split([X|Xs],N,[X|Ys],Zs) :- N > 0, !, N1 is N - 1,
+                 split(Xs,N1,Ys,Zs).
+split(L,0,[],L).
+\end{verbatim}
+
+\begin{verbatim}
+% P18 (**):  Extract a slice from a list
+%% > ?-slice([1,2,3,4,5,6,7], 2,4, R).
+%% R = [2,3,4]
+
+slice([X|_],1,1,[X]) :- !.
+slice([X|Xs],1,K,[X|Ys]) :- K > 1, !, 
+   K1 is K - 1, slice(Xs,1,K1,Ys).
+slice([_|Xs],I,K,Ys) :- I > 1, 
+   I1 is I - 1, K1 is K - 1, slice(Xs,I1,K1,Ys).
+
+% P19 (**): Rotate a list N places to the left 
+%% > ?-rotate([1,2,3,4,5,6,7], 2, R).
+%% R = [3,4,5,6,7,1,2]
+
+rotate(L1,N,L2) :- N >= 0, !, 
+   length(L1,NL1), N1 is N mod NL1, rotate_left(L1,N1,L2).
+rotate(L1,N,L2) :- 
+   length(L1,NL1), N1 is NL1 + (N mod NL1), rotate_left(L1,N1,L2).
+
+rotate_left(L1,N,L2) :- N > 0, !,
+    split(L1,N,S1,S2), append(S2,S1,L2).
+rotate_left(L,0,L).
+
+% P20 (*): Remove the K'th element from a list.
+%% > ?-remove_at(X, [1,2,3,4,5,6], 3, L).
+%% X = 3
+%% L = [1,2,4,5,6]
+
+remove_at(X,[Y|Xs],K,[Y|Ys]) :- K > 1, !, 
+   K1 is K - 1, remove_at(X,Xs,K1,Ys).
+remove_at(X,[X|Xs],1,Xs).
+
+
+% P21 (*): Insert an element at a given position into a list
+%% > ?-insert_at(a,[1,2,3,4,5], 3, L).
+%% L = [1,2,a,3,4,5]
+
+insert_at(X,L,K,R) :- remove_at(X,R,K,L).
+
+
+% P22 (*):  Create a list containing all integers within a given range.
+%% > ?-range(4,9,L).
+%% L = [4,5,6,7,8,9]
+
+range(I,K,[I]) :- I >= K, !.
+range(I,K,[I|L]) :- I < K, 
+    I1 is I + 1, range(I1,K,L).
+
+
+% P23 (**): Extract a given number of randomly
+% selected elements from a list.
+%% (load "rnd.lisp") the Lisp function
+%% that generates random numbers.
+%% Study file "rnd.lisp" to learn how to
+%% implement new primitives.
+%% > ?- rnd_select([1,2,3,4,5,6], 3, L).
+%% L = [6,2,4]
+
+rnd_select(_,K,[]) :- K < 1, !.
+rnd_select(Xs,N,[X|Zs]) :- N > 0,
+    length(Xs,L),
+    random(R, L), I is R + 1,
+    remove_at(X,Xs,I,Ys),
+    N1 is N - 1,
+    rnd_select(Ys,N1,Zs).
+
+
+% P24 (*): Lotto: Draw N different random numbers from  1..M
+%% > ?-lotto(6,49,L).
+%% L = [44,36,39,5,28,34]
+
+lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
+
+
+% P25 (*):  Generate a random permutation of the elements of a list
+%% > ?-rnd_permu([1,2,3,4,5], L).
+%% L = [2,4,3,1,5]
+
+rnd_permu(L1,L2) :- length(L1,N), rnd_select(L1,N,L2).
+
+
+\end{verbatim}
+
+\chapter{Shell}
+\index{Shell}
+Nia, a Greek young woman, has an
+account on a well known social network.
+She visits her friends' postings on a daily basis,
+and when she finds an interesting picture or video,
+she presses the {\em Like}-button. However, when
+she needs to discuss her upcoming holidays on the Saba Island
+with her Argentinian boyfriend, she uses the
+live chat box. After all, hitting buttons and
+icons offers only a very limited interaction tool,
+and does not produce a highly detailed
+level of information that permits the answering
+of questions and making of statements.
+
+
+Using a chat service needs to
+be very easy and fun, otherwise all those teenage
+friends of Nia's would be doing something else.
+I am telling you this, because there are
+two ways of commanding a computer.
+The first is called Graphical User Interface (GUI)
+and consists of moving the cursor with a
+mouse or other pointing device and clicking
+over a menu option or an icon,
+such as the {\em Like} button.
+As previously mentioned, a Graphical User Interface
+often does not generate adequate information
+for making a request to the computer. In addition,
+finding the right object  to press
+can become difficult in a labyrinth of
+menu options.
+
+The other method of interacting with
+the computer is known as Shell and is similar to
+a chat with one's own machine.
+
+In your computer, there is a giant
+program, called the operating system, which controls
+all peripherals that the machine uses to
+stay connected with the external world:
+pointing devices,  keyboard,
+video terminal, robots, cameras, solid
+state drives, pen drives, and other peripherals.
+
+In a Shell interface, Nia issues written instructions
+that the operating system answers by fulfilling the
+assigned tasks. The language that Nia
+uses to chat with the operating
+system is called {\em Bourne-again shell}, or
+bash for short. This language has
+commands to go through folders, browser
+files, create new directories, copy
+objects from one place to the other,
+configure the machine, install
+applications, change the permissions
+of a file, create groups to organize
+users and devices, etc.
+When accessing the operating system through
+a text-based terminal, a shell language is the main way
+of executing programs and doing work on a computer.
+
+The shell interface derives its name from
+the fact that it acts like a shell
+surrounding all other programs being run,
+and controlling everything the machine performs.
+
+To make a long story short,
+it is much faster to complete tasks
+using a shell than with graphical applications,
+icons, menus and mouse. Another benefit of the
+shell is that you can gain access to many
+more commands and scripts than with
+a Graphical User Interface.
+
+In order not to scare off the feeble-minded,
+many operating systems hide access
+to the text terminal. In some distribution
+of Linux, you need to maintain the \keys{Alt} key
+down, then press the \keys{F2} key to open a
+dialog box, where you must type the
+name of the terminal you want to open.
+If you are really lucky, you may find
+the icon of the terminal  on the
+toolbar.
+
+\includegraphics[scale=0.8]{figs/terminal.png}
+
+If the way of opening the text terminal
+is not obvious, you should ask for help
+from a student majoring in Computer Science.
+You can teach her Russian, Samskrit, Javanese
+or Ancient Greek, as a compensation
+for the time that she will spend explaining
+how to start a terminal in 
+OS X or Linux. If you are afraid
+of paying for a few minutes of tutorial
+about the Bourne-again shell
+with hundred hours of classes on
+Russian, don't worry! The CS
+major will give up after barely
+starting the section on the alphabet. After all,
+Philology is much more difficult
+than Computer Engineering.
+For details, read the tale ``The man who could speak
+Javanese'' by Lima Barreto.
+
+\paragraph{The prompt.}\index{Shell!prompt} 
+The shell prompt
+is where one types commands. The prompt
+has different aspects, depending on the
+configuration of the terminal.
+In Nia's machine, it looks something like this:
+\begin{quote}
+\verb|~$ _|
+\end{quote}
+Files are stored in folders. Typically, the
+prompt shows the folder where the user is
+currently working.
+
+The main duty of the
+operating system is to maintain the contents of
+the mass storage devices in a tree structure
+of files and folders.
+Folders are also called {\em directories},
+and like physical folders or cabinets,
+they organize files.
+
+A folder can be put inside another folder.
+In a given machine, there is a folder 
+reserved for duties carried out by the
+administrator.
+This special folder is called home
+or personal directory.
+
+Besides the administrator, a machine can
+have other rightful users, each with
+a personal folder. For instance, Nia's folder
+on her Mac OS X has the \verb|/Users/nia|
+path. You will learn a more formal
+definition of path later on.
+
+
+\paragraph{pwd \#}\index{Shell!pwd} 
+The \verb|pwd| command informs
+the user's position in the file tree.
+A folder can be placed
+inside another folder.
+For example, in a Macintosh, Nia's home
+folder is inside the \verb|/Users| directory.
+
+One uses a path to identify
+a nest of folders. In a path, a subfolder
+is separated from the parent folder
+by a slash bar. If one needs to know
+the current folder, there is the \verb|pwd|
+command. 
+\begin{quote}
+\verb|~$ pwd         # shows the current folder. |\keys{Enter}\\
+\verb|/Users/nia|\\
+\end{quote}
+When Nia issues a command, she may
+add comments to it, so her boyfriend that
+does not know Bourne-again shell (bash)
+can understand what
+is going on and learn something in
+the process. Comments are prefixed
+with the \verb|#| hash char, as you
+can see in the above chat. Therefore,
+when the computer sees a \verb|#|
+hash char, it ignores everything to
+the end of the line.
+
+\paragraph{mkdir wrk \#}\index{Shell!mkdir}
+creates a \verb|wrk|
+folder inside the current directory,
+where \verb|wrk| can be replaced
+with any other name.
+For instance, if Nia is inside her
+home directory, \verb|mkdir wrk| creates
+a folder with the \verb|/Users/nia/wrk| path.
+
+\paragraph{cd wrk \#}\index{Shell!change dir} 
+One can use the
+\verb|cd <folder name>| commands to enter
+the named folder.
+The \verb|cd ..|  command
+takes Nia to the parent of the current
+directory.
+Thanks to the \verb|cd|
+command, one can navigate through the
+tree of folders and directories.
+
+\paragraph{Tab.}\index{Shell!tab} If you want to go
+to a given directory, type part of the directory
+path, and then press \keys{Tab}.
+The shell will complete the folder name for you.
+
+\paragraph{Home directory.}\index{Home directory} One
+can use a \verb|~| tilde to represent
+the home directory. For instance,
+\verb|cd ~| will send Nia to her
+personal folder. The \verb|cd $HOME| has
+the same effect, i.e., it places Nia inside
+her personal directory.
+
+\paragraph{echo \#}\index{Shell!echo} One can use the
+\verb|echo| command to print something.
+Therefore, \verb|echo $HOME| prints
+the contents of the \verb|HOME|
+environment variable on the terminal.
+
+Environment variables store
+the terminal configuration. For instance,
+the \verb|HOME| variable contains
+the user's personal directory identifier.
+One needs to prefix the environment
+variable with the \verb|$| char
+to access its contents. Therefore,
+\verb|echo $HOME| displays the
+contents of the \verb|HOME| variable.
+
+The instruction \verb|echo "Work Space" > readme.txt|
+creates a \verb|readme.txt| text file and
+writes the \verb|"Work Space"| string there.
+If the \verb|readme.txt| file exists,
+this command supersedes it.
+
+The command \verb|echo "Shell practice" >> readme.txt|
+appends a string to a text file. It does
+not erase the previous content of
+the \verb|readme.txt| file. Of course,
+you should replace the string or the
+file name, as necessity dictates.
+
+
+Below you will find
+an extended example of a chat between Nia and
+the OS X operating system.
+\begin{quote}
+\verb|~$ mkdir wrk   # creates a work space folder      | \keys{Enter}\\
+\verb|~$ cd wrk      # transfers action to the wrk file | \keys{Enter}\\
+\verb|~/wrk$ echo "* Work space" > readme.txt | \keys{Enter}\\
+\verb|~/wrk$ echo "This folder is used" >> readme.txt |\keys{Enter}\\
+\verb|~/wrk$ echo "to practice the bash" >> readme.txt | \keys{Enter}\\
+\verb|~/wrk$ echo "commands and queries." >> readme.txt | \keys{Enter}\\
+\verb|~/wrk$ ls      # list files in current folder. | \keys{Enter}\\
+\verb|readme.txt |\\
+\verb|~/wrk$ cat readme.txt  # shows the file contents.| \keys{Enter}
+\begin{verbatim}
+* Work space
+This folder is used
+to practice the bash
+commands and queries.
+\end{verbatim}
+\end{quote}
+
+\paragraph{ls \#}\index{Shell!ls} 
+By convention, a file name has
+two parts, the id and the extension. The id
+is separated from the extension by a dot.
+The \verb|ls | command lists all files
+and subfolders present in the current folder.
+The \verb|ls *.txt| prints only files
+with the \verb|.txt| extension.
+
+\paragraph{Wild card.}\index{Shell!wild card} The 
+\verb|*.txt| pattern
+is called wild card.
+In a wild card, the \verb|*| asterix matches
+any sequence of chars, while the \verb|?|
+interrogation mark matches a single char.
+
+\paragraph{ls -lia *.txt \#} prints detailed
+information about the \verb|.txt| files,
+like date of creation, size, etc.
+\begin{quote}
+\verb|~/wrk$ ls -la |  \keys{Enter}
+\end{quote}
+\begin{verbatim}
+total 8
+drwxr-xr-x    3 edu500ac  staff    102 Sep 18 16:29 .
+drwxr-xr-x+ 321 edu500ac  staff  10914 Sep 18 14:40 ..
+-rw-r--r--    1 edu500ac  staff     74 Sep 18 16:30 readme.txt
+\end{verbatim}
+
+Files starting with a dot are called hidden files,
+due to the fact that the \verb|ls| command does not
+normally show them. All the same,
+the \verb|ls -a| option includes the
+hidden files in the listing.
+
+\index{Permissions}
+In the preceding examples, the first character
+in each list entry is either a dash (-) or the letter d.
+A dash (-) indicates that the file is a regular file.
+The letter d indicates that the entry is a folder.
+A special file type that might appear in a
+\verb|ls -la| command is the symlink. It begins
+with a lowercase l, and points to another location
+in the file system.
+Directly after the file classification comes the permissions,
+represented by the following letters:
+\begin{itemize}
+\item r -- read permission.
+\item w -- write permission.
+\item x -- execute permission.
+\end{itemize}
+
+\paragraph{cp readme.txt lire.txt \#}\index{Shell!cp} 
+makes a copy
+of a file. You can copy a whole directory
+with the \verb|-rf| options, as shown below.
+\begin{quote}
+\begin{verbatim}
+~/wrk$ ls
+readme.txt
+~/wrk$ cp readme.txt lire.fr
+~/wrk$ ls
+lire.fr  readme.txt
+~/wrk$ cd ..
+~$ cp -rf wrk wsp
+~$ cd wsp/
+~/wsp$ ls
+lire.fr  readme.txt
+\end{verbatim}
+\end{quote}
+
+\paragraph{rm lire.txt \#}\index{Shell!rm} 
+removes a file.
+The \verb|-rf| option 
+removes a whole folder.
+\begin{quote}
+\begin{verbatim}
+~/wsp$ ls
+lire.frreadme.txt
+~/wsp$ rm lire.fr
+~/wsp$ ls
+readme.txt
+~/wsp$ cd ..
+~$ ls wrk
+lire.frreadme.txt
+~$ rm -rf wrk
+~$ ls wrk
+ls: wrk: No such file or directory
+\end{verbatim}
+\end{quote}
+
+\paragraph{mv wsp wrp \#}\index{Shell!mv} changes
+the name of a file or folder, or
+even permits the moving of a file or
+folder to another location.
+\begin{quote}
+\begin{verbatim}
+~$ mv wsp wrk
+~$ cd wrk
+~/wrk$ ls
+readme.txt
+~/wrk$ mv readme.txt read.me
+~/wrk$ ls
+read.me
+~/wrk$ cp read.me wrk-readme.txt
+~/wrk$ ls
+read.mewrk-readme.txt
+~/wrk$ mv wrk-readme.txt ~/Documents/
+~/wrk$ ls
+read.me
+~/wrk$ cat ~/Documents/wrk-readme.txt
+Work space
+This folder is used
+to practice the bash
+commands and queries.
+\end{verbatim}
+\end{quote}
+
+\paragraph{Copy to pen drive.}\index{Pen drive}
+In most Linux distributions, the pen drive is
+seen as a folder inside the \verb|/media/nia/|
+directory, where you should replace \verb|nia|
+with your user name. In the Macintosh, the
+pen drive appears at the \verb|/Volume/| folder.
+The commands {\bf cp}, {\bf rm} and {\bf ls}
+see the pen drive as a normal folder.
+
+
+\section{Package managers}\index{Package managers}
+A package
+manager is a tool that works with
+core libraries to handle, even though poorly,
+the installation and removal of
+software. Each operating system has its own
+package manager. Even if you stick to a single
+operating system, you will have to
+deal with many package managers
+and different philosophies concerning
+software installation.
+
+
+I will teach you how to use three
+installation tools: apt-get,
+homebrew and git clone. However,
+this tutorial will not
+completely cover the many subtleties
+involved while you make your machine usable.
+You will really need the help of
+that girl who is majoring in
+Computer Engineering.
+Tell her that, if she teaches you
+how to configure apt-get install,
+you will teach her the ancient
+Javanese script.
+
+\section{Roswell}\index{roswell!Installation}
+People say that Lisp is alien technology.
+Therefore, it is no surprise that one of
+the most popular Lisp installer is called
+{\em roswell}. 
+
+\includegraphics{figs/lisplogo_fancy_256.png}
+
+In order to find the page of {\em roswell}, I
+performed an web search with the following
+keywords: {\em Common Lisp roswell}. There, I
+learned that roswell could be installed in
+a Macintosh through a package manager called
+homebrew:
+\begin{verbatim}
+$ brew install roswell
+\end{verbatim}
+
+If you search for {\em roswell} by using the
+{\em Common Lisp} and {\em roswell} keywords,
+you will certainly find a easy way of installing
+{\em roswell} in your machine.
+
+The next step after installing {\em roswell} is
+to fix the \verb|$PATH| environment variable to
+include {\em roswell}. In my machine, this is
+done by including a line to the \verb|.zshrc|
+shell configuration file:
+\begin{verbatim}
+export PATH="$PATH:/usr/local/Cellar/roswell/19.09.12.102/bin"
+export PATH="$PATH:/Users/ed/.roswell/bin"
+\end{verbatim}
+I don't give more details because this kind of
+information changes from time to time, and also
+from machine to machine. You will need to
+discover the details by yourself. That said,
+here are the main commands of roswell:
+\begin{verbatim}
+$ ros install               # Available Lisp versions
+$ ros install sbcl-bin      # default sbcl
+$ ros install sbcl          # Newest released version of sbcl
+$ ros install ccl-bin       # default prebuilt binary of ccl
+$ ros list installed sbcl   # List the installed versions
+$ ros run                   # Execute Lisp
+\end{verbatim}
+
+Emacs is huge. If you want a compatible editor
+that consumes much less computational resources,
+here is the recipe to install the Lem editor:
+\begin{quote}
+\verb|$ ros install cxxxr/lem|
+\end{quote}
+
+
+\section{github}\index{wamcompiler}
+In the jargon of tech-oriented people,
+a person who uses computers is called
+{\em user}, but engineers
+prefer the term {\em looser}, as
+the latter is an affectionate way
+of calling those individuals who need to work
+with a computer, but in fact have no skills. By the way,
+looser is a loser who can't spell ``loser''.
+Fortunately for us {\em losers}, there exists
+a repository called github. Let us see how
+to download wamcompiler from github:
+\begin{quote}
+\verb|git clone https://github.com/matsud224/wamcompiler|
+\end{quote}
+
+\section{sudo}
+
+Installation often requires that the
+system copy files to the \verb|/usr/local/|
+folder. However, you must give special
+permission for this operation to be performed,
+otherwise the possibility remains open for
+a virus to make similar copies in critical folders.
+The \verb|sudo| command informs the machine that you
+are a superuser. To avoid being tricked by a virus
+or an unauthorized user, the machine asks for the
+password, and if you type it correctly,
+the system performs the installation.
+
+Let us see an example of sudo in action.
+If you decide to use the Lem editor, instead
+of Emacs, you may need to install a front end
+library called \verb|libncurses|. Let us understand
+this issue. A text editor, like Emacs or Lem, has
+three components:
+\begin{enumerate}
+\item A frontend that inserts characters into a buffer.
+A buffer is a memory region with an image of a
+text file. One can see the buffer as a representation
+of a scratch pad. As such, the frontend provides tools to
+insert keystrokes at the  point indicated by 
+a movable cursor.
+\item Editing operations that save buffers
+as files, delete and insert text, move the
+cursor around, copy items from one place to another, etc.
+\item A scripting language for customizing the editor.
+\end{enumerate}
+
+There is a large choice of front-ends. Some front-ends 
+work with a raster graphics image, which  is a dot matrix 
+data structure that represents a grid of pixels. 
+There are also front-ends that are specialized in
+showing letters and other characters via an appropriate
+display media. The latter sort of front-end is called
+text-based user interfaces, while the former is called
+graphical user interface, or GUI for short.
+
+Text-based user interfaces are more comfortable on the
+eyes, since they  provide sharper and crisp alphabetical
+letters. On the other hand, GUI allows for font
+customization. At present, the Lem editor offers only
+ncurses, which is a text-based user interface. Therefore,
+search the web for the distribution site and download the
+most recent version of this front-end.\\
+
+\includegraphics[scale=0.6]{figs-prefix/download.jpg}
+
+Unpack and make the distribution archive as shown below:
+\begin{quote}
+\begin{verbatim}
+~$ tar xfvz ncurses-6.0.tar.gz
+~$ cd ncurses-6.0/
+~/ncurses-6.0$ ./configure --enable-widec
+~/ncurses-6.0$ make
+~/ncurses-6.0$ sudo make install
+\end{verbatim}
+\end{quote}
+Lem assumes that  \verb|libncursesw.a| resides in the
+following folder:
+\begin{quote}
+\begin{verbatim}
+/usr/local/lib/libncursesw.a 
+\end{verbatim}
+\end{quote}
+Therefore, copy the \verb|libncursesw.a| file to
+\verb|/usr/local/lib/| as shown below:
+\begin{verbatim}
+~/$ cd ncurses-6.0 
+~/ncurses-6.0$ cd lib 
+~/ncurses-6.0/lib$ sudo cp libncursesw.a /usr/local/lib/
+\end{verbatim}
+
+I have to say this again: An installation task has so
+many details that, unless you are an engineer yourself, 
+ask for help from a computer expert.
+
+
+
+\chapter{The man who knew Javanese}
+\index{Javanese}
+In a doughnut shop the other day,
+I was telling my friend Castro
+how I tricked respectable members of the
+community not only to make a living,
+but also rise to a higher social position.
+
+For instance, while I was living in Manaus,
+I had to hide my professional degree to win
+over the clients' trust. People, who never would
+come to a physician's practice or lawyer firm,
+flocked to my wizard and fortune teller's office.
+So, I was telling him this story.
+
+My friend listened to me in silence,
+enraptured by my words,
+appreciating the account of picaresque adventures,
+that seemed as though they had been
+extracted from the Story of Gil Blas.
+During a conversational pause,
+after both drying our glasses,
+he remarked randomly:
+
+``You've been living an extremely funny life, Castelo!''
+
+``It's the only kind of life worth living\ldots
+I could not immagine
+myself having a single occupation.
+It is extremely boring
+to go to work in the morning,
+come back in the evening, read the paper
+on the sitting room armchair,
+and go to bed at eleven fifteen.
+Don't you think?
+In fact, I can't imagine how I have been
+able to stand my job at the Consulate!''
+
+
+``Yes, the existence in the civil service
+must be tedious. But that's not
+what amazes me. I wonder how have you been
+able to pass through so many adventures here,
+in this monotonous and bureaucratic Brazil.''
+
+``You will be surprized, my dear Castro,
+to learn that even here, in this country,
+one can write quite interesting pages on a
+memoir. Believe it or not,
+I was even a teacher of Javanese!''
+
+``When was that? Here, after you retired
+from your job at the Consulate?''
+
+
+``No, it was a long time ago.
+What's more, I got my job at the
+Consulate as a consequence of my
+teaching duties.''
+
+``That story I want to hear! In the mean time,
+let us have a few more drinks?''
+
+``Yes, I accept another glass of beer.''
+
+We sent for another bottle, filled our glasses
+and I continued:
+
+``I had just arrived in Rio and I was literally broke.
+My life was consumed fleeing
+from one boarding house to
+the other on rent day, without
+idea of how to earn a living.
+
+Of course, I didn't have money
+to pay for breakfast.
+Even so, I was in a café, but only to
+read through the job openings section
+of the newspaper left on a table
+for the customers' convenience. Then, I came across
+the following advertisement:
+
+
+``Needed: A JAVANESE TEACHER.  Interviews at, etc.''
+
+So, I told myself: ``This certainly is a position
+where you won't find many applicants. If only I
+could comprehend a few words of Javanese,
+I'd apply.''
+
+I left the coffee shop in a waking dream,
+where imagined myself in a brave new world,
+as a Javanese teacher,
+earning more than just a decent living,
+driving my car,
+without unhappy meetings with debt collectors.
+
+When I awoke from my daydream,
+I found myself in front of the public library.
+I went in and gave my cap to a
+person that looked like an attendant,
+since I knew about the custom of the
+upper class to leave their hats at
+the hat stand. I did not have
+a hat, so I left my cap. Of course,
+I never saw my cap again.
+
+I didn't really know what
+book I was going to ask for.
+In any case, this was irrelevant,
+because my name was nationally blacklisted,
+since I never returned the books to
+the highschool library. Nevertheless,
+I climbed the stairs to browse
+an Encyclopedia,
+volume J and look up the entry on
+Java and the Javanese dialect. 
+In a few minutes, I knew that Java was a
+big island of the Greater Sunda Islands,
+at the time a Dutch colony.
+
+%%\index{Brahmic script}
+I also learned that Javanese is an agglutinative
+language of the Malayo-Polynesian family.\index{Polynesian languages}
+It has a noteworthy literature written in
+characters derived from the old Hindu alphabet.
+The Javanese alphabet is a modern variant
+of the Kawi script, a Brahmic script developed
+in Java around the ninth century.
+In the past, it was widely used in religious literature,
+which was written on palm-leaves.
+This kind of manuscript came to be known
+as  lontar.
+The Encyclopedia gave a list of books for further
+reading and I had no doubt of what I needed
+to do, and consulted one of them.
+I made a copy of the alphabet and its phonetic
+transcription and left. I wandered the streets
+walking aimlessly chewing over the letters as
+they were gum.
+
+Hieroglyphs danced in my head. From time to time,
+I would look at my notes. Then I would
+go into Tijuca park, and wrote
+those strange looking characters
+with a stick in the sand to keep
+them vividly in my memory
+and accustom my hands in writing them.
+
+I would enter my building late at night in
+an attempt to avoid coming across the
+landlord, who could ask for the rent.
+Even in my bedroom I kept chewing over
+my Malayan A-B-C. My determination was such
+that I knew it all by heart with the sunrise.
+I convinced myself that Malay was the
+easiest language in the world, and that Javanese
+was as close to Malay as Portuguese to
+Spanish, which simply is not true.
+The reality is that Malay is not so
+easy, and it is  as
+far from Javanese as English from German.
+
+I tried to leave home as early in the morning
+as possible to avoid my landlord.
+But to my dismay, it was not early enough,
+for I couldn't escape meeting the man
+in charge of asking for the room rent.
+
+``Mr. Castelo, when are you going to
+pay your rent bill?''
+
+I aswered him with the most heart filled hope:
+
+``Soon\ldots Wait just a little longer\ldots
+Be patient\ldots I will be appointed as a
+Javanese teacher and\ldots''
+At that moment, the man cut in into my stuttering
+excuses.
+
+``What in hell is that, Mr. Castelo?''
+
+I enjoyed the amusement
+and proceeded to invest
+in the man's patriotism:
+
+``It's a language from the distant reaches of Timor.
+Do you know where it is?''
+
+Oh, simple minded fellow! The man forgot all about
+my overdue bill and told me in a strong accent
+from Portugal:
+
+``I am not sure, Mr. Castelo. If I remember rightly,
+Portugal has or had a colony with that name
+close to Macau. But do you
+really know such a thing, Mr. Castelo?''
+
+Incentivated by this initial result from
+my Javanese studies,
+I started to fulfil the requisite of the advertisement.
+I decided to offer my services as a teacher of
+that transoceanic idiom. I composed the letter of
+acceptance, then I went to the newspaper
+office to left the document there.
+With that, I returned
+to the library to resume my Javanese studies.
+I didn't make any progress that day. In fact, I
+felt that the alphabet was the only knowledge
+required from a Javanese teacher. Perhaps,
+I was overly indulged with the
+bibliography and history of the
+language that I was going to teach.
+
+Two days later I received an answer to my correspondence,
+in which was stated
+that I should go to the residence of
+a certain Dr. Manuel Feliciano Soares Albernaz,
+Baron of Jacuecanga,
+Conde de Bonfim street.
+I can't recall the house
+number. Remember that  I was extremely focused
+on Malayan studies to register the details
+for history, as for example the house number.
+But don't be fooled into thinking that
+my lack of memory for particularities,
+such as house numbers or names of historical
+figures, renders the story as a figment
+of my immagination. More than one scholar
+told me that the  name of a certain
+Prince Kalunga \index{Prince Kalunga}
+is Aji Saka. \index{Aji Saka}
+There you are.
+
+Besides the alphabet, I knew the names
+of a few authors. I also could say, ``How are
+you?'', and knew a few grammar rules.
+All this knowledge was supported
+on around twenty words.
+
+You can't imagine how hard I tried
+to get the money for the bus fare! Javanese
+is easier than loaning money,
+you can be sure. Failing to raise
+the necessary funds for the trip from
+one neighborhood to the other, I walked.
+Of course, I arrived in a state of dripping sweat.
+With a motherly
+affection, the old
+mango trees standing in front
+of the baron's house received, harbored
+and cooled me down with the fresh air of shade.
+It was the first time in all my life
+that I felt sympathy for Nature.
+
+The house was huge, but ill kept.
+However, it was that way more from
+despondency and weariness of living
+than from its owner's poverty.
+The walls hadn't been
+painted for years, and what was left
+of their coats was peeling away.
+The eaves around the edges of the
+roof were made up of old fashioned tiles,
+some of which were missing, creating
+as effect of decaying false teeth.
+In the garden, the
+flatsedge and other weeds had expelled the 
+begonias. However, the more resistent crotons
+continued to bloom with their purplish leaves.
+
+I knocked. It was awhile before 
+an aged African Negro came to the door. His white
+beard and hair gave him an appearance of
+fatigue and suffering.
+
+In the parlor there was a row of gold framed portraits,
+which showed bearded gentlemen and profiles of
+sweet ladies holding huge fans and dresses
+that looked like balloons ready to ascend in the air.
+From among the many items,
+to which the dust gave more antiquity and respect,
+what impressed me most was a big, beautiful,
+porcelain vase from China or India, I never
+learned to differentiate their origins.
+Anyway, the purity of the material,
+its fragility, the naiveté of its contour
+and its dim lustre that appeard to be
+as the moonlight suggested to me that
+the artwork was fashioned by the hands
+of a dreaming child for
+the enchantment of old men's  disillusioned eyes.
+
+As I described above, I was inspecting the furniture,
+while waiting for the master of the house.
+He delayed quite a long time. Then, he came.
+Full of respect, I watched the elderly man
+approach haltingly,
+a large handkerchief in his
+hand, inhaling an old fashioned peppermint
+essence venerably.
+
+Although I wasn't sure he was my pupil to be, I felt
+that it would have been wicked to deceive the
+aged gentleman, whose ancient aspect made
+me think of something august, sacred.
+I hesitated for a moment. Should I invent
+an excuse and leave? But finally
+decided to wait and see.
+
+``I am,'' I said to break the ice,
+``The Javanese teacher you asked for.''
+
+``Sit down,'' answered the old gentleman.
+``Are you from Rio?''
+
+``No, Sir. I'm from Canavieiras.''
+
+``What?'' He said. ``Speak louder, my hearing is impaired.''
+
+``I am from Canavieiras,'' I repeated putting emphasis
+upon each word.
+
+``Where did you go to school?''
+
+``In the city of Salvador, in the great state of Bahia.''
+
+``And where did you learn Javanese?'' he
+asked with that dodgedness so common among the elderly.
+
+I was not expecting for such a question,
+but I made up a lie about a
+Javanese father, who had come to Bahia
+on a freighter. Liking what he saw,
+my phony father decided to
+settle there in Canavieiras as a fisherman.
+He married, prospered and taught me Javanese.
+
+``Did he believe you?'' asked my friend
+who up to that moment had remained silent.
+``And your features?''
+
+``I'm not very different from a Javanese''
+I contested. ``With my thick, straight, black hair
+and tanned skin, I could very well pass for
+a Indonesian halfbreed. You know very well
+that among us there are all kinds of nationalities
+-- Indians, Malayans, Tahitians, Madagascans,
+Guanches\footnote{Guanches were the Berber aboriginal
+inhabitants of the Canary Islands.}
+and even Goths. Our people are an amalgamation
+of races and types to make the whole world envy us.''
+
+``O.K..'' My friend agreed. ``Please, go on.''
+
+``The old gentleman,''  I resumed,
+``listened intently and examined my physique
+for a long while. Then he concluded that I was
+indeed the son of a Malayan, and asked me softly:
+
+``Well, do you really want to teach me Javanese?''
+
+The answer came unwittingly: ``Yes.''
+
+``You must be astounded,'' added the Baron
+of Jacuecanga, ``that I, at my age, should
+still have a wont for learning.''
+
+``I'm not surprized at all. There have been
+noteworthy examples of late learners,
+as Socrates, who started flute at seventy.''
+
+``What I really want, Mr.\ldots?''
+
+``Castelo,'' I supplied.
+
+``What I really want, Mr. Castelo,
+is to fulfill a family pledge.
+I don't know whether you realize that I'm the
+grandson of State Secretary Albernaz, the same
+man who accompanied Peter,
+the first emperor of Brazil,
+into exile, after his abdication.
+When he came back from London,
+the Secretary brought with him a book written in a strange
+language, onto which he bestowed great value.
+
+The old volume had been given to my grandfather
+by an Indian or a Siamese sailor in
+return for what received favor I do not know.
+
+Before he died, my grandfather called
+my father to his deathbed and told him
+the story that follows.
+
+``Son, do you see this book here, written in Javanese?
+Well, the person who
+gave it to me believed that it would bring its owner
+happiness and deliverance from evil. I don't know
+whether you should believe in such a legend or not.
+In any case, keep the book, and if
+the good omens prophesized by the oriental wiseman
+come true, teach your son to read it,
+so that our family line should prosper.''
+
+``My father,'' proceeded the old baron, ``didn't take
+the story to heart. Nevertheless, he maintained
+the book in safe keeping.
+When he lay sick and suspected that the end of his
+life was near\footnote{Before the Scholar among
+my readers accuse me of plagiarism,
+I avow that I am fluent in Ancient Greek,
+and the first book I read in my life
+was the Anabasis.},
+he gave it to me repeating the
+dying words of his own father.''
+
+In the beginning, I 
+paid little attention to the book. I threw it 
+in a corner, and got on with life.
+I even forgot it existed. Lately,
+so many misfortunes have befallen me,
+that I remembered the old family heirloom.
+I must read and understand the book, if I want to
+preserve my last days from witnessing the total
+ruin of my posterity. Of course, to read the book,
+I need to master the Javanese language.
+There you have all of it.''
+
+He became silent. I noticed his eyes glistened
+with tears.
+He wiped them discreetly and asked me if I
+would care to see the book. I gave a yes.
+He summoned the maid, passed her the instructions
+to find and fetch the book,
+while he told me how he had lost all his children,
+nephews and nieces. Only one married daughter
+remained alive. From her numerous offspring,
+only one son survived, a  weak and infirm boy.
+
+The book arrived, an old,
+large volume, presented in
+quarto bound in leather and printed in huge
+letters on yellowed paper.
+
+Since the title page
+was missing, I was unable to determine
+the date of publication. Fortunately,
+the preface was written
+in English. There I read that the book
+contained the stories of a Prince Kalunga,
+a renowened writer.
+
+I explained this entirety to the baron.
+Ignorant of the fact that I arrived at 
+this deliverance of knowledge
+from the English preface, he was
+very impressed with my erudition on
+Javanese culture. I browsed the pages
+with the look of someone familiar
+with that language that most people
+would not be able to tell apart from
+Sanskrit or Hindi.
+
+Before parting company, the baron and I
+agreed upon my fees
+and the class schedules.
+To fulfill my part in the contract,
+I should teach my old pupil to read
+the book in a year.
+
+A few days later, I gave the gentleman
+the first private lesson, but the old man
+was not diligent, not even at my level
+of interest. At the
+end of the class, he could not distinguish
+one character of the abugida from the other,
+or trace the five first letters of the
+hanacaraka sequence.
+
+Traditionally, the Javanese syllabary
+is taught through a poem of 4 verses
+narrating the myth of Aji Saka.\index{Javanese alphabet}
+\begin{quote}
+\includegraphics[scale=0.3]{figs/ha.png}
+\includegraphics[scale=0.3]{figs/na.png}
+\includegraphics[scale=0.3]{figs/ca.png}
+\includegraphics[scale=0.3]{figs/ra.png}
+\includegraphics[scale=0.3]{figs/ka.png} --
+There were two messengers
+\end{quote}
+\begin{quote}
+\includegraphics[scale=0.3]{figs/da.png}
+\includegraphics[scale=0.3]{figs/ta.png}
+\includegraphics[scale=0.3]{figs/sa.png}
+\includegraphics[scale=0.3]{figs/wa.png}
+\includegraphics[scale=0.3]{figs/la.png} --
+with mutual hatred.
+\end{quote}
+\begin{quote}
+\includegraphics[scale=0.3]{figs/pa.png}
+\includegraphics[scale=0.3]{figs/dha.png}
+\includegraphics[scale=0.3]{figs/ja.png}
+\includegraphics[scale=0.3]{figs/ya.png}
+\includegraphics[scale=0.3]{figs/nya.png} --
+One was as mighty as the other.
+\end{quote}
+\begin{quote}
+\includegraphics[scale=0.3]{figs/ma.png}
+\includegraphics[scale=0.3]{figs/ga.png}
+\includegraphics[scale=0.3]{figs/ba.png}
+\includegraphics[scale=0.3]{figs/tha.png}
+\includegraphics[scale=0.3]{figs/nga.png} --
+Here are the corpses.
+\end{quote}
+
+
+In the poem, each syllable is written
+with a different letter. After learning
+the first verse, the student has learned
+five letters.  Five more letters are
+presented in each sebsequent verse. 
+
+It took a whole month for the Baron of
+Jacuecanga to learn the first and second
+verse. What is worse, only one day was
+enough for him to forget everything.
+So, both teacher and student started a long
+cycle of learning and forgetting.
+
+I think that the Baron's daughter and her husband
+didn't know anything about the book until they
+become curious of my activities in their home.
+When I explained the matter to them, they took it
+lightly. They laughed about the behavior of their
+elderly relative, said that he probably had dementia,
+and that learning languages could slow the progress of
+the disease. 
+
+You won't believe it, my dear Castro, but the
+son-in-law came to admire and respect the teacher
+of Javanese. He kept saying: ``It is amazing how
+my father-in-law's tutor could grasp a culture
+so different from our own! Yet, he is
+so young. If I were as knowledgeable as he,
+I would be a scholar at Cambridge or at the Sorbonne.
+
+The husband of Mrs. Maria da Gloria,
+that was the name of the Baron's daughter,
+was a judge, a powerful and well connected man.
+Even so, he never tired of showing
+his admiration for my knowledge of Javanese.
+
+The Baron also seemed happy with me.
+But after two months he gave up learning
+the language. Instead of reading the book
+himself, he concluded that it would be
+enough to understand its contents
+in order to fulfill the pledge he made to his
+dying father. Certainly, the powerful
+spiritual forces behind the book would
+not be opposed to the humble request for
+the services of a translator.
+He would hear my rendition of the story of
+Aji Saka, avoiding the effort that his
+old brain was not in shape to bear.
+
+You are certainly aware that even today
+I don't know Javanese. But as every
+learned man in this country, I had heard
+the story of King Aji Saka, or Prince Kalunga,
+as Brazilians prefer to call the hero.
+In my rural village, at night,
+in my room illuminated by candles and
+kerosene lamps, my mother used to read
+a translation of the Indonesian
+legend into Latin until I would fall asleep.
+Therefore, it was not very difficult to
+patch together memories from my childhood,
+fill the gaps, and present the result
+to the old man as coming directly from the book.
+He would hear those myths in ecstasy, as
+though an angel were providing the rendition.
+And my reputation
+increased among the members of the Baron's
+family and its circle of acquaintainces.
+The Baron raised my salary, and I started
+living an easy life.
+
+An unexpected fact contributed to my
+prestige. The Baron received an inheritance
+from a Portuguese relative that he  didn't
+even know existed. Of course, he assigned the
+happy event to the Javanese book.
+I myself almost believed that this was so.
+
+As time went by, I stopped myself from
+feeling remorse and guilty due to my deceiving
+the naive man and his family. In any case,
+I was terrified at the prospect of coming
+across some horrible person that could
+speak the Javanese dialect. My terror
+increased when the Baron wrote a letter
+to the Viscount of Caruru suggesting my
+name for an international affairs career.
+I advanced every kind of objection to the
+idea. ``I am very ugly, uncouth and gaunt.
+My knowledge of French
+is faulty. I am not elegant.
+I don't know the protocols.''
+
+He insisted: ``Physical aspect doesn't matter, young man.
+Go ahead! Everybody speaks French, German and English.
+But only you know Javanese.''
+
+So, I went to the interview with the Viscount,
+who sent me to the Ministry of Foreign Affairs
+with more than one recommendation letter.
+After all, everybody wanted to have the
+honor of giving me a recommendation letter.
+I was a huge success when I arrived at
+the office of the director
+of fucking nothing\footnote{A literal translation
+of the Portuguse acronym for ASPONE -- Assessor de
+Porra Nenhuma.}.
+
+The director called all the department
+heads: ``Look at this! The man
+knows Javaness.  What a prodigy!''
+
+The heads of various departments introduced me
+to clerks and amanuensis.
+One of these lesser officials of the Ministry
+gave me a look with more envy and hatred than
+admiration. But everybody else kept saying:
+``Do you really know Javanese? Is it difficult?
+I believe that nobody else speaks that language here.''
+
+The clerk who had looked at me with undeserved
+hatred approached the group of admirers and interrupted
+the applauses with a cold comment: ``That is true,
+nobody knows Malay or Indonesian here. But I speak
+Kanak, a language of the New Caledonia. Do you
+know Kanak?
+
+I told him I didn't and proceeded
+to the Minister's office.
+
+The high authority got up, adjusted the
+glasses on his nose, and asked point blank:
+``So, do you speak Javanese?''
+My answer was a loud {\em yes}.
+He wanted to know where I learned the
+language. I told him about my Javanese father.
+The Minister was sincere and direct.
+``You can't go into the Diplomatic Service.
+Brazilian Diplomats must be blond with
+blue eyes. Of course, there is the affirmative
+action for blacks and indians. But although
+your skin is dark, you cannot apply,
+since you are Javanese, not Indian.
+We could send you to a consulate in
+Asia or Oceania, but I am afraid
+that there is no opening now.
+However, if a position appears, you will
+get it. Meanwhile, you will be attached directly
+to my Ministry. By the way,
+I want you to go 
+to Basel sometime next year, in order
+to represent our country in a congress
+of Linguistics. Read the books of
+Hove-Iacque, Max Müller, and other
+good authors in the field.''
+
+Can you follow me? I didn't know Javanese
+and could barely ask for lunch in French
+or English, but have a good job, and would
+represent my country in a meeting of scholars!
+
+The old Baron came to pass,
+and the book went to his son-in-law,
+with the intention that it be given
+to his grandson when the boy come to age.
+The deceased Baron also left me a sum
+in his will.
+
+I cannot say that I didn't try to learn
+tha Malayo-Polynesian languages, but to
+no avail. The effort of learning those
+languages is way out of my reach.
+Besides this, I had more pressing
+business to take care of: Eating well, dressing
+elegantly, and reading Comics.
+
+Anyway, even if you don't read much,
+it is advisable to have shelves of books
+and many volumes of journals in your
+office. Therefore, I subscribed to
+the Revue Anthropologique et Linguistique,
+the Proceeding of the English Oceanic
+Association, and the Archivo Glottologico
+Italiano. Of course, subscribing to those
+scholarly journals without reading
+them did add anything to my learning
+of languages.
+
+
+Yet, my reputation did not stop increasing.
+People who I met on the street would greet me
+with the comment:
+
+``There goes the man who knows Javanese.''
+
+In book stores, grammarians often
+would consult me about the position
+of pronouns in the dialect spoken
+on the island of Sonda.
+Scholars sent me letters  from all
+over the world and newspapers would write 
+articles about me. On an occasion,
+I had to refuse a
+group of well to do young students
+who wanted to learn Javanese at any cost.
+
+Do you remember that commerce paper where
+I found the advertisement? The editor
+asked me to  write an
+article on the classical
+and modern Javanese literature.
+I obliged.
+
+``How could you, since you avow to be ignorant
+of the language, let alone the literature?''
+asked  Castro.
+
+``That was not very difficult. I started
+with a detailed description of the island
+of Java. Dictionaries and
+geography textbooks provided me with the necessary
+information.
+Then, I quoted American, German and French
+authors.''
+
+``Did anybody ever put your knowledge in question?'' My friend asked.
+
+``Never, although I was almost caught out on
+a particular occasion. The police arrested
+an individual, a sailor, a brown fellow who
+spoke a strange language. They called a number
+of different interpreters, but to no avail.
+Finally the police got in touch with me,
+the Javanese scholar, with all the respect
+my position deserved. I delayed in attending
+the request, but in the end I could no longer
+escape the compromise. Fortunately, the man
+had been released, thanks to the intervention
+by the Dutch consul to whom the sailor
+could explain his case through the use
+of half a dozen or so Dutch words.
+The sailor was indeed Javanese.''
+
+The moment finally arrived for my
+attending the congress. So, there
+I was on my way to Europe.
+It was marvelous! I attended to
+the opening ceremony and the invited
+paper presentations. The organizers
+registered me in the Tupi-Guarani
+section. After a couple of days at
+going from presentation to presentation,
+I concluded that the whole thing was
+not for me, and left for Paris.
+Before taking the train, however,
+I was careful enough to convince a
+journalist to publish my portrait
+and a short article about me. Thus,
+I had a way to prove that I was in
+Basel, not in Paris.
+
+Eventually, I returned to Basel for
+the closing ceremony. The organizers
+of the congress assumed that my
+abscence was due to their mistake
+of assigning me to the Guarani section.
+I accepted the apology, but I still
+was not able to write that treatise
+on Javanese that I promised them.
+
+After the congress, I paid for the publication
+of German and Italian translations of the article
+from the Basel paper. The readers of these
+translations offered a banquet in my honor.
+The banquet was presided by Senator Gorot.
+My contribution cost me all the money
+the Baron left me in his will.
+
+The money was well spent. After all,
+I became a celebrity, and after six
+months I was appointed Consul in
+Havana, where I lived for many years,
+in order to perfect my proficiency
+of the Polinesian languages.
+
+``It is fantastic,'' observed Castro, holding
+tightly to his glass of beer.
+
+``Look! Do you know what I would like to
+be right now?''
+
+``What?''
+
+``A famous genetic or computer engineer. Let us
+go for it?''
+
+``I am in.''
+
+
+\chapter{Arithmetic operations}
+Nia accepted the idea of using Prolog in Lisp,
+therefore she decided to learn Lisp. To this end, she
+entered the editor and pressed \verb|C-x C-f| to create
+the \verb|celsius.lisp| buffer, where she typed the
+program below, and saved it with \verb|C-x C-s| (she
+kept the \keys{Ctrl} key down and pressed \verb|x|
+followed by \verb|s|).
+\begin{verbatim}
+;; File: celsius.lisp
+;; Comments are prefixed with semicolon
+;; Some people use two semicolons to
+;; make comments more visible.
+
+(defun c2f(x)
+(- (/ (* (+ x 40) 9) 5.0) 40)
+);;end defun
+
+(defun f2c(x)
+(- (/ (* (+ x 40) 5.0) 9) 40)
+);;end defun
+\end{verbatim}
+Function \verb|c2f| converts Celsius readings to
+Fahrenheit. The \verb|defun| macro, which defines
+a function,  has four components, the function id,
+a parameter list, an optional documentation, and a
+body that contains expressions and commands to carry
+out the desired calculation. Comments are prefixed
+with a semicolon. In the case of \verb|c2f|, the id
+is \verb|c2f|, the parameter list is \verb|(x)|, and
+the body is \verb|(- (/ (* (+ x 40) 9) 5.0) 40)|.
+
+Lisp programmers prefer the prefix notation:
+open parentheses, operation, arguments, close parentheses.
+Therefore, in  \verb|c2f|,  \verb|(+ x 40)|
+adds \verb|x| to 40, and \verb|(* (+ x 40) 9)|
+multiplies $x+40$ by 9.
+
+In order to perform a few tests, Nia must initially save
+the program with \verb|C-x C-s|. Then she 
+presses \verb|C-x 2| to create a window for interacting
+with Lisp. After this action, there are two windows on
+the screen, both  showing the \verb|celsius.lisp| buffer.
+The \verb|C-x o| command makes the cursor jump from one
+window to the other. From the bottom window, Nia presses
+\verb|M-x shell| to startup the shell (she keeps the
+\keys{Alt} key down and presses \verb|x|, then the
+types \verb|shell| at the \verb|M-x| prompt in
+the minibuffer). At the shell, Nia launch Common Lisp
+through roswell:
+\begin{quote}
+\begin{verbatim}
+~/wamcompiler/wamdocs/lisp-src master ×
+› ros run
+* (* 3 4 5)
+60
+* (* 3 4 5)
+60
+* (load "celsius.lisp")
+T
+* (c2f 100)
+212.0
+* (f2c 212)
+100.0
+\end{verbatim}
+\end{quote}
+
+From the Read Eval Print Loop, which we will call
+simply REPL from now on,  Nia can load the
+\verb|celsius.lisp| program and  call any application
+that she has defined herself, or which comes with Lisp.
+The first operation in the REPL is loading the
+\verb|celsius.lisp| file, as you can see in
+figure~\ref{fig:repl}.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+;; To compile: (load "celsius.lisp")
+
+(defun c2f(x)
+(- (/ (* (+ x 40) 9) 5.0) 40)
+);;end defun
+
+(defun f2c(x)
+(- (/ (* (+ x 40) 5.0) 9) 40)
+);;end defun
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+
+* (c2f 100)
+212.0
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\verb|> (load "celsius.scm")|
+\end{fmpage}
+\caption{Source file and REPL}
+\label{fig:repl}
+\end{figure}
+
+Let us recall what happened until now. Nia pressed
+\verb|C-x 2| to split  the buffer window, as shown
+in figure~\ref{fig:repl}. Thus she has two buffers
+in front of her, each with its own window. One of
+the buffers has a Lisp source file, while the other
+contains a Lisp  interaction. In order to  switch
+from one buffer to the other, Nia press the
+\verb|C-x o| command. Nia is a smart girl, who
+cultivates the habit of saving the buffer with
+\verb|C-x C-s| after any modification.
+
+Nia often works with a single window.  In this case,
+after typing and saving the source file with
+\verb|C-x C-s|, she does not split the window
+before opening the interaction buffer with the
+\verb|M-x shell| command. In this case, only one
+buffer is visible. Nia switches  between the
+interaction buffer and the source file by pressing
+the  \verb|C-x b| command, and using the up and
+down arrow to choose the destination buffer. 
+
+Text editing is one of these things that
+are easier to do than to explain. Therefore,
+the reader is advised to learn Emacs
+by experimenting with the commands.
+
+\section{let-binding}\index{let-binding}
+The let-form introduces\index{Local variables} 
+local variables\index{Local variables!let-binding}
+through a list of \verb|(id value)| 
+pairs.\index{let-binding!basic let-binding}
+In the basic let-binding, a variable cannot 
+depend on previous values that appear
+in the local list. In the\index{let-binding!let-star binding}
+\verb|let*| (let star) binding,
+one can use previous bindings to calculate
+the value of a variable, as one can see in
+figure~\ref{fig:date-calculation}.
+When using let binding, the programmer must
+bear in mind that it needs parentheses for
+grouping together the set of \verb|(id value)| pairs,
+and also parentheses for each pair. Therefore,
+one must open two parentheses in front of the
+first pair, one for the list of pairs and the
+other for the first pair.
+
+
+\begin{figure}[!b]
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(defun winter(m)  (floor (- 14 m) 12))
+
+(defun roman-order(m)  (+ m (* (winter m) 12) -2))
+
+(defun zr(y m day)
+  (let* ( (roman-month (roman-order m))
+          (roman-year (- y (winter m)))
+          (century (floor roman-year 100))
+          (decade (mod roman-year 100)) )
+     (mod (+ day decade
+             (floor (- (* 13 roman-month) 1) 5)
+             (floor decade 4)
+             (floor century 4)
+             (* century -2)) 7)) )
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\verb|> (load "zeller.lisp")|\\
+\verb|T|\\
+\verb|> (zr 2016 8 31)|\\
+3
+\end{fmpage}
+\caption{Source file and REPL}
+\label{fig:date-calculation}
+\end{figure}
+
+You certainly know that the word `December' means
+the tenth month; it comes from the Latin word for
+ten, as attested in words such as:
+\begin{itemize}
+\item {\em decimal} -- base ten.
+\item {\em decimeter} -- tenth part of a meter.
+\item {\em decimate} -- the killing of every tenth
+Roman soldier that performed badly in battle.
+\end{itemize}
+
+October is named after the Latin numeral for {\em eighth}.
+In fact, the radical {\sc Oct-} can be translated
+as {\em eight}, like in
+{\em octave}, {\em octal}, and {\em octagon}.
+One could continue with this analysis,
+placing September in the seventh,
+and November in the nineth position
+in the sequence of months.
+But everybody and
+his brother know that December is the
+twelfth, and that
+October is the tenth month of the
+year. Why did the Romans give misleading
+names to these months?
+
+Rome was purportedly founded by Romulus,
+who designed a calendar.
+March was the first month of the year
+in the Romulus calendar. Therefore, if Nia
+wants the order for a given month in
+this mythical calendar, she must
+subtract 2 from the order
+in the Gregorian calendar.
+In doing so, September becomes the
+seventh month; October, the eigth;
+November, the nineth and
+December, therefore, the tenth month.
+
+Farming and plunder were the main
+occupations of the Romans, and since winter
+is not the ideal season for
+either of these activities,
+the Romans did not care much for
+January and February. However,
+Sosigenes of Alexandria,
+at the request of Cleopatra and
+Julius C\ae sar, designed the
+Julian calendar, where January
+and February, the two deep winter
+months, appear in  positions
+1 and 2 respectively.
+Therefore, a need for a formula
+that converts from the modern
+month numbering to the
+old sequence has arisen.
+\begin{quote}
+\begin{verbatim}
+(defun roman-order(m) (+ m (* (winter m) 12) -2))
+\end{verbatim}
+\end{quote}
+The above formula will work if \verb|(winter m)|
+returns 1 for months 1 and 2, and
+0 for months from 3 to 12. The definition
+below satisfies these requisites.
+\begin{quote}
+\begin{verbatim}
+(defun winter(m)  (floo (- 14 m) 12))
+\end{verbatim}
+\end{quote}
+For months from 3 to 12,
+\verb|(- 14 m)| produces a number
+less than 12, and \verb|(floor (- 14 m) 12)|
+is equal to 0, since \verb|floor| is a strange
+name for the integer division. Therefore,
+\verb|(* (winter m) 12)| is equal to
+0 for all months from March through December,
+and the conversion formula reduces
+to \verb|(+ m -2)|, which means that
+March will become the Roman month 1, and December
+will become the Roman month 10.
+However, since January is month 1,
+and February is month 2 in the Gregorian
+calendar, \verb|(winter m)| is
+equal to 1 for these two months.
+In the case of month 1,
+the Roman order is given by
+\verb|(+ 1 (* 1 12) -2)|, that is
+equal to 11. For month 2, one has that
+\verb|(+ 2 (* (winter 2) 12) -2)|
+is equal to 12.
+
+The program of figure~\ref{fig:date-calculation}
+calculates the day of the week
+through Zeller's congruence. In the definition
+of \verb|(zr y m day)|, the let-star 
+binds values to the local variables \verb|roman-month|,
+\verb|roman-year|, \verb|century| and \verb|decade|.
+
+Figure~\ref{fig:date-calculation} shows that
+the let binding avoids recalculating values that
+appear more than once in a program. This
+is the case of \verb|roman-year|, that
+appears four times in the \verb|zr| procedure.
+Besides this, by identifying important
+subexpressions with meaningful names, the
+program becomes clearer and cleaner.
+After loading the program of
+figure~\ref{fig:date-calculation},
+expressions
+such as
+\verb|(zr 2016 8 31)| return
+a number between 0 and 6, corresponding to
+Sunday, Monday, Tuesday, Wednesday,
+Thursday, Friday and Saturday.
+
+\section{True or False}\index{Conditional execution!True and False}
+So far, the only tool that Nia has used
+for programming is combination of functions.
+However, this is not enough to write
+programs that reach a decision or
+make a choice. Lisp has expressions
+to say ``if this is true, do one thing,
+else do another thing''. Nia 
+could have used one of these decision
+making expressions to calculate the roman
+order:
+\begin{quote}
+\begin{verbatim}
+(if (< m 3) (+ m 10) (- m 2))
+\end{verbatim}
+\end{quote}\index{Conditional execution!if-else}
+The if-else expression says: if the
+Julian numbering \verb|m| is greater
+than 2, then subtract 2 from \verb|m|,
+else add 10 to \verb|m|. The \verb|if-else|
+expression is much simpler to understand
+than all that confusing talk about deep
+winter months.
+
+Besides correcting the month, the \verb|(winter m)|
+expression was used to correct the year. If
+the month \verb|m| is 1 or 2, one must subtract
+1 from the Gregorian year in order to obtain
+the Roman year.
+
+\begin{figure}[!b]
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(defun zeller(y m day)
+  (let* ( (roman-month (if (< m 3) (+ m 10) (- m 2)))
+          (roman-year (if (< m 3) (- y 1) y))
+          (century (floor roman-year 100))
+          (decade (mod roman-year 100)) )
+    (mod (+ day decade
+           (floor (- (* 13 roman-month) 1) 5)
+           (floor decade 4)
+           (floor century 4)
+           (* century -2)) 7)) )
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+* (load "wday.lisp")
+T
+* (zeller 2016 8 31)
+3
+\end{verbatim}
+\end{fmpage}
+\caption{Making decisions}
+\label{fig:zeller}
+\end{figure}
+
+In Lisp, {\em Boolean} is a data type
+that can have just two values: \verb|T|
+for ``true'' and \verb|nil| for ``false''.
+The procedure \verb|(< m 3)| returns
+\verb|T| if \verb|m| is less than 3,
+and \verb|nil| otherwise. On the other
+hand, \verb|(if (< m 3) (+ m 10) (- m 2))|
+calculates the expression \verb|(+ m 10)|
+if and only if \verb|(< m 3)| produces
+the value \verb|T|. Otherwise, the
+\verb|if| form calculates the \verb|(- m 2)|
+expression.
+
+Now, let us analyze the terms of the Zeller's
+congruence. A normal year has 365 days and 52 weeks.
+Since 365 is equal to \verb|(+ (* 7 52) 1)|, each
+normal year advances the day of the week by 1.
+Therefore, the formula has a \verb|decade| component.
+Every four years February has an extra day, so it is
+necessary to add \verb|(floor decade 4)| to the formula,
+where \verb|floor| plays the role of integer division.
+
+A century contains 100 years. Therefore, one would
+expect  25 leap years in a century. But since turn
+of the century years, such as 1900, are not leap
+years, the number of leap years in a century reduces
+to 24. So, in a century the day of the week advances
+by 124. But \verb|(mod 124 7)| produces 5, that is
+equal to \verb|(- 7 2)|. Then one needs to subtract 2
+for each century. This is done through the
+term \verb|(* century -2)|.
+
+But every fourth century year is a leap year. Therefore,
+Zeller needed to  add the term \verb|(floor century 4)|
+to the formula.
+
+Starting from March, each month has 2 or 3 days
+beyond 28, that is the approximate duration of a
+lunar month: 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 3, 0.
+Nia noticed that definition
+\begin{quote}
+\verb|(defun acc(i) (- (floor (- (* 13 i) 1) 5) 2))|
+\end{quote}
+returns the accumulated month contribution
+to the week day.
+However, the day chosen to start
+the week cycle is irrelevant. Therefore,
+there is no need to subtract 2 from the
+accumulator.
+
+\chapter{Sets}
+A set is a collection of things. You certainly know that
+collections do not have repeated items. I mean, if a guy or gall has
+a collection of stickers, s/he does not want to have two
+copies of the same sticker in his/her collection. If s/he has a
+repeated item, s/he will trade it for another item that s/he lacks
+in his/her collection.
+
+
+It is possible that if your father has a collection of Greek
+coins, he will willingly accept another drachma in his set.
+However, the two drachmas are not exactly equal; one of them may be older
+than the other.
+
+\section{Sets of numbers}
+Mathematicians collect other things, besides
+coins, stamps, and slide rules. They collect numbers, for instance;
+therefore you are supposed to learn a lot about sets of numbers.
+\begin{description}
+\item[$\mathbb{N}$ is the set of natural integers.] Here is how mathematicians  write the
+elements of $\mathbb{N}$: $\{0,1,2,3,4\ldots\}$.
+\item[$\mathbb{Z}$ is the set of integers, i.e.,] $\mathbb{Z}=\{\ldots-3, -2, -1, 0, 1, 2, 3, 4\ldots\}$.
+\end{description}
+
+%%\begin{wrapfigure}[10]{i}{4cm}
+%%\includegraphics[scale=0.4]{figs/cantor.png}
+%%\caption{Cantor}
+%%\end{wrapfigure}
+
+Why is the set of integers represented by the letter $\mathbb{Z}$? I do not know,
+but I can make an educated guess. The set theory was discovered by Georg Ferdinand
+Ludwig Philipp Cantor, a Russian whose parents were Danish, but who  wrote
+his {\em Mengenlehre} in German! In German, integers may have some strange name like {\em Zahlen}.
+
+
+You may think that set theory is boring; however, many people think that it is quite interesting. For instance, there is an Argentinean that scholars consider to be the greatest writer that lived after the fall of Greek civilization. In few words, only the Greeks could put forward a better author. You probably heard Chileans saying  that Argentineans are somewhat conceited. {\em You know what is the best possible deal? It is to pay a fair price for Argentineans, and resell them at what they think is their worth}. However, notwithstanding the opinion of the Chileans, Jorge Luiz Borges is the greatest writer who wrote in a language different from Greek.
+Do you know what was his favorite subject? It was the Set Theory, or {\em Der Mengenlehre}, as he liked to call it.
+
+When a mathematician wants to say that an element is a member of a set, he writes something like
+$$3  \in \mathbb{Z}$$
+If he wants to say that something is not an element of a set, for instance, if he wants to state that $-3$ is not an element of $\mathbb{N}$, he writes:
+$$-3  \notin  \mathbb{N}$$
+Let us summarize the notation that Algebra teachers use, when they explain set theory to their students.
+\begin{description}
+\item[Vertical bar.] The weird notation $\{x^2 | x \in \mathbb{N}\}$
+represents the set of
+$x^2$, {\em such that} $x$ is a member of $\mathbb{N}$, or else,
+$\{0, 1, 4, 9, 16, 25\ldots\}$
+\item[Conjunction.] In Mathematics, you can use a symbol $\wedge$
+to say {\bf\small and}; therefore $x>2 \wedge x<5$ means 
+\verb|(and (> x 2) (< x 5))| in Lisp notation.
+\item[Disjunction.] The expression
+$(x<2) \vee (x>5)$
+means \verb|(or (< x 2) (> x 5))| in Lisp notation
+\end{description}
+Using the above notation, you can define the set of rational numbers:
+$$\mathbb{Q}=\{\frac{p}{q} | p \in \mathbb{Z} \wedge q \in \mathbb{Z} 
+\wedge q \neq 0\}$$
+In informal English, this expression means that a rational number is a fraction $$\frac{p}{q}$$ such that $p$ is a member of $\mathbb{Z}$ and $q$ is also a member of $\mathbb{Z}$, submitted to the condition that $q$ is not equal to $0$.
+
+In Lisp, one can represent a rational number
+as a Cartesian pair of integers. The expression \verb|(cons p q)|,
+where \verb|p| and \verb|q| are integers, builds such a pair.
+For instance, \verb|(cons 5 3)| produces the
+\verb|'(5 . 3)| pair. N.B. there
+are spaces before and after the dot.\label{page:cartesian-pair}
+
+In the dotted pair notation of a rational number,
+the \verb|(car '(5 . 3))| operation retrieves
+the first element of the pair, i.e., 5.
+On the other hand, the 
+\verb|(cdr '(5 . 3))| operation
+returns the second element, which is 3.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(defparameter f (cons 2 3))
+
+(defparameter g (cons 4 5))
+
+(defun add(x y)
+   (let ( (numerator (+ (* (car x) (cdr y))
+                        (* (car y) (cdr x)) ))
+          (denominator  (* (cdr x) (cdr y)) ))
+      (cons numerator denominator))) 
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+* (load "cartesian.lisp")
+T
+* (add f g)
+(22 . 15)
+* (add '(3 . 7) '(2 . 5))
+(29 . 35)
+\end{verbatim}
+\end{fmpage}
+\caption{Cartesian pairs}
+\label{fig:cartesian-pairs}
+\end{figure}
+
+Let us assume that Nia wants to add two 
+rational numbers. From elementary arithmetic,
+Nia knows that the addition of two rational numbers
+$P$ and $Q$ is given by the following expression:
+\begin{equation}
+\frac{X_a}{X_d}+\frac{Y_a}{Y_d}=
+\frac{X_a\times Y_d + Y_a\times X_d}{X_d\times Y_d}
+\label{eq:addratnums}
+\end{equation}
+In the dotted pair notation, one has $X_a$= \verb|(car X)|,
+$X_d=\verb|(cdr X)|$, $Y_a$= \verb|(car Y)| and
+$Y_d$= \verb|(cdr Y)|. By replacing these values
+in equation~\ref{eq:addratnums}, one arrives at the
+following expressions for the numerator 
+and the denominator of the addition:
+\begin{quote}
+\begin{verbatim}
+(+ (* (car x) (cdr y))    ;; numerator
+   (* (car y) (cdr x)))   
+
+(* (cdr x) (cdr y))       ;; denominator
+\end{verbatim}
+\end{quote}
+Nia used the above expressions for 
+calculating the numerator
+and denominator of $X+Y$ in 
+listing~\ref{fig:cartesian-pairs}.
+
+
+\section{Irrational Numbers}
+At Pythagora's time, the Greeks claimed that any
+pair of line segments is commensurable, i.e., you
+can always find a meter, such that the lengths of
+any two segments are given by integers.  The following
+example will show  the Greek theory of commensurable
+lengths at work. Consider the square that the Greek in
+the figure at the bottom of this page is evaluating.
+
+
+If the Greeks were right, I would be able to find a
+meter, possibly a very small one, that produces an
+integer measure for the diagonal of the square,
+and another integer measure for the side. Suppose
+that $p$ is the result of measuring the side of the
+square, and $q$ is the result of measuring the diagonal.
+The Pythagorean theorem states that
+$\overline{AC}^2+\overline{CB}^2= \overline{AB}^2$, i.e.,
+\begin{equation}
+p^2+p^2= q^2\therefore 2p^2=q^2\label{Pytagoras1}
+\end{equation}
+
+\begin{wrapfigure}[10]{i}{4cm}
+\includegraphics{fig-sets/apolob.png}
+\end{wrapfigure}
+You can also choose the meter so that $p$ and  $q$ have no common factors. For instance,
+if both $p$ and $q$ were divisible by 2, you could double the length of the meter, getting
+values no longer divisible by 2. E.g. if $p=20$ and $q=18$, and you double the length of
+the meter, you get $p=10$, and $q=9$. Thus let us assume that one has chosen a meter so
+that $p$ and $q$ are not simultaneously even. But from equation~\ref{Pytagoras1}, one
+has that $q^2$ is even. But if $q^2$ is even, $q$ is even too. You can check that
+the square of an odd number is always an odd number. Since $q$ is even, you can
+substitute $2\times n$ for it in equation~\ref{Pytagoras1}.
+\begin{equation}
+2\times p^2= q^2= (2\times n)^2= 4\times n^2 \therefore 2\times p^2= 4\times q^2
+\therefore p^2= 2\times n^2
+\label{peven}
+\end{equation}
+
+\begin{wrapfigure}[11]{o}{5.5cm}
+\begin{center}
+\includegraphics[scale=0.5]{fig-sets/apoloa.png}
+\end{center}
+\end{wrapfigure}
+Equation~\ref{Pytagoras1} shows that $q$ is even;
+equation~\ref{peven} proves that $p$ is even too. But this is against our
+assumption that $p$ and $q$ are not both even. Therefore, $p$ and $q$ cannot be
+integers in equation~\ref{Pytagoras1}, which you can rewrite as
+$$\frac{p}{q}=\sqrt{2}$$
+
+
+
+The number $\sqrt 2$, that gives the ratio
+between the side and the diagonal of any square, is not an element of $\mathbb{Q}$,
+or else, $\sqrt 2 \notin  \mathbb{Q}$. It was Hypasus of Metapontum, a Greek philosopher,
+who proved this. The Greeks were a people of wise men and women. Nevertheless they
+had the strange habit of consulting with an illiterate peasant girl at Delphi,
+before doing anything useful. Keeping with this tradition, Hyppasus  asked
+the Delphian priestess--- the illiterate girl--- what he should do to please Apollo.
+She told him to measure  the side and the diagonal of the god's square
+altar using the same meter. By proving
+that the problem was impossible, Hypasus discovered a type of number that can not be
+written as a fraction. This kind of number is called irrational.
+
+An irrational number
+is not a crazy, or a stupid number; it is simply a number that you cannot represent
+as {\em ratione} (fraction, in Latin).
+
+The set of all numbers, integer, 
+irrational, and rational is called $\mathbb{R}$, or
+the set of real numbers. 
+
+Computers are not able to deal
+with sets that hold a transfinite number of
+elements. Therefore, Lisp and
+all other programming languages
+replace sets with the concept of type.
+In Lisp, $\mathbb{Z}$ is 
+called {\bf integer}, although
+the {\bf integer} type does not cover all integers, 
+but enough of them to satisfy
+your needs. Likewise, a floating point
+number belongs to the {\bf number} type, 
+which is a subset of $\mathbb{R}$.
+
+
+If $x\in{\bf Int}$, Lisp programmers\index{Type} say 
+that $x$ has 
+type\label{type:definition} \index{Type!Int} {\bf integer}. 
+They also say that $r$ has 
+type {\bf number} if $r\in {\bf Real}$.
+
+In Lisp, rational and irrational numbers
+are inexact data types. Here are a few functions
+that produce inexact results:
+\begin{quote}
+$\verb|(+ |x_1\;x_2\;\ldots x_n\verb|)|$ -- addition\\
+$\verb|(* |x_1\;x_2\;\ldots x_n\verb|)|$ -- multiplication\\
+$\verb|(- |x_1\;x_2\;\ldots x_n\verb|)|$ -- subtraction\\
+$\verb|(/ |x_1\;x_2\;\ldots x_n\verb|)|$ -- division\\
+$\verb|(pow |x\;y\verb|)|$ -- $x^y$\\
+$\verb|(sin | x \verb|)|$ -- $\sin(x)$\\
+$\verb|(asin | x \verb|)|$ -- $\arcsin(x)$\\
+$\verb|(cos | x \verb|)|$ -- $\cos(x)$\\
+$\verb|(acos | x \verb|)|$ -- $\arcsin(x)$\\ 
+$\verb|(tan | x \verb|)|$ -- $\tan(x)$\\
+$\verb|(atan | x \verb|)|$ -- $\arctan(x)$\\
+$\verb|(log | x \verb|)|$ -- natural logarithm\\
+$\verb|(log | x b\verb|)|$ -- logarithm to the base b
+\end{quote}\index{Predicates!integerp}
+Integers are distinguished from inexact numbers by the
+\verb|(integerp x)| predicate. Two important integer
+functions are \verb|(floor x y)| and \verb|(mod x y)|.
+The first function produces the integer division of
+\verb|x| by \verb|y|, while the other returns
+the remainder of the division. You should remember
+having used these two functions earlier to calculate
+the Zeller's congruence.
+
+\section{Data types}
+There are other types besides {\bf integer}, and {\bf number}.
+The \verb|class-of| function provides the type of any object:
+\begin{quote}\index{Type!class-of}
+\begin{verbatim}
+* (class-of 10)
+#<BUILT-IN-CLASS COMMON-LISP:FIXNUM>
+* (class-of 10.0)
+#<BUILT-IN-CLASS COMMON-LISP:SINGLE-FLOAT>
+\end{verbatim}
+\end{quote}
+Here is a  list of primitive types:
+\begin{description}
+\item[integer ---] Integer numbers between $-2147483648$ and $2147483647$. \index{Predicates!integerp}
+The \verb|(integerp x)| function returns \verb|T| if \verb|x|
+is an integer, and \verb|nil| otherwise.
+\item[float ---] represents rational and irrational numbers,
+albeit approximately. The \verb|(floatp x)|\index{Type!floatp}
+function returns \verb|T| for floating point
+numbers.\index{Predicates!floatp}
+\item[number ---] The \verb|(numberp x)| function returns
+\verb|T| for any type of numbers, and \verb|nil| for non-numeric
+objects.\index{Predicates!numberp}
+\item[string ---] A quoted\index{String} string \index{Type!String}
+of characters: \verb|"3.12"|, \verb|"Hippasus"|, \verb|"pen"|, etc.
+The \verb|(stringp x)| function answers \verb|T| 
+if \verb|x| is a string, 
+and \verb|nil| otherwise.\index{Predicates!stringp}
+A few important functions that operate on strings are:
+\begin{itemize}
+\item \verb|(length s)| returns the number
+of chars of the \verb|s| string
+\item\verb|(subseq "Hello, World" 2 5)| operation
+returns \verb| "llo"|\index{Substring!subseq}
+\end{itemize}
+\item[char ---] Chars have the \verb|#\|
+  prefix: \index{Type!Char}
+\verb|#\A|,
+\verb|#\b|, \verb|#\3|, \verb|#\Space|,
+\verb|#\Newline|, etc.
+The \verb|(characterp x)| function returns \verb|T|
+when \verb|x| is a char.\index{Predicates!characterp}
+Let \verb|s| be\index{Type!characterp}
+a string such as \verb|"Hello"|. Then,
+\verb|(aref "Hello" 0)|
+returns the first char of \verb|s|,
+\verb|(aref "Hello" 1)| returns
+the second char, and so on. One can compare
+chars with the following functions:
+\begin{quote}
+\verb|(char= x #\g)| -- \verb|T| if \verb|x= #\g|\\
+\verb|(char> x #\g)| -- \verb|T| if \verb|x| comes
+after the \verb|#\g| char.\\
+\verb|(char< x #\g)| -- \verb|T| if \verb|x| comes
+before the \verb|#\g| char.\\
+\verb|(char>= x #\g)| -- \verb|T| if \verb|x| is
+equal to \verb|#\g| or comes after it.\\
+\verb|(char<= x #\g)| -- \verb|T| if \verb|x| is
+equal to \verb|#\g| or comes before it.\\
+\end{quote}
+\item[cons ---] The cons data type can represent both
+Cartesian pairs and lists; \verb|(consp x)| returns
+\verb|T| if \verb|x| is a cons,\index{Predicates!consp}
+otherwise it returns \verb|nil|. The \verb|()| empty
+list is often used as the second element of a cons pair
+to form lists. The \verb|(null x)| returns \verb|T| when
+\verb|x| is the \verb|()| empty list.
+\end{description}
+
+
+\section{Functions}
+A function is a relationship between an argument and a unique value.
+Let the argument be $x\in B$, where $B$ is a set; then $B$ is called
+domain of the function. Let the value be $f(x)\in C$, where $C$ is
+also a set; then $C$ is the range of the function.
+Functions can be represented by tables, or clauses. Let us examine
+each one of these representations in turn.
+
+\subsection*{Tables}
+Let us consider a function that associates \verb|T| ({\em true})
+or \verb|nil| ({\em False}) to the letters of the Roman alphabet.
+If a letter is a vowel, then the value will be \verb|T|; otherwise, 
+it will be \verb|nil|. The range of such a function is \verb|{T, nil}|, and the domain is
+$\{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z\}$.\\
+
+\verb||\\
+{\footnotesize
+\begin{tabular}{|p{1.2cm} p{1.2cm} | p{1.2cm} p{1.2cm} |p{1.2cm} p{1.2cm} | p{1.2cm} p{1.2cm} |}
+Domain & Range & Domain & Range & Domain & Range & Domain & Range\\
+a & \verb|T| & g &\verb|nil| & m &\verb|nil| & t & \verb|nil| \\
+b & \verb|nil| & h &\verb|nil| & n & \verb|nil| & u & \verb|T| \\
+c & \verb|nil| &  i &\verb|T| &o &\verb|T| & v & \verb|nil|\\
+d &\verb|nil| &  j & \verb|nil| & p & \verb|nil| & w & \verb|nil| \\
+e &\verb|T| & k & \verb|nil| & q & \verb|nil| & x & \verb|nil| \\
+f &\verb|nil| &  l &\verb|nil| & r & \verb|nil| & y & \verb|nil| \\
+&            &                 &  & s & \verb|nil| & z & \verb|nil|\\
+\end{tabular}}
+
+\subsection{Clauses}
+From the last section, you certainly noted that it is pretty
+tough to represent a function using a table. You must list
+every case. There are also functions, like $(\sin\;x)$, whose
+domain has an infinite number of values, which makes it
+impossible to list all entries.  Even if you were to try to
+insert only a finite subset of the domain into the table, it
+wouldn't be easy.  Notwithstanding, in the past, people used
+to build tables. In fact, tables were the only way to calculate
+many useful functions, like $(\sin\;x)$,  $(\log\;x)$,
+$(\cos\;x)$, etc. In 1814 Barlow published his Tables which
+give factors, squares, cubes, square roots, reciprocals
+and hyperbolic logs of all numbers from 1 to 10000.
+
+In 1631, Briggs published tables of sin functions to 15 places
+and tan and sec functions to 10 places. I heard the story of a mathematician who published a table of sinus, and made a mistake. Troubled by the fact that around a hundred sailors lost their way
+due to his mistake, that mathematician committed suicide. This
+story shows that the use of tables may be hazardous to your health.
+
+In order to understand how to represent a function with clauses,
+let us revisit the vowel table. Using clauses, that table becomes
+\begin{quote}\small
+\begin{verbatim}
+(defun vowelp(x)
+   (cond ( (or (char= x #\a)(char= x #\e)(char= x #\i) 
+               (char= x #\o)(char= x #\u)) T)
+         (T nil)))
+\end{verbatim}
+\end{quote}
+Expressions like $(\verb|or | p_1\;p_2\ldots p_n)$ has the same 
+meaning as $p_1 \vee p_2\ldots \vee p_n$.
+
+Functions have a parameter list that represents an element
+of the domain. Below the name of the function, and its
+parameter list, one finds a set of clauses. Each
+clause has a condition followed by an expression, that gives
+the value, if that clause applies. Consider the first clause:
+\begin{quote}
+\begin{verbatim}
+(or (char= x #\a)(char= x #\e)(char= x #\i) 
+           (char= x #\o)(char= x #\u)) T)
+\end{verbatim}
+\end{quote}
+asks the question: {\em Is \verb|x= #\a|, \verb|x= #\a|,
+\verb|x= #\a|, \verb|x= #\a| or \verb|x= #\a|?} If the
+answer is yes, the  clause  value is \verb|T| (last
+expression of the clause). 
+
+Now, let us consider the Fibonacci function,
+that has such an important role in the
+book ``The Da Vinci Code''.
+Here is its table for the first 9 entries:\\
+\begin{quote}\label{page:Fibonacci}
+\begin{tabular}{p{1cm}p{3cm} | p{1cm}p{3cm} | p{1cm}p{3cm}}
+0 & 1 & 3 & 5 & 6 & 21\\
+1 & 2 & 4 & 8 & 7 & 34 \\
+2 & 3 & 5 & 13 & 8 & 55\\
+\end{tabular}
+\end{quote}
+Notice that a given functional value is equal to
+$f_{n}= f_{n-3}+2\times f_{n-2}$. Assume that $n=6$.
+Then,  $f_6= f_3+2\times f_4$.
+
+Of course, the expression $f_{n}= f_{n-3}+2\times f_{n-2}$
+is true only for $n>2$, since there are not three precedent
+values for $n=0$, $n=1$ and $n=2$.  The below program shows
+how  you can state that a rule is valid only under certain
+conditions.\\
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(defun fib(n)
+   (cond ( (< n 2) (+ n 1))
+         ( (= n 2) 3)
+         (T  (+ (fib (- n 3))
+                (* (fib (- n 2)) 2)) )))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+* (load "fibonacci")
+T
+* (fib 5)
+13
+* (fib 50)
+32951280099
+\end{verbatim}
+\end{fmpage}
+
+
+
+\paragraph{Predicates.} A predicate is a function that gives
+true and false for output. In Lisp, the only false value is
+\verb|nil|, but any value that is different from \verb|nil|
+is considered true. A predicate can be used to discover
+whether a property is true for a given value. For instance,
+a sequence of elements such as \verb|'(S P Q R)| is called
+list. There is also an empty list, that has no elements at
+all, and is represented by \verb|()| or by \verb|nil|. Let
+\verb|xs| be a list. Then, the predicate \verb|(null xs)|
+returns \verb|T| if \verb|xs| is the empty list.
+
+There are predicates designed for performing comparisons.
+For instance, \verb|(> m 2)| returns \verb|T| for \verb|m|
+greater than 2, and \verb|nil| otherwise. Here is a more or
+less complete list of comparison predicates:
+\begin{itemize}
+\item\verb|(> m n)| -- \verb|T| for
+\verb|m| greater than \verb|n|.
+\item\verb|(< m n)| -- \verb|T| for
+\verb|m| less than \verb|n|.
+\item\verb|(>= m n)| -- \verb|T| for
+\verb|m| greater or equal to \verb|n|.
+\item\verb|(<= m n)| -- \verb|T| for
+\verb|m| less or equal to \verb|n|.
+\item\verb|(= m n)| -- \verb|T| if
+\verb|m| is a number equal to \verb|n|.
+\end{itemize}
+The inputs \verb|m| and \verb|n| must be both numbers,
+if you want the above predicates to work.
+
+
+A string is a sequence of characters
+represented between double quotation
+marks. For instance, \verb|"Sunday"|
+is a string. Below, there is a short
+list of string predicates.
+\begin{itemize}
+\item\verb|(string= s z)| -- \verb|T|\index{String!string=}
+if \verb|s| and \verb|z| are equal.
+\item\verb|(string> s z)| -- \verb|T|\index{String!string>}
+if \verb|s|  comes
+after \verb|z| in the alphabetical order.
+\item\verb|(string< s z)| -- \verb|T|\index{String!string<}
+if \verb|s| comes before \verb|z|
+in the alphabetical order.
+\item\verb|(string<= s z)| -- \verb|T| if\index{String!string<=}
+\verb|s| precedes or is equal to \verb|z|.
+\item\verb|(string>= s z)| -- \verb|T| if\index{String!string>=}
+\verb|s| follows or is equal to \verb|z|.
+\end{itemize}
+
+The prefix \verb|#\| identifies isolated characters. Let us
+assume the following definition:
+\begin{quote}
+\begin{verbatim}
+(defparameter s "Nia Vardalos")
+\end{verbatim}
+\end{quote}
+Then, the chars \verb|#\N| \verb|#\i|  \verb|#\a| and
+\verb|#\Space| were retrieved by the expressions
+\verb|(aref s 0)|, \verb|(aref s 1)|, \verb|(aref s 2)|
+and \verb|(aref s 3)| respectively.
+
+The blank space character,  control
+characters, non-graphic characters
+and all other non-printable characters
+can be represented by
+identifiers, such as \verb|#\space|,
+\verb|#\tab| and \verb|#\newline|.
+
+\pagebreak
+Character have their own set of predicates, as one
+should expect.
+\begin{itemize}
+\item\verb|(char= #\A #\a)| -- is \verb|nil|
+since \verb|#\A| and \verb|#\a| are not equal.
+\item\verb|(char> #\z #\a)| -- is \verb|T|
+since \verb|#\z|  comes after \verb|#\a| in the
+alphabetical order.
+\item\verb|(char< #\a #\z)| -- is \verb|T|
+since \verb|#\a| comes before \verb|#\z|
+in the alphabetical order.
+\item\verb|(char<= #\a #\c)| -- is \verb|T| since
+the order of \verb|#\a| is less or equal to
+the order of \verb|#\c|.
+\item\verb|(char>= #\a #\c)| -- \verb|nil| since
+the order of \verb|#\a| greater or equal to the
+order of \verb|#\c|.
+\end{itemize}
+
+Lisp often uses special forms to make decisions.
+The $(\textrm{and}\; p_1\; p_2\ldots p_n)$ form
+evaluates the sequence $p_1$, $p_2$\ldots $p_n$
+until it reaches $p_n$ or one of the previous
+$p_i$ returns \verb|nil|. In fewer words,
+the and-form stops at the first
+$p_i$ that returns \verb|nil| and, if no
+argument is false, it stops at $p_n$.
+The form returns the value of the last
+$p_i$ that it evaluates. The and-form
+returns a value different from \verb|nil|
+if and only if all $p_i$ predicates produce
+values different from \verb|nil| (false).
+
+Like the and-form, the or-form also stops
+as soon as it can. In the case of the or-form,
+this means returning true as soon as any
+of the arguments is true. Remember that
+true is anything different from \verb|nil|.
+The  $(\textrm{or}\; p_1\;
+p_2\ldots p_n)$ form returns the value
+of the first true $p_i$ predicate.
+
+The \verb|(not P)| form returns \verb|T|
+if \verb|P| produces \verb|nil|, and
+evaluates to \verb|nil| if \verb|P| is true,
+i.e., anything different from \verb|nil|.
+
+With the \verb|and|, or and \verb|not| forms, Nia can
+combine primitive functions to define many interesting
+predicates. For instance, the predicate \verb|(digitp d)|
+determines whether \verb|d| is a digit.
+\begin{quote}
+\begin{verbatim}
+(defun digitp(d)
+    (and (char>= d #\0)
+         (char<= d #\9)))
+\end{verbatim}
+\end{quote}
+The predicate \verb|deep-winterp| checks if
+\verb|m| is 1 or 2:
+\begin{quote}
+\begin{verbatim}
+(defun deep-winterp(m)
+    (or (= m 1) (= m 2)))
+\end{verbatim}
+\end{quote}
+
+
+\section{The cond-form}\label{page:cond-form}
+Now that Nia knows how to find
+an integer between 0 and 6 for the 
+day of the week, she needs a function
+that produces the corresponding name.
+
+
+\begin{figure}[!h]
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+(defun weekday(n)
+  (cond ( (= n 0) 'Sunday)
+     ( (= n 1) 'Monday)
+     ( (= n 2) 'Tuesday)
+     ( (= n 3) 'Wednesday)
+     ( (= n 4) 'Thursday)
+     ( (= n 5) 'Friday)
+     ( T 'Saturday)))
+
+(defun zeller(y m day)
+  (let* ( (roman-month (if (< m 3) (+ m 10) (- m 2)))
+          (roman-year (if (< m 3) (- y 1) y))
+          (century (floor roman-year 100))
+          (decade (mod roman-year 100)) )
+    (weekday (mod (+ day decade
+                     (floor (- (* 13 roman-month) 1) 5)
+                     (floor decade 4)
+                     (floor century 4)
+                     (* century -2)) 7)) ))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{\linewidth}
+\verb|> (load "zel.lisp")|\\
+\verb|T|\\
+\verb|> (zeller 2018 8 31)|\\
+\verb|Friday|
+\end{fmpage}
+\caption{Day of the week}
+\label{fig:day-of-the-week}
+\end{figure}
+
+\index{Conditional execution!cond}
+\index{cond!clauses}
+The cond-form controls conditional
+execution, based on a set of clauses.
+Each clause has a condition followed by
+a sequence of actions.  Lisp starts with the
+top clause, and proceeds in decending order.
+It executes the first clause whose 
+condition produces a value different from \verb|nil|.
+For instance, the first clause condition is
+the \verb|(= n 0)| predicate.
+If the predicate \verb|(= n 0)| 
+returns \verb|T| for the Sunday index,
+the function \verb|weekday| returns \verb|'Sunday|.
+If \verb|n= 1|, the second condition holds,
+and the function produces the symbol \verb|'Monday|.
+And so on.
+
+
+\section{Lists}
+In Lisp, there is a data structure called list,
+that uses parentheses to represent nested
+sequences of objects. One can use lists to
+represent structured data.
+For instance, in the snippet below,
+\verb|xor-structure| shows
+the structure of a combinatorial circuit
+through nested lists.
+
+\begin{verbatim}
+(defparameter *x* 42)
+
+(setf  (symbol-function 'xor)
+  (lambda (A B)
+     (or (and A (not B))
+         (and (not A) B)) ))
+
+(defparameter xor-structure
+  '(or (and A
+            (not B))
+       (and (not A) 
+            B)))
+\end{verbatim}
+
+Although Nia does not know what a combinatorial 
+circuit is, she noticed that the structure
+defined as \verb|xor-structure| is prefixed by a
+single quotation mark, that in Lisp parlance is
+known as quote. Since Common Lisp uses the
+same notation for programs and structured
+data, the computer needs a tag to set
+data apart from code. Therefore, 
+quote was chosen to indicate that
+an object is a list, not a procedure that
+needs to be executed by the computer.
+
+The \verb|defparamete| form creates global variables.
+In the above source code, the variable \verb|*x*| is
+an id for the number 42, while \verb|xor| is the id for
+a program that calculates the output of a two input
+exclusive or gate. Of course, Nia could define the
+\verb|xor| gate as shown below:
+\begin{verbatim}
+(define *x* 42)
+
+(defun xor(A B)
+  (or (and A (not B))
+      (and (not A) B)) )
+
+(defparameter xor-structure
+  '(or (and A 
+           (not B))
+       (and (not A) 
+            B)))
+\end{verbatim}
+
+From the examples, Nia discovered that there are
+two ways of defining the \verb|xor| gate as a
+combination of \verb|A| input, \verb|B| input,
+\verb|and| gate, \verb|or| gate and \verb|not| gate.
+In the first and most popular style, one uses the
+\verb|(defun xor(A B) ...)| format. The advantage of
+this method is that it spares one nesting level. 
+
+In the second style of defining functions and
+gates, the abstraction appears explicitly in the
+defining expression:
+\label{page:lambda1}\index{lambda}
+
+\begin{verbatim}
+(setf  (symbol-function 'xor)
+   (lambda (A B)
+      (or (and A (not B))
+          (and (not A) B)) ))
+\end{verbatim}
+
+This second style is quite remarkable because
+the abstraction that defines the operation
+is treated exactly like any other
+data type existent in the language.
+In fact, there is no formal difference
+between the definition of \verb|*x*|
+as an integer constant, and \verb|xor|
+as a functional abstraction.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+;; File: list-example.lisp
+
+(defparameter xor-structure
+   '(or (and A (not B))
+        (and (not A) B)))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\verb|(load "list-example.lisp")|\keys{Enter}\\
+\verb|T|\\
+\verb||\\
+\verb|(car xor-structure)| \keys{Enter} \\
+\verb|OR|\\
+\verb|(cdr xor-structure)|\keys{Enter}\\
+\verb|((AND A (NOT B)) (AND (NOT A) B))|\\
+\verb|(car (cdr xor-structure))|\keys{Enter}\\
+\verb|(AND A (NOT B))|\\
+\verb|(car (cdr (car (cdr xor-structure)) ))|\keys{Enter}\\
+\verb|A|\\
+\verb|(car (cdr (cdr (car (cdr xor-structure)) )))|\keys{Enter}\\
+\verb|(NOT B)|
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\verb||
+\end{fmpage}
+\caption{List selectors}
+\label{fig:selectors}
+\end{figure}
+
+
+Although Lisp represents programs and
+data in the same way, it does not use
+the same methods to deal with source
+code and lists. In the case of source
+code, the compiler translates it into
+a virtual machine language that the
+computer can easily and efficiently
+process.
+
+Data structures, such as lists, have
+an internal representation with parts. 
+In particular, a list is implemented
+as a chain of pairs 
+(vide page~\pageref{page:cartesian-pair}),
+each pair containing
+a pointer to a list element,
+and another pointer to the next pair. 
+Let us assume that
+\verb|xs| points to the list
+\verb|'(S P Q R)|.
+This list corresponds to the following
+chain of pairs:
+\begin{quote}
+\begin{verbatim}
+[*|*]--->[*|*]--->[*|*]--->[*|*]--->()
+|        |        |        |        
+S        P        Q        R       
+\end{verbatim}
+\end{quote}
+The first pair has a pointer to \verb|S|,
+and another pointer to the second pair.
+The second pair contains pointers to 
+\verb|P| and to the third pair. 
+The third pair points to \verb|Q| and
+to the fourth pair. Finally, the fourth
+pair points to \verb|R| and to 
+the \verb|()| empty list.
+
+\begin{quote}
+\begin{verbatim}
+[*|*]---> next pair
+|        
+S      
+\end{verbatim}
+\end{quote}
+The operation \verb|(car xs)| produces
+the first pointer of the \verb|xs| 
+chain of pairs. In the case of
+the \verb|'(S P Q R)| list, \verb|(car xs)|
+returns \verb|S|. On the other hand,
+\verb|(cdr xs)| yields the pair
+after the one pointed out by \verb|xs|,
+i.e., \verb|'(P Q R)|. A sequence
+of \verb|cdr| applications permits the user to
+go through the pairs of a list. \\
+
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+(defparameter spqr
+     '(S P Q R))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\verb|(load "spqr.lisp")|\keys{Enter}\\
+\verb|(S P Q R)|\\
+\verb||\\
+\verb|(cdr spqr)|\\
+\verb|(P Q R)|\\
+\verb||\\
+\verb|(cdr (cdr spqr))|\\
+\verb|(Q R)|\\
+\verb||\\
+\verb|(cdr (cdr (cdr spqr)))|\\
+\verb|(R)|
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\verb||
+\end{fmpage}
+
+\pagebreak
+If all one needs is to represent
+sequences, then contiguous memory
+elements could be more
+practical than pairs. However, as one
+can see in figure~\ref{fig:selectors},
+a list element can be a nested sublist.
+In this case, 
+the \verb|car| part of a pair can point down to
+a sublist branch. The diagram below shows
+that one can reach any part of a nested
+list following a chain of \verb|car| and \verb|cdr|.
+In such a chain, the \verb|cdr| operation
+advances one pair along the list, and
+the \verb|car| operation goes down into a sublist.
+The \verb|cdr| operation is equivalent to a
+right $\rightarrow$  arrow, while the \verb|car|
+operation is acts like a down $\downarrow$ arrow.
+\begin{quote}
+\verb"     "$\rightarrow$\verb"       "$\rightarrow$\\
+\verb"[*|*]cdr-[*|*]cdr---[*|*]--()"\\
+\verb" |        |         car"$\downarrow$\\
+\verb" |        |          |  " $\rightarrow$\\
+\verb" |        |         [*|*]cdr-[*|*]---[*|*]---()"\\
+\verb" |        |          |       car"$\downarrow$\verb"     |"\\
+\verb" |        |          |        |       |"\\
+\verb" |        |          |        |       B"\\
+\verb" |        |          |        |  "\\
+\verb" |        |         and      [*|*]---[*|*]---()"\\
+\verb" |        |                   |       |"\\
+\verb" |        |                   |       |"\\
+\verb" |        |                  not      A"\\
+\verb" |        |"\\
+\verb" or      [*|*]---[*|*]---[*|*]---()"\\          
+\verb"          |       |       |"\\                     
+\verb"         and      A      [*|*]---[*|*]---()"\\  
+\verb"                          |       |"\\                     
+\verb"                         not      B"                    
+\end{quote}
+The above example shows the chains and subchains of
+pairs that one uses to represent the logic
+circuit below:
+\begin{quote}
+\begin{verbatim}
+(defparameter xs
+   '(or 
+        (and  A  
+              (not B))
+        (and (not A)
+             B)))
+\end{verbatim}
+\end{quote}
+
+Let us assume that Nia wants to retrieve the
+\verb|(NOT A)| part of the circuit. Considering
+that each right $\rightarrow$ arrow is equivalent
+to a \verb|cdr| operation, and each down $\downarrow$
+arrow can be interpreted as a \verb|car| operation,
+she must perform \verb|(car (cdr (car (cdr (cdr xs)) )))|
+to reach the goal.
+
+
+\section{The list constructor}\index{List!cons}
+Since the \verb|car| and \verb|cdr| operations
+select the two parts of a pair, they are called
+{\em selectors}.
+Besides the two selectors, lists have a
+constructor: The operation \verb|(cons x xs)| builds a pair
+whose first element is \verb|x|, and the 
+remaining elements are grouped in \verb|xs|.
+
+\begin{quote}
+\verb|(cons 'and '(A B))|\keys{Enter}\\
+(AND A B)
+\end{quote}
+
+One has learned previously that lists must be
+prefixed by the special quote operator,
+in order to differentiate them from programs.
+To make a long story short, quote  prevents
+the evaluation of a list or symbol.
+
+When you first heard about pairs on
+page~\pageref{page:cartesian-pair},
+it was stated that the first element
+of a pair is separated from the 
+second by a dot. However, the dot
+can be omitted if the second element
+is itself a Cartesian pair or
+the empty list. Then,
+the  much neater 
+\verb|'(3 4)| list syntax is equivalent 
+to the dotted Cartesian \verb|'(3 . (4 . ()))| pair.
+
+A backquote, not to be confused with quote, also prevents
+evaluation, but the backquote transforms the list 
+into a template.\index{List!backquote}
+When there appears a comma in the 
+template, Lisp evaluates the expression following
+the comma\index{List!comma}
+and replaces it with the result. 
+If a comma is combined with \verb|@| to produce
+the \verb|,@| at-sign,\index{List!at-sign}
+then the expression following the at-sign 
+is evaluated to create a list. This list is
+spliced into place in the template. 
+Templates are specially useful for creating
+macros, as you will learn below.
+
+Macros are programs that brings a more convenient
+notation to a standard Lisp form. The syntax of Lisp,
+that unifies data and programs, makes it possible to
+create powerful macros that implement Domain Specific
+Languages (DSLs), speed up coding or create new software
+paradigms. In fact, the macro system is one of the
+two features that places Lisp asunder from other
+languages, the other being its Mathematical Foundations.
+For learning macros in depth, the reader is referred to
+Dough Hoyte's book on the subject\cite{Hoyte}.
+Here is a small example of macro:
+
+\begin{verbatim}
+(defmacro while-do(c r . bdy)
+    `(do () ((not ,c) ,r) ,@bdy))
+\end{verbatim}
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+* (load "whiledo")
+T
+* (let ( (s ()) (i 0))
+    (while-do (< i 5) s
+       (setf s (cons i s) i (+ i 1)) ))
+(4 3 2 1 0)
+\end{verbatim}
+\end{fmpage}
+
+
+In the above macro definition, the  \verb|bdy| variable,
+which comes after a dot, groups all remaining macro
+parameters. The syntax of Lisp requires that a blank space
+is inserted before and after the dot.
+
+The \verb|(setf i (+ i 1))| operation destructively updates
+the value of the local variable \verb|i|. For instance,
+if \verb|i| is equal to 3, the value of \verb|i| is replaced
+with \verb|(+ i 1)|, what makes \verb|i| equal to 4. On the
+same token, \verb|(setf s (cons i s))| replaces the value
+of \verb|s| with \verb|(cons i s)|. Then, if \verb|s= (2 1 0)|
+and \verb|i= 3|, \verb|(setf s (cons i s))| updates \verb|s|
+to \verb|(cons 3 '(2 1 0))= '(3 2 1 0)|.
+
+Destructive updates are not considered good programming practice.
+The \verb|while-do| macro is not very useful, since Lisp programmers adopt the functional style, which abhor the use of setf.
+A much more interesting macro is the Curry operator:
+\begin{quote}\label{page:lambda2}\index{lambda}
+\begin{verbatim}
+(defmacro curry(fn x)
+   (let ( (g (gensym)))
+      `(lambda(,g) (,fn ,g ,x)) ))
+\end{verbatim}
+\end{quote}
+Here are a few examples of how to use the curry macro:
+\begin{verbatim}
+* (load "curry.lisp")
+T
+* (setf (symbol-function 'twice) (curry * 2))
+#<FUNCTION (LAMBDA (#:G0)) {225F6FFB}>
+* (twice 21)
+42
+* (funcall (curry + 2) 39)
+41
+\end{verbatim}
+In order to understand this macro, you must learn the concept
+of lambda abstraction. You have learned how to define functions
+that have names. However, Lisp allows the creation of anonymous functions. Suppose that you want to filter the elements of a list, leaving only those that are greater than a given number.
+You can use the following expression:
+\begin{quote}
+\begin{verbatim}
+(remove-if-not (lambda(x) (> x 4)) '(3 2 4 1 6 9 8))
+(6 9 8)
+\end{verbatim}
+\end{quote}
+Of course, you could have defined a \verb|g4| function
+and use it as shown below.
+\begin{quote}
+\begin{verbatim}
+(defun g4(x) (>  x 4))
+
+(remove-if-not #'g4 '(3 2 4 1 6 9 8))
+(6 9 8)
+\end{verbatim}
+\end{quote}
+This solution has a flaw: It requires a
+definition for every number that you
+want to filter, which is simply impossible.
+Fortunately, the lambda abstraction comes
+to your rescue, since it 
+creates a predicate on the fly for every
+number that you want to filter. The Curry
+macro is a handier method to define a lambda
+abstraction:
+\begin{quote}
+\begin{verbatim}
+(remove-if-not (curry > 4) '(3 2 4 1 6 9 8))
+(6 9 8)
+\end{verbatim}
+\end{quote}
+
+Perhaps you are not convinced of the
+necessity of defining the curry macro.
+After all, who  needs to filter a list
+for elements greater than a given number?
+I will try to give an answer to this
+question.
+
+Let us assume that you have a list
+of words and needs to sort it
+to build a spell checker. The sorting
+program is given below.
+
+
+
+\begin{figure}[!h]
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+(defmacro curry(fn x)
+   (let ( (g (gensym)))
+      `(lambda(,g) (,fn ,g ,x)) ))
+
+(defun quick-sort(s)
+  (cond ((null s) s)
+        ((null (cdr s)) s)
+        (T (append 
+              (quick-sort (remove-if-not 
+                             (curry string< (car s)) 
+                             (cdr s)))
+              (list (car s))
+              (quick-sort (remove-if-not
+                             (curry string>= (car s))
+                             (cdr s))) ) )))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+* (load "curry.lisp")
+T
+* (quick-sort '("Caecilia" "Anna" "Priscilla"))
+("Anna" "Caecilia" "Priscilla")
+\end{verbatim}
+\end{fmpage}
+\caption{The filter function}
+\label{fig:filter}
+\end{figure}
+
+In listing~\ref{fig:filter}, the definition of
+\verb|quick-sort| calls \verb|quick-sort| itself.
+When such a thing happens, computer scientists
+say that the function is recursive. The \verb|avg|
+function that you learned in section~\ref{sec:average},
+page~\pageref{sec:average} is another example of
+recursive function. 
+
+The \verb|append| function appends its
+arguments, that are supposed to be lists.
+Let us assume that the \verb|quick-sort|
+function was called by the following expression:
+\begin{quote}
+\verb|> (quick-sort '("g" "a" "c"  "h" "n" "b"))|
+\end{quote}
+The \verb|(remove-if-not (curry string< (car s)) (cdr s))|
+expression will filter all strings that comes before
+\verb|"g"| and return the \verb|("a" "c" "b")|.
+A recursive call to \verb|quick-sort| will
+sort this list, producing the first argument
+of \verb|append|, to wit, \verb|("a" "b" "c")|.
+
+The second argument of \verb|append| is
+given by the \verb|(list (car s))| expression.
+Since \verb|s= '("g" "a" "c"  "h" "n" "b")|,
+and the \verb|list| function builds a list
+from its arguments, one
+has \verb|(list (car s))= '("g")|.
+
+The third argument of \verb|append| will
+be the sorted list of all strings in \verb|s|
+that are greater or equal to \verb|"g"|,
+i.e., \verb|("h" "n")|.
+
+The value of the \verb|(append '("a" "b" "c") '("g") '("h" "n"))|
+expression produces the final result, that is
+\verb|("a" "b" "c" "g" "h" "n")|.
+
+\chapter{Recursion}\label{chapter:Recursion}
+\index{Recursion}
+The mathematician Peano invented a very interesting axiomatic theory for
+natural numbers:
+\begin{enumerate}\index{Recursion!Peano's axioms}
+\item Zero is a natural number.
+\item Every natural number has a successor: The successor
+      of 0 is 1, the successor of 1 is 2, the successor
+      of 2 is 3, and so on.
+\item If a property is true for zero and, after assuming
+	that it is true for n, you prove that it is true
+	for n+1, then it is true for any number.
+\end{enumerate}
+Peano's insight can be applied to many other situations.
+When they asked Myamoto Musashi, the famous Japanese Zen
+assassin, how he managed to kill a twelve year old boy
+protected by his mother's 37 samurais\footnote{The boy's
+father had been killed by Musashi. His uncle met the the
+same fate. His mother hired her late husband's students
+to protect the child against Musashi.}, he answered:
+\begin{quote}\em
+I defeated one of them, then I defeated the remaining 36.
+To defeat 36, I defeated one of them, then I defeated
+the remaining 35. To defeat 35, I defeated one of them,
+then\ldots To defeat 2, I defeated one of them, then
+I defeated the other.
+\end{quote}
+A close look will show that the predicate \verb|app/3|
+\index{Recursion!append!definition} of
+Listing~\ref{rec/app} acts like Musashi. The first
+clause of \verb|app([],L,L)| states that appending
+an \verb|[]| empty list to \verb|L| produces \verb|L|.
+The second  clause of \verb|app/3|  states:
+\begin{quote}
+  \verb/ap([H|T],L,[H|U]) :- ap(T,L,U)./\\
+  The result of appending \verb/[H|T]/ to \verb|L|
+  is \verb/[H|U]/,\\ if the result of appending
+  \verb|T| to \verb|L| is \verb|U|.
+\end{quote}
+
+In listing~\ref{rec/app}, the second clause of the \verb|ap/3|
+predicate changes the goal repeatedly from
+\verb/ap([H|T],L,[H|U])/ to \verb/:-ap(T,L,U)/, until a new
+subgoal unifies with the first clause and produces a solution.
+By the way, the \verb|:-| symbol can be read as {\em if},
+thus the clause \verb/ap([H|T],L,[H|U]) :- ap(T, L, U)/ means:
+\begin{quote}
+\verb/app([H|T],L,[H|U])/ if \verb/ap(T,L,U)/
+\end{quote}
+
+Let us pick a more concrete instance of the problem.
+Nia evaluated \verb|?-ap([2,3], [4,5],R).| Here are the
+inference steps to solve this query:
+\begin{enumerate}
+\item The query \verb/?-ap([2,3],[4,5],L)/ matches
+to the \verb/ap([H|T],L,[H|U])/ head of the second clause,
+with \verb|H=2|, \verb|T=[3]| and \verb|T=[4,5]|.
+The second clause changes the goal to:
+\begin{quote}
+	subgoal 1 -- \verb/:-ap([3],[4,5],U)/
+\end{quote}
+after eventually finding that the subgoal 1 produces
+\verb|U=[3,4,5]|, the inference engine will mount
+\verb/H=2/ and \verb/U=[3,4,5]/ into the \verb/[H|U]/
+pattern to obtain the final result: \verb/[2,3,4,5]/.
+\item Subgoal 1 -- which is \verb/:-ap([3],[4,5],U)/
+      -- fails to unify with the first clause, but
+      matches the second clause with \verb|H=3|,
+      \verb|T=[]| and \verb|L=[4,5]|. The second clause
+      changes the goal again, this time to
+\begin{quote}
+      subgoal 2-- \verb|:-ap([],[4,5],U)|.
+\end{quote}
+Subgoal 2 unifies with the first clause,
+and produces \verb/U=[4,5]/. Then, the inference
+engine mount \verb|H=3| and \verb|U=[4,5]| into
+the \verb/[H|U]/ pattern of the second clause,
+and thus solves subgoal 1 --\verb/ap([3],[4,5],[3,4,5])/.
+\item Now that the solution of subgoal 1 is known,
+the answer to the original query can be found simply
+by mounting \verb/H=2/ and \verb/U=[3,4,5]/ into
+the pattern \verb/[H|U]/, which produces \verb/[2,3,4,5]/
+\end{enumerate}
+
+\begin{figure}[!h]
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+ap([], L, L).
+ap([H|T], L, [H|U]) :- ap(T, L, U).
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.8\linewidth}
+\begin{verbatim}
+> ?-ap([1,2,3],[4,5],Resp).
+Resp = [1,2,3,4,5]
+\end{verbatim}
+\end{fmpage}
+\caption{Append}
+\label{rec/app}
+\end{figure}
+
+
+\section{Classifying rewrite rules}\index{Recursion!Classifying rules}
+Typically a recursive definition has two kinds of clauses:
+\begin{enumerate}
+\item Trivial cases, which can be \index{Recursion!Trivial case} 
+resolved using primitive operations and unification, which is
+a kind of pattern match.
+\item General cases, which can be \index{Recursion!General case} 
+broken down into simpler subgoals.
+\end{enumerate}
+Let us classify the two clauses of \verb|(App xs s)|:\\
+
+\verb||\\
+\begin{tabular}{p{5cm}p{7cm}}
+\verb|ap([],L,L) | & The first clause is certainly trivial\\
+\\
+\verb/ap([H|T],L,[H|U])/ \verb/:- /
+\verb/    ap(T, L, U)/
+& The second clause can be
+broken down into simpler
+subgoals and operations: Appending two
+lists with one element
+removed from the first,
+and then inserting the element
+left out into the result.\\
+\end{tabular}
+
+
+\section{Named-let}
+\index{let-binding!named-let}
+
+In Scheme, named-let\index{Named-let}\index{Loop!named-let}
+permits the creation of functions with initialized arguments,
+avoiding the definition of auxiliary functions that require
+manual initialization. Unfortunately, Common Lisp does not
+have named-let, but there is nothing that a good macro
+cannot resolve.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(defmacro nlet(n letargs &rest body)
+  `(labels ((,n ,(mapcar #'car letargs) ,@body))
+      (,n ,@(mapcar #'cadr letargs)) ))
+
+(defun fibo(i)
+  (nlet fn+1 ( (n i) (fn 2) (fn-1 1) )
+    (if (< n 2) fn (fn+1 (- n 1) (+ fn fn-1) fn)) ))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+* (load "nlet.lisp")
+T
+* (fibo 5)
+13
+\end{verbatim}
+\end{fmpage}
+\caption{One argument Fibonacci function}
+\label{oneargfib}
+\end{figure}
+
+The named-let binding is used mainly
+to loop. In this sense, it is not
+different from looping facilities
+that one can find in languages like C
+or Python. However, the named-let
+binding has an important advantage
+over other loop facilities: One can
+give a meaningful name
+\index{Named-let!meaningful name for loop}
+to Lisp loops. For instance, since the loop of
+figure~\ref{oneargfib} is used  to calculate
+the \verb|fn+1| iteration, Nia put the
+\verb|fn+1| tag on it.
+
+There is another way to get rid of auxiliary 
+parameters:\index{Local variables!auxiliary parameters}
+One can initialize the parameters of a definition with
+optional values,\index{Local variables!default values}
+as shown in figure~\ref{accumulators}.
+
+\begin{figure}[!h]
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+;; Example of optional parameters
+
+(defun avg(s &optional (sum 0) (n 0))
+  (cond ( (and (null s) (= n 0)) 0)
+        ( (null s) (/ sum n) )
+        (T (avg (cdr s) (+ (car s) sum) (+ n 1.0)) )))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+* (load "defaults.scm")
+T
+* (avg '(3 4 5 6))
+4.5
+\end{verbatim}
+\end{fmpage}
+\caption{Accumulator parameters}
+\label{accumulators}
+\end{figure}
+
+Doug Hoyte\cite{Hoyte} gives an illuminating explanation
+about how the named-let works, therefore I feel in no
+obligation of dealing with the subject here. In any case,
+let us echo one of Hoyte's advices below, for ready reference:
+\begin{quotation}
+To understand a macro, it helps to {\em macroexpand}
+an example of use of this macro. To do that, provide
+a list representing this macro invocation to the
+\verb|macroexpand| function. Notice that
+\verb|macroexpand| will not expand nested macro
+invocation for you.
+\begin{quote}
+\begin{verbatim}
+* (macroexpand 
+    '(nlet fn+1 ( (n i) (fn 2) (fn-1 1) )
+       (if (< n 2) fn
+           (fn+1 (- n 1) (+ fn fn-1) fn)) ))
+(LABELS ((FN+1 (N FN FN-1)
+           (IF (< N 2)
+               FN
+               (FN+1 (- N 1) (+ FN FN-1) FN))))
+  (FN+1 I 2 1))
+\end{verbatim}
+\end{quote}
+\end{quotation}
+
+From the example, you can see that Lisp has labels,
+which is a tool equivalent to named-let. However,
+labels has a more complex syntax, and therefore is
+more difficult to deploy.
+
+\section{Reading data from files}
+
+Procedure \verb|(rdLines fname)|, defined in
+figure~\ref{rdFile}, reads the contents of a file
+line by line and inserts the corresponding strings
+into a list. Procedure \verb|(getcomments fname)|
+filters the list, leaving only comments.
+\index{stream!input}
+\begin{figure}[!h]
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+;; File: (load "rdfile.lisp")
+
+(defmacro nlet(n letargs &rest body)
+  `(labels ((,n ,(mapcar #'car letargs) ,@body))
+      (,n ,@(mapcar #'cadr letargs)) ))
+
+(defun iscomment(s)
+  (and (> (length s) 0)
+       (char= (aref s 0) #\;)))
+
+(defun rdLines(fname)
+  (with-open-file (stream fname)
+    (nlet next-line 
+       ( (line (read-line stream nil)) )
+       (if (null line) nil
+	 (cons line
+	    (next-line (read-line stream nil))) )) ))
+
+(defun getsemi(fname)
+  (remove-if-not #'iscomment (rdLines fname)))
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+› rlwrap ros run
+* (load "rdfile.lisp")
+T
+* (getsemi "rdfile.lisp")
+(";; File: (load \"rdfile.lisp\")")
+\end{verbatim}
+\end{fmpage}
+\caption{Lines from file}
+\label{rdFile}
+\end{figure}
+
+Lisp has a cleverly designed input system.
+The first argument of the \index{with-open-file}
+\index{Input from file} \verb|with-open-file|
+\label{page:with-open-file} macro is a list
+containing a stream name and a file name. The
+body of the macro uses the stream to process the
+contents of the file. For instance,
+\verb|(read-line stream nil)| reads a line from
+the stream. If it fails to read the line, it
+returns its second argument, where \verb|nil|
+can be useful to stop the reading operation
+at the end of the file.
+
+
+\section{Writing data to files}
+\index{stream!output}
+Let us assume tha Nia needs a program that translates
+markdown to html, in order to publish poems in the internet.
+I hope you will be able to understand the code by yourself.\\
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+;; File: (load "wrthtml.lisp")
+;;uncomment if nlet is not loaded yet
+; (defmacro nlet(n letargs &rest body)
+;    `(labels ((,n ,(mapcar #'car letargs) ,@body))
+;       (,n ,@(mapcar #'cadr letargs)) ))
+
+(defun tit(s) (and (> (length s) 0) (char= (aref s 0) #\#)))
+
+(defun tohtml(xs fname)
+  (with-open-file (out fname :direction :output
+                          :if-does-not-exist :create
+			  :if-exists :append) ;; or :supersede
+    (nlet next-line ( (s xs) )
+       (cond ( (null s) T)
+	     ( (tit (car s)) (format out "<h2>~a</h2>~%" (car s))
+	       (next-line (cdr s)))
+	     ( T (format out "~a<br/>~%" (car s))
+		 (next-line (cdr s)) )) )))
+\end{verbatim}
+\end{fmpage}
+\verb||\\
+\begin{fmpage}{\linewidth}
+\begin{verbatim}
+› rlwrap ros run
+* (load "rdfile.lisp")
+T
+* (load "wrthtml.lisp")
+T
+* (defparameter txt (rdLines "hellen.md"))
+TXT
+* (tohtml txt "hellen.html")
+T
+\end{verbatim}
+\end{fmpage}
+
+
+\begin{quote}
+\begin{verbatim}
+# To Helen by Edgard Alan Poe
+
+Helen, thy beauty is to me
+Like those Necéan barks of yore,
+That gently, o'er a perfumed sea,
+The weary, way-worn wanderer bore
+To his own native shore.
+\end{verbatim}
+\end{quote}
+\index{stream! :supersede}\index{stream! :create}
+\index{stream! :append}\index{stream! :direction}
+\index{stream! :output}
+
+\index{with-open-file! :supersede}
+\index{with-open-file! :create}
+\index{with-open-file! :append}
+\index{with-open-file! :direction}
+\index{with-open-file! :output}
+%% \appendix
+
+\index{princ}
+
+\begin{thebibliography}{99}
+
+\bibitem{Abelson} Harold Abelson, Gerald Jay Sussman and
+Julie Sussman. Structure and Interpretation of
+Computer Programs. The MIT Press, Second Edition, 1996.
+
+\bibitem{Felleisen} Matthias Felleisen,
+Robert Bruce Findler, Matthew Flatt, Shriram Krishnamurthi.
+How to Design Programs.
+Available from \verb|http://www.htdp.org|
+
+\bibitem{Sitaram} Dorai Sitaram. Teach yourself Scheme
+in Fixnum Days. Available
+from \verb|http://ds26gte.github.io/tyscheme/|
+
+\bibitem{Hoyte} Doug Hoyte. Let Over Lambda. Hoytech, 2008. ISBN: 978-1-4357-1275-1
+
+\bibitem{Church1932} A. Church, A set of postulates for the foundation of logic, Annals of Mathematics, Series 2, 33:346–366 (1932).
+
+\bibitem{Church} Alonzo Church. The Calculi of Lambda Conversion. Princepton University Press, 1986.
+
+\bibitem{Dybvig} R. Kent Dybvig. The Scheme Programming Language.
+Available from \verb|http://www.scheme.com/tspl4/|
+
+\end{thebibliography}
+
+\printindex
+
+\end{document}
+
