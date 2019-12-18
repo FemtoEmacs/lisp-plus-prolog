@@ -1,0 +1,148 @@
+
+=============================================
+   CXPROLOG INSTALLATION FROM SOURCE CODE
+
+ APPLIES TO LINUX, MAC OS X & MINGW/WINDOWS
+=============================================
+
+
+
+* BUILDING THE APPLICATION
+
+The following command builds the executable CxProlog, with
+all the optional features disabled:
+
+    make
+
+ - File generated in LINUX, MAC OS X => cxprolog
+ - File generated in MINGW/WINDOWS  => cxprolog.exe
+
+
+
+* BUILDING THE DYNAMIC LIBRARY
+
+The following command builds the CxProlog dynamic library, with
+all the optional features disabled:
+
+    make lib
+
+ - File generated in LINUX, MAC OS X => libcxprolog.so
+ - Files generated in MINGW/WINDOWS  => libcxprolog.a, cxprolog.dll
+
+
+
+* ACTIVATING OPTIONAL FEATURES
+
+To activate optional features in the application or in the
+dynamic library you supply extra arguments to the "make" command.
+The available options are the following:
+
+    JAVA=y
+        Adds a JNI-based external interface for Java.
+
+    WXWIDGETS=y
+        Adds an external interface for the wxWidgets  platform independent API.
+
+To activate the two options at the same time, you use one of these:
+
+    make JAVA=y WXWIDGETS=y
+    make JAVA=y WXWIDGETS=y lib
+
+These features depend on the availability of some libraries and applications.
+The dependencies are listed in the section "DEPENDENCIES".
+
+
+
+* FULL BUILD
+
+The following command builds the application and the dynamic library
+with the three optional features activated:
+
+    make full
+
+
+
+* TESTING
+
+The following command checks if CxProlog operates correctly on your machine.
+Several unit tests are run in a special CxProlog stress testing mode the exposes
+the execution to every opportunity to crash.
+
+    make test
+
+
+
+* CLEANING
+
+This removes all the mess created by the compiler, including the application
+and the dynamic library:
+
+    make clean
+
+
+
+* INSTALLING
+
+The following command installs the CxProlog files in the default
+directory "/usr/local" (this may require superuser privileges):
+
+    make install
+
+To compile and install in a different directory, e.g. "/opt/local", use
+the 'clean' and the 'PREFIX' options like this:
+
+    make clean install PREFIX=/opt/local
+
+
+
+* DEPENDENCIES
+
+The optional features of CxProlog depend on the availability of some libraries
+and applications. The dependencies are as follows:
+
+- The GNU readline feature depends on the availability of the
+  "libreadline-dev" library. To install on Debian-based systems, the
+  command is:
+
+    sudo apt-get install libreadline-dev
+
+  To install on Mac OS via MacPorts, the command is:
+
+    sudo port install readline
+
+- The Java interface features depends only on the availability of the Sun JRE,
+  but probably you will prefer to install the full Sun JDK.
+  To install the JDK on Debian-based systems, the command is:
+
+    sudo apt-get install sun-java6-jre
+
+- The wxWidgets interface features depends on the availability of the
+  "libwxgt-dev" library. To install on Debian-based systems, the command is:
+
+    sudo apt-get install libwxgtk2.8-dev
+
+
+
+Enjoy using CxProlog.
+
+amd@di.fct.unl.pt
+                           - * - * - * - * -
+
+
+
+======================================
+   MINGW INSTALLATION ON WINDOWS OS
+======================================
+
+MinGW (Minimalist GNU for Windows), is a native software port of GCC to
+Microsoft Windows, along with a set of import libraries and header files for
+the Windows API.
+
+MinGW allows the creation of native Windows applications. MinGW does not
+require a compatibility layer DLL. MinGW, always uses direct Win32-API calls.
+
+The latest version of MinGW is always available here:
+
+    http://www.tdragon.net/recentgcc/
+
+More installation details later...

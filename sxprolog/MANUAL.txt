@@ -1,0 +1,4644 @@
+####################
+CxProlog User Manual
+####################
+
+:Author: A\. Miguel Dias
+:Version: 0.98.2
+:Affiliation:
+    CITI - Centro de Informatica e Tecnologias da Informacao
+    Dept. de Informatica, FCT, Universidade Nova de Lisboa.
+    Copyright (C) 1990-2016 A.Miguel Dias, CITI, DI/FCT/UNL
+
+:License:
+    CxProlog is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 1, or (at your option)
+    any later version.
+
+    CxProlog is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CxProlog; see the file COPYING.  If not, write to
+    the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+:About this file:
+    This file was prepared as input to the program reStructuredText, a
+    a processor of plain text documentation that knows how to generate such
+    formats as HTML, XML or TeX. reStructuredText is a component of the
+    documentation preparation system DocUtils, which is available
+    at http://docutils.sourceforge.net.
+
+Index:
+
+- Introduction
+- CxProlog Limits
+- Command-line options
+- CxProlog Built-in Predicates
+
+    - Misc
+    - Control
+    - Terms
+    - Occurs-check and cyclic terms
+    - Comparing Terms
+    - Characters and Unicode
+    - Arithmetic
+    - Units/Contexts
+    - Program Database
+    - Operators
+    - Input/Output - Streams
+
+        - Character encodings
+        - BOM - Byte Order Mark
+        - Handling Streams
+        - Implicit Streams
+        - Dec-10 Prolog Compatibility Text Streams
+        - Reading and Writing Terms
+        - Reading and Writing Characters
+        - Reading and Writing Bytes
+        - Reading and Writing Characters or Bytes
+        - Reading and Writing Blocks of Bytes
+    - OS Services
+    - Filesystem
+    - Prolog Flags
+    - Extra types
+    - Aliases
+    - Imperative Variables (ivars)
+    - Imperative Queues
+    - Imperative Stacks
+    - Imperative Dictionaries
+    - Imperative Arrays
+    - Imperative Buffers
+    - Handling Transient Text
+    - Threads (coroutines)
+    - Sockets
+    - Processes
+    - Unit tests
+    - Debugger
+    - Foreign Interfaces
+
+        - Foreign Interface to C/C++
+        - Foreign Interface to Java
+        - Foreign Interface to wxWidgets
+        - GUI Event Handling
+
+- Customising CxProlog
+
+    - Alternative Boot Files
+    - Default Boot
+    - Adding Built-in Predicates Written In C
+
+- Overview of the Debugger
+
+    - Introduction
+    - Debugging Line
+    - Debugging Commands
+
+- Writing CxProlog scripts for Unix
+
+
+
+Introduction
+============
+
+CxProlog is a WAM based Prolog system that supports most of the
+Part 1 of the ISO Prolog standard, as well as the classic Edinburgh
+Prolog dialect.
+
+Furthermore, it also includes the following non-standard features:
+
+- Units (Modula-2-like modules);
+- Contexts (cf. [L.Monteiro, A.Porto: "Contextual Logic Programming",
+  in Proc. 6 ICLP, Lisboa, Portugal, MIT Press, 1989]);
+- Imperative mechanisms: imperative variables (ivars), imperative queues,
+  imperative stacks, imperative dictionaries, imperative arrays,
+  general purpose buffers;
+- Support for cyclic terms (rational trees);
+- Support for an occurs-check execution mode;
+- Interactive debugger;
+- Java and WxWidgets interface;
+- 21-bit Unicode support;
+- Threads (Modula-2-like coroutines).
+
+CxProlog is small and manageable, yet reasonably fast. It is a compiler but
+provides an interpreter-like interface.
+
+CxProlog is mostly written in C and prefers to be compiled with GNU gcc.
+CxProlog has been tested on Linux, MacOS X and Windows/MinGW, always
+using gcc. It should be compatible with any 32 or 64 bit machine.
+No customisation of the source code is necessary, as CxProlog adjusts
+itself to the host machine.
+
+CxProlog system is experimental software. As yet there is no support
+and this "MANUAL" file is the sole documentation available.
+
+Contributors with suggestions for improving CxProlog:
+Antonio Porto, Tiago Antao, Rui Marques,
+Paulo Matos, Nuno Soares, Ricardo Amador,
+Joaquim Baptista, Paulo Moura, Bruno Rodrigues.
+
+Artur Miguel Dias (amd@di.fct.unl.pt)
+CITI - Centro de Informatica e Tecnologias da Informacao
+Dept. de Informatica, FCT, Universidade Nova de Lisboa
+Portugal
+
+
+
+CxProlog Limits
+===============
+
+- Code Area: No limit (grows as necessary)
+- Local Stack + Global Stack: No limit (grows as necessary)
+- Trail: No limit (grows as necessary)
+- Max arity of functor or predicate: 64
+- Max number of distinct variables in term: No limit
+- Max number of distinct named variables in asserted clause: No limit
+- Max length of atom: No limit
+- Max number of clauses per predicate: No limit
+- Max code length of compiled clause: No limit
+- Max number of simultaneously open streams: OS dependent
+- Max int: 268435455 = 2^28-1  (2^60-1 on 64 bit machines)
+- Min int: -268435456 = -2^28  (-2^60 on 64 bit machines)
+- Max Unicode code: 1114111 = 0x10ffff
+
+
+
+Command-line options
+====================
+
+The following are the system-supported command-line options. Note that each
+option starts with two hyphens (following the double-hyphen option leader
+GNU convention). Some of the options require one argument.
+
+  --boot <filename>    See the section 'Alternative Boot Files'
+
+  --script <filename>  See the section 'Writing CxProlog scripts for Unix'
+
+  --goal <goal>        The goal is proved immediately after the boot, just
+                       before entering the top level. Usually the goal
+                       is placed between single quotes, specially if it
+                       is a complex term.
+
+  --quiet              Sets the Prolog flag 'info_messages' to 'silent',
+                       therefore suppressing all non-essential messages. The
+                       error messages are still issued.
+
+  --test               Checks if CxProlog operates correctly on your machine.
+                       Several unit tests are run in a special CxProlog
+                       stress testing mode the exposes the execution to many
+                       opportunities to crash.
+
+  --flags <spec>       Allows most Prolog flags to be setup at startup time.
+                       Note that there are some some Prolog flags that are
+                       read-only at runtime, but that can be setup at
+                       startup time. Spaces are not allowed in <spec>.
+                       Example:
+                       "cxprolog --flags nil_is_special=true,occurs_check=true"
+
+Furthermore, calling CxProlog as follows::
+
+    cxprolog file.pl
+
+is equivalent to::
+
+   cxprolog --script file.pl
+
+This equivalence is applied only if the filename extension is exactly ".pl".
+
+This equivalence allows a ".pl" file to run by double-clicking
+on its icon in the file browser, assuming that the file name extension
+".pl" has been associated with the CxProlog application. In some systems,
+e.g. Linux, it may also be required that the particular ".pl" file
+has the executable attribute set.
+
+The previously described command-line options have predefined meaning. All
+the other option strings are available to the user. Note that the command-line
+options are accessed from inside an application using the Prolog flag 'argv'.
+
+
+
+CxProlog Built-in Predicates
+============================
+
+This section describes the CxProlog built-in predicates. The built-in
+predicates are special because::
+
+- they are predefined;
+- they are automatically available in all the units;
+- they are usually immutable;
+- they are untraceable by the built-in debugger.
+
+In this document, each built-in is introduced using a generic goal
+template, followed by a condensed description of its semantics.  As
+an example, the goal template corresponding to the built-in predicate
+*functor/3* is:
+
+    *functor(?T,?A,?N)*
+
+In a goal template, the symbols preceding the parameters have the
+following interpretation:
+
+    \+
+       Input parameter. The actual argument shall be instantiated.
+
+    \@
+       Input unaltered parameter. The actual argument shall remain
+       unaltered, even if is compound. This mode corresponds to a
+       stronger variant of the mode \+.
+
+    \-
+       Output parameter. The actual argument shall be a variable that
+       will be instantiated if the goal succeeds.
+
+    \?
+       Input/Output parameter. The actual argument can be used both ways.
+
+Also, in a goal template, the name of the parameters reflect
+their type, according to the following table:
+
+    A
+        atom
+    B
+        buffer (special datatype)
+    C
+        Prolog character (one-char atom) or Unicode code
+    D
+        dictionary or array (special datatypes)
+    E
+        Arithmetic expression
+    F
+        filename (atom)
+    G
+        goal to be proved
+    K
+        stack (special datatype)
+    L
+        list
+    N
+        number (integer, float, or Unicode code)
+    P
+        process (special datatype, only available in Unix) or predicate
+        indicator (always of the form Name/Arity)
+    Q
+        queue (special datatype)
+    S
+        stream (special datatype)
+    T
+        general term
+    U
+        unit designator (term)
+    Z
+        thread (special datatype)
+
+The sophisticated user can add extra built-in predicates and redefine
+existing predefined built-in predicates. The section _`Customizing CxProlog`
+explains how this is done.
+
+Most of the CxProlog built-in predicates conform to:
+
+- Clocksin: "Introduction to Logic Programming", Springer Verlag.
+- L.Monteiro, A.Porto: "Contextual Logic Programming",
+  in Proc. 6 ICLP, Lisboa, Portugal, MIT Press, 1989.
+
+Misc
+~~~~
+
+version(-A)
+    Gets the identification of the running version of CxProlog.
+
+version
+    Show the identification of the current version
+    of CxProlog.
+
+show
+    Synopsis of the available "show predicates", which
+    are predicates that show certain details of
+    the CxProlog internal state.
+
+features
+    Prints information about certain features of CxProlog that
+    may vary between installations.
+
+host_speed(-N)
+    Evaluates the speed of the host machine. Faster
+    machines produce larger numbers. The result is always larger than 0.
+    Examples:
+
+    - MacPlus --> 2;
+    - Celeron/433 --> 450.
+    - PentiumIII-M/700 --> 900.
+
+    Of course the result provides only a rough indication. Also the result
+    may vary somewhat with the version of CxProlog being used.
+
+Control
+~~~~~~~
+\+G1,+G2 [ISO]
+    Conjunction. Proves G1 and G2.
+
+\+G1;+G2 [ISO]
+    Disjunction. Proves G1 or G2.
+
+\! [ISO]
+    Cut. When encountered as a goal, it commits the predicate where it
+    occurs to the choices made since that predicate was last activated.
+    The cut is local in almost every meta-predicate, like call/1, \+/1,
+    once/1, etc. and also in the condition part of ->/2.
+    The cut is transparent only in the meta-predicates ,/2, ;/2, and in the
+    body part of ->/2.
+
+call(+G) [ISO]
+    Proves goal G.
+
+call_cleanup(+G, +Cleanup)
+    Ensures that Cleanup is executed after the goal G has completed
+    execution so that it will not resume execution anymore. By "completed
+    execution" of G we mean one of the following:
+    (1) G has succeeded determinately, after exhausting all its solutions;
+    (2) G has failed; (3) G has raised an exception; (4) a cut in G has removed
+    all the remaining alternatives for G; (5) a cut after G has removed all
+    the remaining alternatives for G.
+    The Cleanup goal runs deterministically (i.e. all solutions except the
+    first are cut) and for side effects alone (all new variable bindings are
+    discarded at the end.)
+    Example: call_cleanup(process_file(S), close(S)).
+
+call(+G,+T1)
+call(+G,+T1,+T2)
+call(+G,+T1,+T2,+T3)
+call(+G,+T1,+T2,+T3,+T4)
+call(+G,+T1,+T2,+T3,+T4,+T5)
+call(+G,+T1,+T2,+T3,+T4,+T5,+T6)
+call(+G,+T1,+T2,+T3,+T4,+T5,+T6,+T7)
+call(+G,+T1,+T2,+T3,+T4,+T5,+T6,+T7,+T8)
+    Proves the goal G with the extra arguments Ti added at the end.
+    For example, *call(a(1),2)* is equivalent to *a(1,2)*. Also,
+    *call(a,1,2)* is equivalent to *a(1,2)*. These predicates
+    are very efficient when used in higher-order predicates,
+    as in the example::
+
+      map(G,[],[]).
+      map(G,[X|Xs],[Y|Ys]) :- call(G,X,Y), map(G,Xs,Ys).
+
+    Note that the full term, containing all the arguments, is not
+    actually built; the overhead would be larger if you used ins_end/3
+    or =../2 to build the full term before performing the call.
+    The call/* predicates also appear in other Prologs such as
+    Poplog-Prolog and SWI-Prolog.
+
+apply(+A,+L)
+    Proves a modified goal G with extra arguments added at the end.
+    The extra arguments are the terms in the list L. For example,
+    *apply(a,[1,2])* is equivalent to *a(1,2)*. This predicate also
+    exists in SWI-Prolog.
+
+\+G [ISO]
+    Same as call(+G).
+
+\\+ +G [ISO]
+    Goal G is not provable (that is G fails).
+
+not +G
+    Same as *\\+ G*.
+
+try +G
+    Always succeeds deterministically, either with the first
+    solution for G, if one exists, or otherwise with G
+    unchanged. Except for the occurrence of cuts in G,
+    this predicate could be defined as:
+    *try G :- G, ! ; true.*
+
+once +G [ISO]
+    Succeeds deterministically with the first solution to G
+    if and only if there exists at least one. Except for
+    the occurrence of cuts in G, this predicate could be
+    defined as:
+    *once G :- G, !.*
+
+possible +G
+    Succeeds deterministically if and only if there is at
+    least one solution to G. The current instantiation
+    state of G is not changed. Except for occurrence of
+    cuts in G, the predicate could be defined as:
+    *possible G :- \\+ \\+ G.*
+
+gen +G
+    Explores all the alternatives in the goal G and, at
+    the end, succeeds with the current instantiation
+    state of G unchanged. Except for occurrence of cuts
+    in G, this predicate could be defined as:
+    *gen G :- G, fail ; true.*
+
+\+G1->+G2;+G3 [ISO]
+    Conditional goal. If G1 succeeds prove G2; if not,
+    prove G3.
+
+\+G1->+G2 [ISO]
+    Same as *(G1->G2;false)*. But if the 'compatible_if_then'
+    Prolog flag is 'false', it becomes equivalent to *(G1->G2;true)*
+    which is more sound logically.
+
+true [ISO]
+    Succeeds.
+
+fail [ISO]
+    Fails.
+
+false
+    Same as fail.
+
+repeat [ISO]
+    Succeeds repeatedly on backtracking.
+
+repeat(+N)
+    Succeeds repeatedly on backtracking exactly N times.
+    After that fails.
+
+repeat(+N1,-N2)
+    Like repeat(N1) and the succession 1, 2, 3, ..., N1
+    is generated via N2 on backtracking.
+
+between(+N1,+N2,?N3)
+    If N3 is an integer, checks the condition N1 <= N3 <= N2.
+    If N3 is a variable, generates, via backtracking, the succession of
+    integers between N1 and N2. The upper limit can be ignored by
+    using N2=inf.
+
+abort
+    Aborts the CxProlog execution and restarts the top level. The execution
+    stacks are cleared, but the internal database remains unchanged.
+
+restart
+    Same as abort/0.
+
+halt [ISO]
+    Terminates CxProlog execution displaying the message
+    "CxProlog halted".
+
+exit
+    Exits from CxProlog, displaying no message.
+
+exit_script
+    Acts like exit/0 inside scripts and like true/0 outside scripts.
+    This predicate checks if there is a script running by simply
+    looking for the '--script' argument in the the command line.
+
+error(+T)
+    Issues one error message in the CxProlog standard format and
+    then calls abort/0. The message is written in the stream
+    'user_error'. The main part of the message consists in the textual
+    representation of T unless T is a list. In it is a list, it is
+    filtered through concat/2 before the result is printed.
+
+warning(+T)
+    Issues one warning message in the CxProlog standard format.
+    The message is written in the stream 'user_error'. The main part
+    of the message consists in the textual representation of T unless T
+    is a list. In it is a list, it is filtered through concat/2 before the
+    result is printed.
+
+question(+G,+L)
+    Implements the top-level queries of the predefined
+    top-level user-iteration. Also implements the *?-G*
+    questions inside the consulting predicates.
+
+forall(+G1, +G2)
+    Checks whether the goal G2 can be proved for all the alternative
+    bindings of a goal G1. Defined as:
+    *forall(G1, G2) :- \+ (G1, \+ G2).*
+
+findall(+T,+G,-L) [ISO]
+    L is unified with the list (not ordered an possibly
+    containing duplicates) of all the instances of template
+    T for which G is provable. All free variable
+    (those contained in G and not in T) are considered
+    to be existentially quantified.
+
+bagof(+T,+G,-L) [ISO]
+    L is unified with the list (not ordered an possibly
+    containing duplicates) of all the instances of template
+    T for which G is provable. The predicate fails if G
+    fails for every instance of T. If G is of the form
+    *X^T*, where X is a variable, then X is treated as being
+    existentially quantified in T. G must not be an
+    uninstantiated variable.
+
+setof(+T,+G,-L) [ISO]
+    Like bagof except that the returned list L is free from
+    duplicates.
+
+catch(+ProtectedGoal,-Exception,-HandlerGoal) [ISO]
+    This is equivalent to ProtectedGoal, unless an exception
+    is thrown while ProtectedGoal is being proved. In this
+    case all the bindings made by ProtectedGoal are undone,
+    like it the goal has failed, and Exception is unified with
+    the term representing the exception. If the unification
+    succeeds, the exception is said to have been "caught"
+    and the HandlerGoal is executed, in fact replacing the
+    execution of the original ProtectedGoal. If the unification
+    fails, the system starts looking for an ancestor of the
+    current goal that would handle the exception. If it
+    cannot find any such a handler, the system activates
+    a default handler that prints the exception term and,
+    if the debugger is on, also prints the stack trace
+    corresponding to the execution context at the point
+    where the exception was raised.
+
+catch(+ProtectedGoal,-Exception,-StackTrace,+HandlerGoal)
+    Similar to catch/3 except that, if the debugger is on,
+    a stack trace of the current execution environment
+    is built and returned in the parameter StackTrace.
+    If the debugger is off the empty list is returned.
+
+throw(+ExceptionTerm) [ISO]
+    Explicitly throws an exception. ExceptionTerm can be any
+    term except a free variable.
+
+    **Note:** All non-fatal errors that might arise during the
+    execution of programs manifest themselves by throwing
+    exceptions.
+
+on_exception(?Pattern,+ProtectedGoal,+HandlerGoal)
+    This is a Quintus-Prolog compatibility predicate.
+    Equivalent to
+    *catch(+ProtectedGoal,?Pattern,+HandlerGoal).*
+    Note the different argument order.
+
+raise_exception(+Exception)
+    This is a Quintus-Prolog compatibility predicate.
+    Identical to throw/1.
+
+write_exception(+Exception)
+    Writes an exception-term in the stream 'user_error' using the the CxProlog
+    format for error messages.
+    On error, any built_in predicate creates an exception-term and then,
+    depending on the value of the 'on_error' Prolog flag, may throw an
+    exception. The format of a exception-term is as exemplified::
+
+       error('ERROR', see/1, 'Cannot open file ''a''')
+       error('TYPE ERROR', see/1, 'STREAM or FILENAME expected, found ''1''')
+
+deterministic(-A)
+    The argument A can be 'true' or 'false'. 'true' means that the interpreter
+    is currently exploring the last execution alternative generated by the
+    code syntactically preceding the goal "deterministic(A)". SWI-Prolog
+    has a similar predicate. Example::
+    
+       [main] ?- (X=1;X=2;X=3), deterministic(D).
+       X = 1 
+       D = false ? ;
+       X = 2 
+       D = false ? ;
+       X = 3 
+       D = true 
+ 
+
+Terms
+~~~~~
+The Prolog data elements are called terms. There are three categories of
+terms: variables, atomic terms and compound terms.
+
+Variable are placeholders for general terms. They become instantiated
+via unification.
+
+The atomic terms include: atoms, integers, floats and extras. Atoms
+are simple sequences of Unicode characters. Extras are data elements
+not traditionally present in Prolog that include imperative data
+structures and interfacing data structures to the outside world.
+
+The compound terms include structures, lists and strings. Every compound
+term is composed of an functor (an atom with implicit arity) and a
+sequence of arguments, which are also arbitrary terms. A list is a
+compound term with functor ./2 and a string is a list of numeric
+character codes.
+
+As for the extras, these are data elements not traditionally present
+in Prolog. The extras include imperative data structures, such as arrays,
+and interfacing data structures to the outside world, such as Java objects.
+
+
+var(+T) [ISO]
+    T is an uninstantiated variable.
+
+nonvar(+T) [ISO]
+    T is an instantiated term.
+
+atom(+T) [ISO]
+    T is an atom.
+
+integer(+T) [ISO]
+    T is an integer number.
+
+float(+T) [ISO]
+    T is a float number.
+
+number(+T) [ISO]
+    T is a number (integer or float).
+
+atomic(+T) [ISO]
+    T is an atom or a number.
+
+compound(+T) [ISO]
+    T is a structure or a list, that is a term with arity greater than zero.
+
+callable(+T)
+    T is an atom or a compound term.
+
+is_list(+T)
+    T is a properly terminated list.
+
+ground(+T)
+    T does not include free variables. Handles cyclic terms well.
+
+functor(?T,?A,?N) [ISO]
+    T is a term with name A and arity N.
+
+arg(+N,+T,-Tn) [ISO]
+    Tn in the N-th argument of term T. The condition 1 <= N <= arity(T)
+    must hold or the predicate fails.
+
+ins(+N,?T,?X,?TX)
+    Term TX is the term T with the extra argument X
+    inserted at position N. The condition 1 <= N <= arity(T)+1
+    must hold or the predicate fails. Bidirectional predicate.
+
+ins_start(+T,+X,-TX)
+    Term TX is the term T with the extra argument X
+    inserted at the start position. Efficient
+    unidirectional predicate.
+
+ins_end(+T,+X,-TX)
+    Term TX is the term T with the extra argument X
+    inserted at the end position. Efficient
+    unidirectional predicate.
+
+?T =.. ?L [ISO]
+    Univ. L is the list whose head is the atom
+    corresponding to the principal functor of T and
+    whose tail is the list of arguments of T.
+
+name(?AN,?L)
+    L is the list of Unicode codes that makes up the printed
+    representation of the atom or number AN. Note that if L can be
+    seen as the representation of a number then AN becomes instanciated with
+    that number. For example, name(X,[51,52,53]) returns 123 and not '123'.
+    To be sure an atom is returned you use the more specific predicates
+    atom_char/2 or atom_codes/2. For example, both atom_chars(X,['1','2','3'])
+    and atom_codes(X,[51,52,53]) return the atom '123'.
+
+atom_codes(?A,?L) [ISO]
+    L is the list of Unicode codes that makes up the printed
+    representation of the atom A.
+
+atom_char(?A,?L) [ISO]
+    L is the list of characters (one-char atoms) that makes up the printed
+    representation of the atom A.
+
+number_codes(?N,?L) [ISO]
+    L is the list of Unicode codes that makes up the printed
+    representation of the number N.
+
+number_chars(?N,?L) [ISO]
+    L is the list of characters (one-char atoms) that makes up the printed
+    representation of the number N.
+
+atom_length(+A,?N) [ISO]
+    N is the length of atom A.
+
+atom_concat(+A1,+A2,-A3) [ISO]
+atom_concat(?A1,?A2,+A3) [ISO]
+    A3 is the concatenation of atoms A1 and A2. If A3  is instantiated then
+    all of its decompositions can be obtained using back-tracking.
+
+sub_atom(+A, ?Before, ?Length, ?After, ?SubAtom) [ISO]
+    SubAtom is the subatom of A of length Length with Before characters
+    preceding it and After characters following. When instantiated, Length,
+    Before and After are integers. Can be used as a generator using
+    back-tracking.
+
+numbervars(+T,+Na,-Nz)
+    Unifies the variables in T to terms of the form
+    '$VAR'(N), with N between Na and Nz-1.
+    Handles cyclic terms well.
+
+term_variables(+T,-L)
+    L is the list of all the variables in term T. Handles cyclic terms well.
+
+subterm(+T1,-T2)
+    T1 is a part of T2. Handles cyclic terms well.
+
+subsumes_term(?Generic, ?Specific) [ISO]
+    Checks if Specific is an instance of General. There are no
+    no side effect or binding of variables. 
+
+subsumes_chk(?Generic, ?Specific)
+    Another name for the predicate subsumes_term/2, for retrocompatibility.
+
+subsumes(?Generic, ?Specific)
+    If Specific is an instance of General, binds variables in General so that
+    General becomes identical to Specific. Specific remains unchanged.
+
+?T1 = ?T2 [ISO]
+    Unifies T1 with T2. Handles cyclic terms well.
+
+?T1 \\= ?T2 [ISO]
+    T1 is not unifiable with T2. Handles cyclic terms well.
+
+copy_term(+T1,-T2) [ISO]
+    T2 is a copy of term T1 in which all variables have
+    been replaced by new variables occurring nowhere
+    else. Handles cyclic terms well.
+
+copy_term(L,+T1,-T2)
+    T2 is a copy of term T1 in which all variables in
+    list L have been replaced by new variables
+    occurring nowhere else.  Handles cyclic terms well.
+    Example: *copy_term([X,Y],f(A,X,Y),Z) --> Z=f(A,_45,_46).*
+
+cyclic_term(+T)
+    Succeeds if the term T is cyclic.
+
+acyclic_term(+T)
+    Succeeds if the term T is acyclic.
+
+quote(+A1,-A2)
+    Quotes a piece of text.
+
+atom_term(?A,?T)
+    Converts between a term T and its textual representation A.
+
+atom_termq(?A,?T)
+    Variant of *atom_term(A,T)* which quotes atoms where
+    necessary so that the conversion is reversible.
+
+hide_par(?T1, ?T2)
+    This predicate helps dealing with the terms generated by the
+    term reader when the 'parenthesised' operator flag is active.
+    More details later...
+
+succ(?N1,?N2)
+    The non-negative integer N2 is the successor of the
+    non-negative integer N1.
+
+plus(?N1,?N2,?N3)
+    Defines the relation N3 = N1 + N2. At most, one of the arguments can be
+    a variable.
+
+gensym(+Prefix,-Unique)
+    Generates unique atoms with the given prefix. For example, successive
+    invocations of gensym(a,X) will return a1, a2, a3, ... This is a
+    relatively standard predicate, supported for C-Prolog, SWI-Prolog, etc.
+
+gensym(-Unique)
+    Generates unique atoms with the prefix '%'. Successive invocations
+    will generate '%1', '%2', '%3', ...
+
+app(?L1,?L2,?L3)
+    Append lists.
+
+add_pl(+A1,-A2)
+    A2 is the concatenation of A1 with '.pl' unless this
+    extension is already in A1. Another exception is
+    the atom 'user', which remains unchanged.
+
+atoms
+    Shows all existing atoms and also information
+    concerning the hash table where they are stored.
+
+floats
+    Shows all existing large precision floats and also information
+    concerning the hash table where they are stored.
+
+Occurs-check and cyclic terms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The theory of traditional Prolog is based on Herbrand terms, which are
+representations for finite trees. In the domain of Herbrand terms,
+a unification such as X=f(X) must fail because the equation X=f(X)
+does not have a finite term as a solution; the actual solution of
+that equation is the infinite term f(f(f(...))). *Occurs-check* is the
+part of the unification algorithm which detects and disallows, through
+failure, any attempt to unify a variable with a structure containing
+the same variable.
+
+In 1973, it was found that supporting occurs-check in the unification
+was computationally too costly and therefore the occurs-check was
+dropped out of the Prolog language. The task of trying to
+avoid the creation of infinite terms was passed to the programmer
+Fortunately, in practice, the inconvenience caused by the omission of
+occurs-check is very slight. Even nowadays, the modern ISO Prolog
+standard keeps the same philosophy, not disallowing the creation of
+infinite terms, but missing to specify rules on how such terms should
+be dealt with.
+
+In 1982 appeared Prolog II, a new variant of Prolog founded on a theory
+on rational trees, not on Herbrand terms. Cyclic terms have many useful
+applications and Prolog II accepted them as a good thing. So it introduced
+algorithms to deal with them in finite time (in unification, etc.)
+That attitude was not followed by the current ISO Prolog standard,
+as said before. However, some modern Prolog implementations followed
+in the Prolog II footsteps. This is the case of SICStus Prolog, SWI-Prolog,
+and some other Prologs. It is also the case of CxProlog, since version
+0.96. It is important to clarify the advantages of supporting cyclic terms:
+
+    - The ability of a part of a data structure refer to a different
+      part of the same data structure is important no matter what the
+      programming language is used. Cyclic terms allow this in Prolog.
+
+    - Proper support for cyclic term allows exactly the same program
+      transformations that are supported by first-order logic. For example,
+      consider the two seemling equivalent clauses::
+
+          q(X, A, Y, B, X) :- X = a, A = f(X), B = f(Y).
+          q(X, f(X), Y, f(Y), X) :- X = a.
+
+      Using the first clause, the goal "q(X,X,Y,Y,Y)" fails in every Prolog.
+      Using the second clause, the same goal also fails in Prolog II
+      but may cause a loop in a ISO compliant Prolog.
+
+Now for the particulars of CxProlog. Since version 0.96, CxProlog supports
+two modes of execution: a default mode that disables occurs-check and
+provides proper support for cyclic terms; the second mode enables occurs-check
+and prevents the creation of cyclic terms. The current mode is determined
+by the Prolog flag 'occurs_check' (cf. section "Prolog Flags").
+
+Occurs-check may be useful for some very specialized applications, like
+theorem provers the rely on first-order logic. But, in general, we recommend
+leaving occurs-check disabled to avoid the following drawbacks:
+
+    - With occurs-check enabled, there is a penalty in efficiency, maybe
+      around 10% in most practical programs. The complexity of unification
+      with occurs-check is linear on the size of the *largest* term
+      being unified, whereas unification without the occurs-check is linear
+      on the size of the *smallest* of those terms. Furthermore some useful
+      techniques lose their efficiency advantage if occurs-check is
+      activated: the differences-list technique is a case in point.
+
+    - In the future, there may come to exist CxProlog libraries implemented
+      using cyclic terms. They will not work with occurs-check enabled.
+      As now there are no such libraries.
+
+Note that, no matter whether occurs-check is enabled or not, both semantics
+are compatible with the current ISO Prolog standard. In the standard,
+the unification X = f(X) is undefined.
+
+To finish this section of the manual, a single ISO predicate is described.
+
+unify_with_occurs_check(+T1,+T2) [ISO]
+    Unifies T1 with T2 with the proviso that both terms must unify to
+    an acyclic (finite) term. This predicate works as described, no
+    matter what is the current state of the 'occurs-check' Prolog flag.
+
+Comparing Terms
+~~~~~~~~~~~~~~~
+A total ordering, called "standard order" and denoted by @<, is defined
+over the set of all Prolog terms. All the predicates in this section are
+concerned with this ordering.
+
+The standard order:
+   1 - variables @< floats @<integers @< atoms @< compound terms @< extra terms;
+   2 - variables are ordered by age;
+   3 - numbers are ordered in increasing order;
+   4 - atoms are ordered in increasing lexicographic order;
+   5 - compound terms are ordered by arity, name, and arguments first-to-last;
+   6 - extras (dicts, arrays, etc.) are ordered by unique internal address.
+
+All the predicates in this section handle cyclic terms well.
+
++T1 == +T2 [ISO]
+    T1 and T2 are literally identical.
+
++T1 \\== +T2 [ISO]
+    T1 and T2 are not literally identical.
+
++T1 @< +T2 [ISO]
+    T1 is before T2 in the standard order.
+
++T1 @> +T2 [ISO]
+    T1 is before T2 in the standard order.
+
++T1 @=< +T2 [ISO]
+    T1 is not after T2 in the standard order.
+
++T1 @>= +T2 [ISO]
+    T1 is not before T2 in the standard order.
+
+compare(?Order,+T1,+T2)
+    Order is one of the atoms '<', '=', '>', indicating how
+    T1 and T2 are related in the standard order.
+
+sort(+L1,-L2)
+    Quicksorts list L1 into L2. Duplicates are removed.
+
+msort(+L1,-L2)
+    Quicksorts list L1 into L2.
+
+keysort(+L1,-L2)
+    Quicksorts list L1 into L2. Items of L1 must have
+    the form Key-Value. Sorting is stable with respect to
+    the order of the Values
+
+Characters and Unicode
+~~~~~~~~~~~~~~~~~~~~~~
+Characters can be represented in two ways: either using one-character
+atoms, e.g. 'a', or using numeric character codes, e.g. 97.
+The predicate char_code/2 implements the conversion between
+the two formats. For example, the goal char_code(a,X) returns 97.
+
+Since version 0.90, CxProlog supports the standard 21-bit Unicode
+character set. The range of Unicode codes is 0 - 0x10ffff,
+with the special subrange 0xd800 - 0xdfff excluded.
+
+Unicode is an abstract character set and does not specify how text
+and characters should be represented internally. CxProlog happens to
+use internally the compact UTF-8 encoding, but this is transparent
+and the programmer should deal simply with one-character atoms or
+numeric character codes.
+
+The predicates char_reorder/1 and char_reorder/2 control the current
+character ordering. The current character ordering determines the order
+of atoms and general terms in predicates @</2, @=</2, etc. and influences
+the behavior of the predicates sort/2, msort/2 and keysort/2. Changing
+the order of the character is the simplest solution to certain problems such
+as sorting text while ignoring diacriticals (in French text, for example).
+
+Note that the default character order is based on the numeric character codes.
+
+In CxProlog it is possible to specify an alternative character ordering
+in two ways: (1) using a locale; (2) by defining a table of comparison codes.
+When using the second method, the comparison between two chars if first
+based on their comparison codes and second on their Unicode codes (which are
+used only if the comparison codes are equal.)
+
+The predicates of the family "char_is*/1" check the lexical class of any
+character or Unicode code. As now, the "char_is*/1" predicates are
+experimental and only work properly within the latin-1 subrange of
+Unicode: every non latin-1 character is considered as a low case letter (as
+in SICStus Prolog).
+
+char_code(?C,?N)
+    The character (one-char atom) C has Unicode code N.
+
+char_reorder(+A)
+    The atom A designates either a locale or a predefined character ordering.
+    Only abbreviated locales are accepted, as in the examples: 'pt_PT',
+    'pt_BR' or 'en_EN'. There are only two predefined character orderings:
+
+        'none' - The character ordering is based on the numeric character
+                 codes, meaning no reordering is active. DEFAULT.
+        'latin1_ignore_diacriticals' - The comparison code of any
+                 character carrying a diacritical is the code of the
+                 corresponding character that does not carry the diacritical.
+
+char_reorder(+CN1, +CN2)
+    The comparison code of character CN1 is set to CN2 (CN1 and CN2 stand for
+    characters or Unicode codes.) The comparison between two chars
+    is first based on their comparison codes and next on their Unicode codes.
+    As an example, the easier way to insert the seven variants of the low
+    case 'a' between the letters 'a' and 'b' is simply set to 'a' the
+    comparison codes of the seven variants:
+    *char_reorder(224,'a'), char_reorder(225,'a'), char_reorder(226,'a'),
+    char_reorder(227,'a'), char_reorder(228,'a'), char_reorder(229,'a'),
+    char_reorder(230,'a').*
+
+char_reorder
+    Shows the internal character reorder table.
+
+char_isalnum(+CN)
+    CN is alphanumeric. CN stands for a character or a Unicode code.
+
+char_isalpha(+CN)
+    CN is alphabetic.
+
+char_islower(+CN)
+    CN lower case alphabetic.
+
+char_isupper(+CN)
+    CN upper case alphabetic .
+
+char_isdigit(+CN)
+    CN is one of these '0123456789'.
+
+char_isspace(+CN)
+    CN is one of these ' \b\f\n\r\t\v'.
+
+char_issymbol(+CN)
+    The ascii symbols are exactly '#$&*+-./:;<=>?@\^`~' but
+    there are many more symbols in the latin-1 subrange.
+    Furthermore, in the current version of CxProlog all the chars
+    outside the latin-1 range are seen as symbols.
+
+char_isprint(+CN)
+    CN is a printable char or Unicode code, including spaces.
+
+char_ispunct(+CN)
+    CN is printable but not a space or an alphanumeric character.
+
+char_conversion(+CN1,+CN2) [ISO]
+    In CxProlog, this is a compatibility predicate that does nothing.
+    In CxProlog, the current char_conversion table always define
+    the fixed identity transformation.
+
+current_char_conversion(?CN1,?CN2) [ISO]
+    Consults the current char_conversion table, which in CxProlog
+    is a fixed dummy table that maps each character onto itself.
+
+
+Arithmetic
+~~~~~~~~~~
+In CxProlog, arithmetic is done at integer level whenever possible.
+For example, results of subexpressions that are technically floats but
+de-facto whole numbers are always automatically converted to integers.
+
+These are the CxProlog predicates involving the evaluation of arithmetic
+expressions.
+
+-N is +E [ISO]
+    Evaluates Exp as an arithmetic expression and unifies
+    the result with N. The result of the evaluation is
+    automatically converted to an integral value
+    whenever its decimal part is zero or almost zero.
+
++E1 =:= +E2 [ISO]
+    E1 and E2 evaluate to the same number.
+
++E1 =\\= +E2 [ISO]
+    E1 and E2 do not evaluate to the same number.
+
++E1 < +E2 [ISO]
+    The value of E1 is lesser than the value of E2.
+
++E1 > +E2 [ISO]
+    The value of E1 is greater than the value of E2.
+
++E1 =< +E2 [ISO]
+    The value of E1 is not greater than the value of E2.
+
++E1 >= +E2 [ISO]
+    The value of E1 is not less than the value of E2.
+
+
+The following are the evaluable predicates that can be used in arithmetic
+expressions. Note that at the time of evaluation, each logic variable in
+an arithmetic expression is expected to be bound to some number or to
+some arithmetic subexpression. In other words, the mode of the arguments
+of all the evaluable predicates is "+".
+
+
+- +E [ISO]
+    Symmetric.
+
++E1 + +E2 [ISO]
+    Sum.
+
++E1 - +E2 [ISO]
+    Difference.
+
++E1 * +E2 [ISO]
+    Product.
+
++E1 / +E2 [ISO]
+    Division.
+
++E1 // +E2 [ISO]
+    Integer division.
+
++E1 mod +E2 [ISO]
+    Module (integer remainder). The sign of the result is the same
+    as the sign of the value of E1.
+
++E1 rem +E2 [ISO]
+    The same as E1 mod E2.
+
++E1 ** +E2 [ISO]
+    The value of E1 raised to the value of E2.
+
++E1 ^ +E2
+    The same as E1 ** E2.
+
+exp(+E1, +E2)
+    The same as E1 ** E2.
+
++E1 \/ +E2 [ISO]
+    Integer bitwise 'or'. Only applies to integers.
+
++E1 /\ +E2 [ISO]
+    Integer bitwise 'and'. Only applies to integers.
+
++E1 << +E2 [ISO]
+    Integer bitwise left shift. Only applies to integers.
+
++E1 >> +E2 [ISO]
+    Integer bitwise right shift. Only applies to integers.
+
+\ X [ISO]
+    Integer bitwise negation (one's complement). Only applies to integers.
+
+abs(+E) [ISO]
+    Absolute value of E.
+
+acos() [ISO]
+    Arccosine.
+
+asin(+E) [ISO]
+    Arcsine.
+
+atan(+E) [ISO]
+    Arctangent.
+
+ceiling(+E) [ISO]
+    Smallest integral value greater or equal than the value of E.
+
+cos(+E) [ISO]
+    Cosine.
+
+exp(+E) [ISO]
+    Natural exponential.
+
+float(+E) [ISO]
+    The value of E coerced to a float. But due to the CxProlog automatic
+    conversion of numbers, this operation returns whole numbers as integers.
+
+float_fractional_part(+E) [ISO]
+    Decimal part of a number. The sign of the result is the same
+    as the sign of the value of E.
+
+float_integer_part(+E) [ISO]
+    The same as truncate(E).
+
+floor(+E) [ISO]
+    Largest integral value not greater than the value of E.
+
+integer(+E)
+    The same as round(E).
+
+log(+E) [ISO]
+    Natural logarithm.
+
+log10(+E)
+    Decimal logarithm.
+
+max(+E1,+E2)
+    The largest of the values of E1 and E2.
+
+min(+E1,+E2)
+    The smallest of the values of E1 and E2.
+
+random(N)
+    A random integer i such that 0 <= i < N. N must be a positive integer.
+
+round(+E) [ISO]
+    Round the value of E to the nearest integer.
+
+sin(+E) [ISO]
+    Sine.
+
+sign(+E) [ISO]
+    Evaluates to -1, 0 or 1 depending on E<0, E=0 or E>0.
+
+sqrt(+E) [ISO]
+    Square root.
+
+tan(+E) [ISO]
+    Tangent.
+
+truncate(+E) [ISO]
+    Round the value of E to the nearest integer towards zero.
+
+cputime
+    The cpu time in seconds used by CxProlog since startup. The result
+    is a float.
+
+currtime
+    Absolute time in seconds since 00:00:00 UTC, January 1, 1970.
+    The result is an integer if the magnitude of the number allows.
+    Otherwise the time is returned as a float.
+
+e
+    The value of e = 2.718281828...
+
+epsilon
+    The difference between the smallest number above 1.0 and 1.0. (The
+    value is computed dynamically, at startup.)
+
+float_size
+    The size of a float number in bits. CxProlog always uses the largest
+    precision floats available in the host machine (80 bits in most
+    installations).
+
+global
+    Current occupation, in bytes, of the local global.
+
+heapused
+    Current occupation, in bytes, of the heap (program space).
+
+int_size
+    The size of an integer in bits. On 32 bit machines this value is
+    usually 29 and on 64 bit machines is 61. Fortunately, on 32 bit
+    machines, large integers can be hold without loss of precision in the
+    form of float numbers; typically a 80-bit float can hold a 65-bit
+    integer (64 bits of magnitude plus sign bit) and a 64-bit float can
+    hold a 53-bit integer (52 bits of magnitude plus sign bit).
+
+inf
+    The IEEE 754 float constant "infinity". Here are some properties of inf:
+
+    - inf =:= inf  (inf is equal to itself)
+    - N < inf      for any number N except inf
+    - -inf < N     for any number N except -inf
+    - 1 / inf      yields 0
+    - 1 / 0        yields inf
+    - -1 / 0       yields -inf
+    - inf / 0      yields inf
+    - inf + 1      yields inf
+    - inf * inf    yields inf
+    - log(0)       yields -inf.
+
+local
+    Current occupation, in bytes, of the local stack.
+
+max_int
+    Largest integer that fits in a integer.
+
+min_int
+    Smallest negative integer that fits in a integer.
+
+nan
+    The IEEE 754 float constant "not a number". Here are some properties of nan:
+
+    - nan =\\= nan (nan is not equal to itself)
+    - log(-1)      yields nan
+    - inf / inf    yields nan
+    - inf - inf    yields nan
+
+pi
+    The value of pi = 3.141592654...
+
+random
+    A random float f for which 0.0 <= f < 1.0.
+
+[+E]
+    Allowed only if the Prolog flag 'compatible_strings' is 'true'. For
+    example *"a" =:= [97].*
+
+ivar(+A)
+    The value of the IVAR named A. An example: a :=4, X is ivar(a)+1.
+
+
+Units/Contexts
+~~~~~~~~~~~~~~
+In CxProlog, every goal is proved in relation to a *current context*, which
+is a stack of unit designators. We call *current unit* the unit refered to
+by the unit designator at the top of the current context. If the current
+context is empty there is no current unit. For further flexibility, an
+extra *historic context* where entire contexts can be pushed was included.
+
+When a predicate is invoked and there is no matching local nor imported
+definition available in the current unit, the units below the current unit
+are sequentially searched, from top to bottom. If a suitable visible
+definition is found then the execution of the predicate proceeds in the
+smaller context that results from the initial by removing all the
+unsuccessfully searched units. If no definition is found, what happens
+depends on the the current value of the Prolog flag 'unknown'. The
+possible values for this flag are: 'error', 'fail', 'warning'.
+
+
++U>>+G
+    Context extension. Proves G in the current context
+    extended with the unit designator U.
+
++U<>+G
+    Context switching. Proves G with the top of the
+    current context replaced by the unit designator U.
+
+call_on_empty_context(+G)
+    Context freeing. Proves G in the empty context.
+
+call_on_context(+L,+G)
+    Context setting. Proves G in a given context L,
+    represented as a list of unit designators.
+
+down +G
+    Context down. Proves G with the top of the
+    current context popped.
+
+context(-L)
+    L is the current context, represented as a list of
+    unit designators.
+
+show_context
+    Displays the current context on the current output
+    stream.
+
+show_context(+S)
+    Displays the current context on the output stream S.
+
+>+G
+    Context saving. Proves G in the current context,
+    after pushing the current context on the historic
+    context.
+
+<+G
+    Context restoring. Proves G in the most recently
+    saved context, which is temporarily popped from
+    the historic stack.
+
+hcontext(-L)
+    L is the current historic context, represented as a
+    list of lists of unit designators.
+
+show_hcontext
+    Displays the current historic context on the current
+    output stream.
+
+show_hcontext(+S)
+    Displays the current historic context on the output
+    stream S.
+
+create_unit(+U)
+    Creates a new unit, as specified by unit designator U.
+    In the case of an parametrized unit, all the parameters of U
+    must be atoms, telling the name of each unit parameter.
+    You probably never will need to use this predicate, which is
+    used in the implementation on consult/1.
+
+context_top(-U)
+    U is the top of the current context. This is a
+    unit designator corresponding to the current unit.
+
+unit_spec(-U)
+    UnitSpec is the unit designator of the current unit.
+
+unit_param(+N,-T)
+    T is the value of the N-th parameter of the current unit.
+
+unit_arity(-N)
+    N is the arity of the current unit.
+
+current_unit(-T)
+    Generates, through backtracking, the descriptors of all the existing units.
+
+units
+    Shows all the existing units.
+
+
+check_imports
+    Produces warnings concerning the inconsistency of
+    the import/visibility declarations. Examples:
+
+    - "Predicate A/N is imported from non-existent unit U".
+    - "Imported predicate A/N is not visible in unit U".
+
+check_missing
+    Produces warnings concerning missing predicates,
+    invoked in existing code. Sometimes they will be
+    legitimate "context dependent predicates".
+    Sometimes they will be genuine mistakes that must
+    be corrected.
+
+This is a simple sampling unit definition. Notice the visibility
+declarations, the import declarations and the use of a parametrized unit::
+
+    unit a(P).
+    visible xxx/0, yyy/0, ccc/0.
+    import vvv/0 from d(222).
+
+    xxx :- show_context, writeln('xxx: I am the a/0 version').
+    ccc :- show_context, xxx.
+    yyy :- unit_param(1,X), writeln(X).
+    zzz :- P>>context(X), writeln(X).
+    s:- v := [1,2,Z].
+    g(X) :- v =: X.
+
+Program Database
+~~~~~~~~~~~~~~~~
+Since the version 0.92, CxProlog follows the ISO Prolog standard
+regarding the database and distinguishes between static predicates
+and dynamic predicates.
+
+Predicates are assumed to be static when consulted and no particular
+declaration is required for a predicate to be static. The static
+predicates have the following characteristics: (1) they run faster
+than dynamic predicates; (2) it is impossible to modify a static
+predicate while the programming is running, except via the built-ins
+consult/1 or abolish/1; (3) the predicate clause/2 only works with
+static predicates created with the Prolog flag 'keep_source' at 'true'.
+
+A dynamic predicate has to be explicitly declared using dynamic/1
+or implicitly declared via the assert predicates. The
+properties of the dynamic predicates are the following: (1) they
+are a bit slower than the static predicates; (2) it is always
+possible to change a dynamic predicate during execution by adding
+or removing clauses; (3) the source term of each clause is always saved
+so that the predicates clause/2, retract/1 always work with dynamic
+predicates (even if the Prolog flag 'keep_source' is 'false'); (4) the
+semantics of the predicate updates is soundly defined. The two classical
+well-defined update semantic views are supported: the "logical update
+semantic view" (see dynamic/1) and the "immediate update semantic view"
+(see dynamic_iu/1).
+
+Before version 0.92, all predicates in CxProlog where implicitly dynamic but
+with ad-hoc update semantics, which means that the complicated case of
+self-modifying predicates could not be easily described. In version 0.92,
+the semantics of consult/1 changed radically. CxProlog abandoned the old
+C-Prolog model (incompatible with the static predicates) and adopted the
+"modern model", used in most modern Prologs: roughly, the predicate
+reconsult/1 was discontinued, but much of its behavior was transfered
+to an enhanced predicate consult/1.
+
+There is a Prolog flag 'old_update' that, if 'true', provides a good
+degree of compatibility with the old C-Prolog model, regarding the assert,
+retract and consulting predicates. This flag is 'false' by default.
+
+asserta(+T) [ISO]
+    Asserts term T as the first clause of a dynamic predicate,
+    in the current unit. If the predicate does not exist it is
+    implicitly declared dynamic.
+
+assertz(+T) [ISO]
+    Asserts term T as the last clause of a dynamic predicate,
+    in the current unit. If the predicate does not exist it is
+    implicitly declared dynamic.
+
+assert(+T)
+    Same as assertz(T). Non-ISO.
+
+clause(+T1,-T2) [ISO]
+    Searches the current unit for a clause whose head matches T1.
+    If found, such clause is unified with the term (T1 :- T2).
+    The body of a unit clause is the atom true.
+
+retract(+T) [ISO]
+    Erases from the current unit the first clause that matches T.
+    The clause must belong to a dynamic predicate. A unit clause
+    such as 'f(5)' can be retracted in several ways: retract(f(5)),
+    retract((f(5):-true)), retract((f(5):-X)).
+
+retractall(+T) [ISO]
+    Erases from the current unit all the clauses with heads matching T.
+    All the erased clauses must belong to the same dynamic predicate.
+
+abolish(+A/+N) [ISO]
+    Deletes the predicate A/N from the current unit. Only static
+    built-in predicates cannot be abolished. All the other kinds of
+    predicate can be abolished: even user-defined static predicates
+    and dynamic built-in predicates can be abolished. An abolished
+    predicate cannot be found anymore by predicate_property/2,
+    current_predicate/1 and current_predicate/2. If an imported
+    predicate is abolished, only the import link is deleted and
+    the original predicate remains undisturbed in its original unit.
+    Dynamic built-in predicates are treated in a special way: the
+    clauses are deleted but each predicate stays alive, even if as an
+    empty predicate.
+
+abolish(+A,+N)
+    Same as abolish(A/N).
+
+:- visible +FPredSpec
+    This directive declares the specified predicates to be visible
+    outside the current unit, enabling them to be imported into other
+    units. FPredSpec can be an a predicate indicator (Name/Arity),
+    a comma-separated sequence of predicate indicators or a
+    list of predicate indicators. Example: *:-visible a/2, b/4, c/4.*
+
+:- import +FPredSpec from +U
+    This directive imports into the current unit the specified predicates
+    from the unit designated by U . All the imported predicates
+    must be visible in U. FPredSpec can be a predicate
+    indicator (Name/Arity), a comma-separated sequence of predicate
+    indicators or a list of predicate indicators.
+    Example: *:-import a/2, b/4, c/4 from u(z).*
+
+:- dynamic +FPredSpec [ISO]
+    This directive declares the predicates specified by FPredSpec
+    to be dynamic with logical update semantic. It will be always possible
+    to change the declared predicates during execution by adding or
+    removing clauses and the semantics of the updates
+    will follow the "logical update semantic view",
+    meaning that it will be exactly the clauses available at the time
+    of each invocation that will considered for that invocation.
+    The implementation uses timestamps to achieve this efficiently,
+    a technique borrowed from the concurrent database systems.
+    The efficiency penalty is usually around 15%, comparing to
+    static predicates.
+    FPredSpec can be a predicate indicator (Name/Arity), a
+    comma-separated sequence of predicate indicators or a list of
+    predicate indicators. Example: *:-dynamic a/2, b/4, c/4.*
+
+:- dynamic_iu +FPredSpec
+    This directive declares the predicates specified by FPredSpec
+    to be dynamic with immediate update semantics.
+    It will be always possible to change the declared predicates
+    during execution by adding or removing clauses and the semantics
+    of the updates will follow the "immediate update semantic view",
+    meaning that any change to the database becomes instantly visible to
+    all active predicate invocations. There is an large efficiency
+    penalty (up to 50%) associated with this semantics because it forces
+    determinacy detection to be completely dropped: even a predicate with a
+    single clause requires a choice point to run because that execution of
+    the clause itself may append new clauses. The "immediate update
+    semantic view" is sometimes useful for fulfilling the special
+    requirements of some special predicate.
+    FPredSpec can be a predicate indicator (Name/Arity), a
+    comma-separated sequence of predicate indicators or a list of
+    predicate indicators. Example: *:-dynamic_iu a/2, b/4, c/4.*
+
+:- multifile +FPredSpec [ISO]
+    This directive declare the predicates specified by FPredSpec
+    to be multifile. A multifile predicate is one that may be defined
+    across files. Example: *:-multifile a/2, b/4, c/4.*
+
+:- discontiguous +FPredSpec [ISO]
+    This directive declare the predicates specified by FPredSpec
+    to be discontiguous. A discontiguous predicate is one that may be
+    defined using clauses that are not consecutive in the source file.
+    Example: *:-discontiguous a/2, b/4, c/4.*
+
+predicate_property(?Head,?Prop)
+    The main functor of term Head identifies a predicate with the property
+    Prop available in the current unit. predicate_property/2 can be used
+    for simple checks or to generate, through backtracking, all the
+    predicates available in the current unit along with their properties.
+    The supported predicate properties are:
+
+      - built_in - Built-in predicate. The built-in predicates are
+          predefined and available in all the units. They are also
+          untraceable by the debugger. A built-in predicate is either
+          'static' (immutable) or 'dynamic' (mutable). Dynamic built-ins
+          are rare: portray/1 is one example of such predicate.
+      - user_defined - Opposite of 'built-in'. The user-defined
+          predicates are the local predicates plus the import links.
+      - local - Predicate introduced in the current unit using some
+          clauses or via a declaration of visible or dynamic.
+      - static - Static predicate.
+      - dynamic - Dynamic predicate that follows the "logical update
+          semantic view".
+      - dynamic_iu - Dynamic predicate that follows the "immediate
+          update semantic view".
+      - imported_from(U) - Import link pointing to a predicate exported
+          by the unit designated by U.
+      - visible - Exported user-defined predicate. The candidates for
+          exporting are the local predicates and the import links.
+      - private - Non-exported user-defined predicate.
+      - multifile - Predicate is multifile.
+      - discontiguous - Predicate is discontiguous.
+      - source - Predicate has the source term available.
+      - file(F) - F is the absolute file name of the source file
+          where the predicate was declared or defined for the first time.
+      - full_name(T) - T is unified with a term which fully identifies
+          the predicate. Contains a unit name (if the predicate is not
+          built-in) and a predicate indicator. Here are some examples:
+          'main:a/3', 'books(platao):contains(cat), 'nl/2'. This property
+          is available to all predicates, even undefined predicates.
+      - number_of_clauses(N) - N is unified with the number of clauses
+          of a predicate. This property is only available to local
+          predicates and to dynamic built-in predicates.
+      - undefined - local static private predicate with no clauses.
+          Such a predicate can exist in the database if it invoked from
+          the body of some existing clause or if it has been invoked in
+          the past. An undefined predicate has no more properties
+          besides 'undefined' and 'full_name(T)'. retractall/1 does not
+          delete undefined predicates but abolish/1 does that.
+
+    The properties 'static', 'dynamic', 'dynamic_iu' and
+    'imported_from(U)' define a partition over the user-defined
+    predicates of each unit. The properties 'visible' and 'public'
+    also define a partition over the user-defined predicates of
+    each unit.
+
+    predicate_property/2 treats the built-in predicates and
+    undefined predicates very discreetly. When invoked with the first
+    argument uninstantiated, predicate_property/2 does not generate
+    built-in and undefined predicates, unless it is forced by the
+    following specific requests: predicate_property(X,built_in) and
+    predicate_property(X,undefined).
+
+current_predicate(?P) [ISO]
+    P is a predicate indicator for one of the user-defined predicates
+    in the current unit. Can be used for simple checks and can also
+    be used to generate, through backtracking, all the user-defined
+    predicates available in the current unit. The exact same predicates
+    could be generated using predicate_property(Head,user_defined),
+    albeit the format of the returned predicates is different here.
+
+current_predicate(?Name,?Head)
+    The main functor of term Head identifies an user-defined predicate
+    from the current unit; the atom Name is the name of that predicate.
+    Can be used for simple checks or to generate, through backtracking,
+    all the user-defined predicates available in the current unit.
+    It is almost equivalent to predicate_property(Head,user_defined);
+    the difference is the extra argument Name which makes
+    current_predicate/2 faster or more convenient to use, in
+    some circumstances.
+
+visible_predicate(?Head)
+    Exists for backward compatibility. Defined as:
+      visible_predicate(P) :- predicate_property(Head, visible).
+
+imported_predicate(?Head,?U)
+    Exists for backward compatibility. Defined as:
+      imported_predicate(Head,U) :- predicate_property(Head, imported_from(U)).
+
+builtin_predicate(?Head)
+    Exists for backward compatibility with old versions of CxProlog.
+    Defined as:
+      builtin_predicate(Head) :- predicate_property(Head, built_in).
+
+system_predicate(?Head)
+    Exists for backward compatibility with old versions of CxProlog.
+    Defined as:
+      system_predicate(Head) :- predicate_property(Head, built_in).
+
+builtins
+    Shows all existing built-in predicates.
+
+rename_builtin(+A,+N,+Anew)
+    Renames a predefined built-in predicate from A/N to Anew/N.
+    The original predicate descriptor is reused to guarantee
+    that all the statically bound invocations of the renamed predicate,
+    in the bodies of the existing predicates, continue to be bound
+    to the same predicate.
+
+    **Only works at boot time.**
+    This predicate is offered as a tool for the sophisticated
+    programmer who wants to create an "ALTERNATIVE BOOT FILE".
+
+hide_builtin(+A,+N)
+    Simply renames the predefined built-in predicate A/N in a standard way,
+    by adding the prefix "builtin_" to its name.
+
+    **Only works at boot time.**
+    This predicate is offered as a tool for the sophisticated
+    programmer who wants to create an "ALTERNATIVE BOOT FILE".
+
+abolish_builtin(+A,+N) [deprecated]
+    Same as hide_builtin/2. Exists for backward compatibility. In old
+    versions of CxProlog it truly deleted built-in predicates, but this
+    was a grave mistake because the implementation of a built-in
+    predicate might depend on other built-in predicate.
+
+    **Only works at boot time.**
+    This predicate is offered as a tool for the sophisticated
+    programmer who wants to create an "ALTERNATIVE BOOT FILE".
+
+build_indexes_now
+    Forces the indexes of all the static predicates to be build immediately.
+    Normally, each index is built lazily, when a predicate is called for the
+    first time. This built-in predicate can be called before spawning extra
+    cxprolog processes, to take advantage of the copy-on-write optimization
+    strategy than many operating systems use.
+
+hide_non_core_builtins
+    Applies hide_builtin/0 to all the non-core built-in predicates (around
+    400 predicates). To hide a core built-in predicate, you must call
+    hide_builtin/1 explicitly. The core built-in predicates are the
+    following::
+
+    true/0, fail/0, false/0, repeat/0, halt/0, exit/0, abort/0, restart/0,
+    is/2, raise_exception/1, throw/1, on_exception/3, catch/4, catch/3,
+    call/*, apply/2, !/0, not/1, \+/1, ->/2, ;/2, ,/2, try/1, once/1,
+    possible/1, gen/1, <>/2, >>/2, >/1, </1, call_in_empty_context/1,
+    with_ivar/3 ;
+
+    **Only works at boot time.**
+    This predicate is offered as a tool for the sophisticated
+    programmer who wants to create an "ALTERNATIVE BOOT FILE".
+
+mutable_builtin(+A,+N) [deprecated]
+    Exists for backward compatibility. Now the prefered method
+    of creating a mutable built-in is simply declaring it
+    as 'dynamic' at boot time. The *:- mutable_builtin(A,N)*
+    or *:- dynamic A/N* declarations must precede the clauses
+    of the predicate. Note that built-ins are immutable by default.
+
+    **Only works at boot time.**
+    This predicate is offered as a tool for the sophisticated
+    programmer who wants to create an "ALTERNATIVE BOOT FILE".
+
++T1 :- +T2
+    Handy predicate for asserting clauses at the top
+    level. Equivalent to assertz((+T1 :- +T2)).
+
+all
+    Lists the contents of all the existing units.
+
+listing
+    Lists the declarations and clauses in current unit.
+
+list
+    Same as listing.
+
+listing(+A)
+    Lists the declarations and clauses in the current unit
+    that are concerned with all the predicates named A.
+
+listing(+A/+N)
+    Lists the declarations and clauses in the current unit
+    that are concerned with the predicate A/N.
+
+code +AFPredSpec
+    Displays the virtual machine code for all predicates
+    described by AFPredSpec. AFPredSpec can be an atom,
+    a predicate indicator (Name/Arity), a comma-separated
+    sequence of atoms/predicate indicators, or a list of
+    atoms/predicate indicators. Example: *code a, b/4, c.*
+
+statistics
+    Shows the space currently used in the various data
+    areas of CxProlog and also the running time since
+    startup.
+
+silent_consult(+F)
+    Consults the file or list of files specified by F. Behaves like
+    consult/1 except that produces no statistics neither warnings.
+
+ensure_loaded(+F) [ISO]
+    Consults the file or list of files specified by F, but ignores
+    the files that have already been loaded. Therefore, is equivalent
+    to consult/1 for the files that have not been loaded yet.
+
+consult(+F) [ISO]
+    Consults the file F or list of files F, writing some statistics
+    and emitting some warnings, if necessary. The argument F
+    represents an atom or a list of atoms. The consulted files may
+    contain directives :-/1 or ?-/1. This predicate is ISO-compatible.
+    It assumes that the entire definition of each predicate is
+    contained in a single file. If it comes across, in a different
+    file, of more clauses for an already loaded predicate, it redefines
+    the predicate using the new clauses and issues a warning. Only
+    predicates with the property 'multifile' are allowed to be defined
+    across multiple files.
+    It also assumes that the entire definition of each predicate is
+    made of contiguous clauses in each file. A warning is issued for
+    predicates made of discontiguous clauses. Only predicates with the
+    property 'discontiguous' are allowed to be defined using discontiguous
+    clauses.
+    The consult predicate remembers the source file of each clause and
+    uses this source file information whenever the same file is about to
+    be consulted one more time: in preparation for the new definitions
+    it removes from the database all the old clauses, previously sourced
+    at that file (except if the file being consulted is 'user' or
+    'user_input').
+    By using consult/1 in strange ways, e.g. "a(2):-[file],fail.", a static
+    predicate can change itself while running. In such a case, the
+    implementation enforces the "logical update semantic view", even
+    with static predicates.
+
+    The Prolog flag 'old_update' changes the semantics of the consulting
+    predicates (and also of the assert and retract predicates) to support
+    compatibility with the old C-Prolog and retro-compatibility with
+    versions of CxProlog prior to 0.92: more details in the section
+    'Prolog Flags'.
+
+    HOW TO WRITE YOUR OWN CONSULT PREDICATE: If you want to write your
+    own ISO-compatible consult predicate, you need to use the
+    unofficial unsafe predicate '$consult_clause'/1 which supports adding
+    new clauses to the end of any user predicate even if it is a static
+    predicate; note that'$consult_clause'/1 provides consistent update
+    semantics only if the target predicate is being built or rebuilt from
+    scratch, at it always happens in consult/1. You may also take advantage
+    of the standard consult management of the Prolog database
+    by calling '$enter_consult'(S) near the beginning of your consult
+    predicate and '$exit_consult' near its ending. Finally, to process
+    the directives in the standard way, you may also want to call
+    '$consult_directive'(G) whenever you come across a directive :-G.
+    Here is the generic scheme of a user defined consult predicate::
+
+         myconsult(File) :-
+            ( File == user -> S = user ; open(File,read,S) ),
+            '$enter_consult'(S),
+            myconsult_loop(S),   % uses '$consult_clause'/1 and
+            '$exit_consult',     %              '$consult_directive'/1
+            close(S).
+
+compile(+F)
+    The same as consult(F).
+
+consulting(-S)
+    Obtains the input stream currently being consulted (or included).
+    This predicate is intended to be used in the directives
+    :-/1 or ?-/1 occurring in the stream being consulted.
+    The predicate fails if no consulting is taking place.
+
+\[+F1,...,+Fn\]
+    Shorthand for consulting a list of files. If the Prolog flag 'old_update'
+    is 'true', any filename Fi may be optionally preceded by the operator
+    '-' to indicate that the file should be reconsulted instead of consulted.
+    Example: *[a,b].*
+
+:- initialization(+G). [ISO]
+    This directive saves its argument G to be executed later, at the
+    end of the consult. If there are multiple such directives in the
+    same file, the order of the execution of the goals is not specified
+    (but all will be executed.)
+
+:- include(+F). [ISO]
+    This directive textually includes the file F at the current point
+    of a source-file.
+
+silent_reconsult(+F)
+    Only available if the Prolog flag 'old_update' is 'true'. Reconsults
+    the file or list of files specified by F. Behaves like
+    reconsult/1 except that produces no statistics.
+
+reconsult(+F)
+    Only available if the Prolog flag 'old_update' is 'true'. Reconsults the
+    file F in the style of the old C-Prolog. Also writes some statistics
+    to user_output.
+
+current_atom(?D)
+    Generates, through backtracking, all the existing atoms.
+
+
+Operators
+~~~~~~~~~
+op(+Prec,+Type,+Name) [ISO]
+    Declares a operator named Name of type Type and
+    precedence Prec. Name can be a single operator
+    name or a list of operator names. Type is one of
+    the following atoms: fx, fy, xf, yf, xfx, xfy, yfx,
+    yfy. Prec is one integer in the range 0..1200,
+    higher values indicating lower precedence. "0" is a special
+    precedence that cancels one active interpretation of the
+    operator as follows::
+
+     - cancels the prefix interpretation if Type is fx or fy
+     - cancels the infix interpretation if Type is xfx, xfy or yfx
+     - cancels the postfix interpretation if Type is xf or yf.
+
+current_op(-Prec,-Type,-Name) [ISO]
+    Provides read-only access to the internal operator table.
+    Can also be used to generate, through backtracking, all
+    the existing operators.
+
+op_flag(+Name,+A,-T)
+    Queries the value of the operator flag A for the operator
+    named Name.
+
+op_flag(+Name,+A,-To,+Tn)
+    Gets or changes the value of the operator flag A for the operator
+    named Name. The old value of A is To and the new value
+    is Tn.
+
+ops
+    Shows details about the currently defined operators.
+
+reset_ops
+    Resets all the operators to their initial state.
+
+Operator flags:
+
+parenthesised
+    Controls how the operator is processed by the term reader
+    (predicates read/1 and read/2). If an operator with this
+    flag set to 'true' occurs as principal functor of a term
+    surrounded by parenthesis, as in *(TERM)*, then the resulting
+    term will have the form *'$PAR'(TERM)*. DEFAULT=false.
+
+Input/Output - Streams
+~~~~~~~~~~~~~~~~~~~~~~
+On the predicates of this section, S stands for a stream (a new kind of
+primitive type), or for an alias bound to a stream.
+
+CxProlog supports streams over files, over buffers (see
+"Imperative Buffers"), and also the special null streams that
+throw away anything written to them. The predicates open/3 and
+open/4 open streams over files, the predicates
+open_buffer_stream/3 and open_buffer_stream/4 open streams
+over buffers (see "Imperative Buffers"), and the predicate
+open_null_stream opens null streams.
+
+The predefined aliases 'user_input', 'user_output' and 'user_error' denote
+the "standard input stream", "standard output stream", and "standard
+output error stream". The atom 'user' represents either 'user_input'
+or 'user_output', depending on the context.
+
+Both file and buffer streams are by default opened in "text mode"
+but they can also be opened in "binary mode" using the option
+'text(binary)' in the predicates open/4 or open_buffer_stream/4.
+There is a collection of "byte oriented" I/O predicates that operate
+exclusively over binary streams: the *_byte predicates.
+There are two collection of "character oriented" I/O predicates
+that operate over text streams: the *_char predicates and *_code predicates.
+There is a collection of "term oriented" I/O predicates, including
+the predicates read/1 and write/1, that also operates over text streams.
+Finally, there is a collection of I/O predicates that are agnostic because
+they operate over the two kinds of streams: includes the predicates get0/1,
+peek/1, skip/1, put/1, etc.
+
+Streams: Character encodings
+----------------------------
+CxProlog uses the 21-bit Unicode character set for representing
+characters and atoms. Unicode is an abstract character set and
+therefore knowing the internal representation of the Unicode
+characters in CxProlog is not important to the programmer.
+
+However, if the programmer wants to store text in a file or
+in a buffer (via a text stream), then the physical representation,
+or "encoding", of the characters comes into play. In CxProlog, each
+text stream has an associated character encoding that determines how
+the Unicode characters are physically represented in a file or in a
+buffer. When a new stream is opened, its encoding will be obtained
+from the Prolog flag 'encoding', unless the programmer explicitly
+specifies a different encoding with the help the encoding/1
+option of the stream-open predicates.
+
+Filenames are always assumed to be in the encoding indicated
+by the Prolog flag 'encoding_os'.
+
+As for the implementation of encodings, older versions of CxProlog
+relied completely on locales and on the wide-char functions of
+the C standard library to interpret and process the contents of
+text streams.
+
+Since version 0.97, CxProlog includes built-in support for some
+of the more popular character encodings. It also continues to
+support all the OS-supported encodings via the C standard library.
+Follows a short description of the character encodings supported by
+CxProlog.  Any of them can be specified using the encoding/1 option
+of the predicates open/4 or open_buffer_stream/4::
+
+
+- octet - This is the exclusive encoding of binary streams. This encoding
+      cannot be used with text streams, and all the other encodings
+      cannot be used with binary streams.
+
+- ascii - Supports only characters with codes in the range 0 - 127.
+      Outside this range, errors are generated. Each valid character is
+      encoded in a single byte.
+
+- iso_latin_1 - Supports only characters with codes in the range 0 - 255.
+      Outside this range, errors are generated. Each valid character is
+      encoded in a single byte.
+
+- utf8 - Supports the full Unicode range. Each character is encoded
+      as a sequence of 1 up to 4 bytes. Note that the ascii characters
+      are encoded in a single byte and that a utf-8 file that only
+      contains ascii characters is identical to an ascii file.
+
+- utf16be - Supports the full Unicode range. Each character is encoded
+      using 2 or 4 bytes. The suffix "be" stands for "big-endian" meaning
+      that, for each 16-bit word, the high-order byte appears first.
+
+- utf16le - Supports the full Unicode range. Each character is encoded
+      using 2 or 4 bytes. The suffix "le" stands for "low-endian" meaning
+      that, for each 16-bit word, the low-order byte appears first.
+
+- utf32be - Supports the full Unicode range. Every character is encoded
+      in exactly 4 bytes. The suffix "be" stands for "big-endian" meaning
+      that, for each 32-bit word, the high-order byte appears first.
+
+- utf32le - Supports the full Unicode range. Every character is encoded
+      in exactly 4 bytes. The suffix "le" stands for "low-endian" meaning
+      that, for each 32-bit word, the low-order byte appears first.
+
+- text - Represents the OS-supported character encoding specified in the
+      OS environment locale. The actual meaning of this encoding
+      name can be observed in the read-only Prolog flag 'encoding_os'.
+
+- ja_JP.eucJP, sr_YU.iso88595@cyrillic, etc. - Any concrete OS-supported
+      locale can be used inside CxProlog as an encoding specifier.
+
+The following two encodings are also built-in in CxProlog, but they
+exist only for compatibility with other Prologs::
+
+- unicode_be - Supports only the 16-bit characters of the, now obsolete,
+      16-bit Unicode. Outside the 16-bit range, errors are generated.
+      In the domain of 16-bit characters this encoding is equivalent
+      to utf16be, so a unicode_be file can be read using the encoding
+      utf16be.
+
+- unicode_le - Supports only the 16-bit characters of the, now obsolete,
+      16-bit Unicode. Outside the 16-bit range, errors are generated.
+      In the domain of 16-bit characters this encoding is equivalent
+      to utf16le, so a unicode_le file can be read using the encoding
+      utf16le.
+
+The following four encodings are "fake" encodings that, when used,
+are immediately converted to more specific encoding::
+
+
+- utf16 - Is immediately converted to utf16be.
+
+- utf32 - Is immediately converted to utf16be.
+
+- unicode - Is immediately converted to unicode_be.
+
+- default - Is immediately converted to the current default encoding,
+      the current value of the Prolog flag 'encoding'.
+
+Trying to write a character not compatible with the encoding of an
+output stream throws an program exception unless in the case of an
+output stream attached to a console. Trying to write an
+incompatible character to such a stream causes the character
+to be converted to the equivalent hexadecimal ISO escape
+sequence which is then printed. This is useful for
+debugging but also to overcome the limitations of consoles that
+do not handle Unicode well.
+
+Streams: BOM - Byte Order Mark
+------------------------------
+The Unicode standard specifies that for the, so called, "official
+Unicode encodings", a special Unicode character can be optionally
+placed at the beginning of a text file to tell the encoding of the file.
+This character is called the BOM (Byte Order Mark) and its code is
+0xfeff. The physical representation of the BOM at the beginning of the
+file depends on the actual encoding of the file.
+
+CxProlog implements the BOM only in the following encodings. The physical
+representation of the BOM is also shown::
+
+
+- utf8 - representation: EF BB BF
+- utf16be - representation: FE FF
+- utf16le - representation: FF FE
+- utf32be - representation: 00 00 FE FF
+- utf32le - representation: FF FE 00 00
+- unicode_be - representation: same as utf16be
+- unicode_le - representation: same as utf16le
+
+By default, there is automatic BOM detection when a file is opened
+for reading. If a BOM is detected, then the encoding of the
+file stream is set to the designated encoding, no matter
+any other encoding the user might have specified. The 'bom(true)'
+stream property is also set. To disable the automatic BOM
+detection, the programmer must explicitly set the property 'bom(false)'
+when opening the file for reading.
+
+By default, there is no automatic BOM emission when a file is opened
+for writing. To force a BOM to be written, the programmer must
+use the property 'bom(true)' when opening the file for writing.
+
+Notice that the same physical representations of the BOM is used to
+indicate encodings in the 'utf16' family of 32-bit Unicode and in
+the 'unicode' family of the obsolete 16-bit Unicode. By default, an
+encoding for the utf16 is selected unless the programmer explicitly
+specifies encoding(unicode), encoding(unicode_be) or encoding(unicode_le).
+
+Streams: Handling Streams
+-------------------------
+This section describes predicates for opening, closing and managing
+information about streams.
+
+
+stream(+S)
+    S is a valid active stream.
+
+open(+F,+M,-S) [ISO]
+    Equivalent to open(F, M, S, []).
+
+open(+F,+M,-S,+O) [ISO]
+    Opens a stream S over the file specified by atom F.
+    The mode M is one of following atoms: 'read', 'write', 'append'.
+    O is an option list. The available options are::
+
+
+        - alias(A) - specifies the atom  A as an alias for the stream.
+        - bom(A) - specifies the attitude of the stream towards the
+          BOM character (cf. previous section) when a stream is opened.
+          The value 'true' enables BOM detection for input text file stream
+          and BOM emission for output text file streams. The DEFAULT is 'true'
+          for input text file streams and 'false' otherwise (all output
+          streams and all non-text streams.)
+        - encoding(A) - specifies the character encoding used in the stream,
+          as explained in a previous section.
+          DEFAULT='text' (represents the value of the Prolog flag 'encoding')
+        - eof_action(A) - specifies the effect of attempting to read beyond
+          the end-of-stream position. The possible values for A are: 'error'
+          (raises an exception), 'eof_code' (keeps returning 'end_of_file'),
+          and 'reset' (used for tty files only).
+          DEFAULT = 'eof_code'.
+        - reposition(A) - specifies whether it is possible to reposition the
+          stream. The possible values for A are 'false' and 'true'.
+          DEFAULT = 'true'.
+        - type(A) - specifies whether the stream is a text stream or a
+          binary stream. The possible values for A are 'text' and 'binary'.
+          DEFAULT = 'text'.
+
+open_buffer_stream(+B,+M,-S)
+    Opens a stream S over buffer B. The mode M is one
+    of the atoms: 'read', 'write', 'append'.
+    The character encoding that becomes associated with
+    the stream is the default encoding, indicated by the
+    Prolog variable 'encoding'.
+    Equivalent to open_buffer_stream(B, M, S, []).
+
+open_buffer_stream(+B,+M,-S,+O)
+    Opens a stream S over the buffer B.
+    The mode M is one of the atoms: 'read', 'write', 'append'.
+    O is an option list. The available options and their default values
+    are the same as in open/4.
+
+open_null_stream(-S)
+    Creates a new null stream and returns it in S. A null stream is
+    a particular form of output stream that does not have any particular
+    encoding associated with it. All output operations are compatible
+    with null streams. A null stream will discard all characters, terms
+    and bytes written to it.
+
+close(+S) [ISO]
+    Equivalent to close(S, [force(false)]).
+
+close(+S, +O) [ISO]
+    Closes the stream S, according to the option list . The available
+    options are:
+
+        - force(false) - in case of error, an exception is issued and the
+          stream is not closed.
+        - force(true) - errors are silently ignored and the stream is
+          always closed.
+
+absolute_file_name(+RelativePath,-AbsolutePath)
+    Expand the local filename RelativePath into the canonized absolute
+    path AbsolutePath. RelativePath and AbsolutePath are both atoms.
+    This predicate is used by consult/1 to uniquely identify files.
+    This is only a syntactic transformation. The file does not need to exist.
+
+current_stream(-Name,-Mode,?Stream)
+   Provides read-only access to the internal
+   stream table. Can also be used to generate, through
+   backtracking, all the existing streams, with their name and mode.
+
+current_stream(-Name,-Mode,-Path,?Stream)
+   Similar to current_stream/3, but also provides the value of Path.
+   If you do not need the value of Path, use the first version
+   because it is much more efficient.
+
+stream_property(?S,?Prop) [ISO]
+    The stream S has the property Prop. This predicate can be used
+    for checking specific properties of specific streams, but can also
+    be used to generate, through backtracking, all the open streams
+    along with their properties. The supported stream properties are::
+
+
+      - alias(A) - A is unified with one of the aliases of the stream.
+          If A is already bound, a simple check is performed to see if
+          A is an alias for the stream.
+      - encoding(A) - A is unified with the character encoding
+          associated with the stream S.
+      - bom(A) - A is 'true' or 'false' depending on the stream S
+          if a file stream that detects the BOM character when the file
+          is opened for reading, or writes a BOM character when the file
+          is opened for writing.
+      - encoding(A) - A is unified with the character encoding
+          associated with the stream S.
+      - end_of_stream(A) - If the position of S is before the end-of-stream
+          then A is unified with 'not'; if the position of S is exactly
+          end-of-stream then A is unified with 'at'; if the position of S is
+          past-end-of-stream then A is unified with 'past'.
+      - eof_action(A) - A is unified with the eof_action for the stream S.
+      - file_name(A) - If the stream S is connected to a file then the atom A
+          is the name of the file. This property in only available for
+          streams connected to files.
+      - file_path(L) - If the stream S is connected to a file then the
+          list L is the path of the file. L is a list (cf. section
+          "Filesystem"). This property in only available for streams
+          connected to files.
+      - input - The stream S is an input stream.
+      - mode(A) - A is unified with the mode of the stream S. The mode
+          was specified when the stream was opened and the possible values
+          are 'read',  'write' and 'append'
+      - output - The stream S is an output stream.
+      - position(T) - T is unified with the current stream position.
+          A stream position is an opaque term that is handled using the
+          predicate stream_position_data/3.
+      - reposition(Bool) -  Bool is 'true' or 'false' depending on the
+          stream S allows repositioning.
+      - tty(Bool) - Bool is 'true' or 'false' depending on the stream S
+          is connected to a terminal.
+      - type(A) - A is unified with the atoms 'text' or 'binary' depending
+          on the type of the stream S.
+
+character_count(+S, -N)
+    N is the number of characters either read or written on the stream S.
+    Counting starts at 0 (zero).
+
+line_count(+S, -N)
+    N is the number of lines either read or written on the stream S.
+    Counting starts at 1 (one).
+
+line_position(+, -N)
+    N is the current position in the current line of the stream S.
+    Counting starts at 0 (zero). Tabs are defined on each 8-th character
+    and backspaces reduces the line position by one (except at the beginning).
+
+byte_count(+S, -N)
+    N is the number of bytes either read or written on the stream S.
+    Counting starts at 0 (zero). For text files, this predicate may
+    be different from character_count/2 due to multi-byte encodings.
+
+stream_position_data(?Field, +StreamPosition, -Value)
+    Given a stream position previously obtained using the position/2
+    option of stream_property/2, gets the value of one of the four available
+    fields: 'char_count', 'line_count',  'line_position',  'byte_count'.
+
+streams
+    Shows details about all the currently opened streams.
+
+'$set_user_streams'(+S1,+S2,+S3)
+    This is a low-level hack that you rarely will need to use,
+    if at all. It replaces the three standard user streams -
+    'user_input', 'user_output' and 'user_error' - even if
+    they are supposedly constant. This comes in handy for redirecting
+    input and output already committed to the standard user streams: for
+    example, to provide the normal top-level interaction through
+    an Internet connection (see file pl/net.pl); or
+    to redirect to a log file the error messages issued through
+    'user_error' (use '$set_user_streams'(user,user,YourLogFile)
+    to achieve this).
+
+'$restore_user_streams'
+    Restores the original user streams, canceling the effects
+    of '$set_user_streams'/3.
+
+Streams: Implicit Streams
+-------------------------
+CxProlog supports explicit stream based operations, which require
+an explicit stream argument, as well as  implicit stream based operations,
+which do not accept such explicit stream argument. The four predicates
+described in this section manage the current implicit streams
+over which the implicit stream based predicates operate.
+
+There are only two implicit current streams: the so-called
+"current input stream" and the "current output stream". The implicit
+streams are anonymous but they can be obtained using the
+predicates current_input/1 and current_output/1, and changed using
+the predicates set_input/1 and set_output/1.
+
+The initial "current input stream" is 'user_input', and the initial
+"current output stream" is 'user_output'.
+
+
+set_input(+S) [ISO]
+    Makes stream S the current input stream.
+
+current_input(-S) [ISO]
+    Gets the current input stream.
+
+set_output(+S) [ISO]
+    Makes stream S the current output stream.
+
+current_output(-S) [ISO]
+    Gets the current output stream.
+
+Streams: Dec-10 Prolog Compatibility Text Streams
+-------------------------------------------------
+The six predicates in this section are provided for backward
+compatibility. These ancient predicates are prone to problems
+concerning ambiguities in filenames and changing of the working directory.
+For example, the call see(myfile) is unable to open the file 'myfile'
+if another file with the same name but located in a different directory
+is still open. On the other hand, the call see('./myfile') may open
+a second stream over the local file 'myfile' because, technically,
+'myfile' and './myfile' are different names.
+
+The ISO Prolog introduced safe replacement predicates: the predicate open/3,
+and several I/O predicates that require an explicit stream argument. In
+CxProlog it is still safe to use the current implicit streams,
+but only if they are controlled using the predicates of the previous section;
+please avoid the six predicates in this section.
+
+
+see(+S)
+    If S is an atom, the file named S is opened (if not
+    already open) and is made the current input stream. If S
+    is a stream term then is made the current input stream.
+
+seeing(-S)
+    Gets the current input stream except that if the current input
+    stream is 'user_input' the atom 'user' is returned.
+
+seen
+    Closes the current input stream and changes it to 'user_input'.
+
+tell(+S)
+    If S is an atom, the file named S is opened (if not
+    already open) and is made the current output stream. If S
+    is a stream term then is made the current output stream.
+
+telling(-S)
+    Gets the current output stream except that if the current input
+    stream is 'user_output' the atom 'user' is returned.
+
+told
+    Closes the current output stream and changes it to 'user_output'.
+
+Streams: Reading and Writing Terms
+----------------------------------
+This section describe the term oriented I/O predicates. All of them operate
+exclusively over text streams. Some are explicit stream based and require
+an explicit stream argument; the others other are implicit stream based
+and do not have a stream argument.
+
+
+read_term(-T, +Loptions) [ISO]
+    Reads the term T from the current input stream using to the current
+    operator table and the provided read-options. At end-of-file, the atom
+    'end_of_file' is returned.
+    Example: read_term(T, [character_escapes(false), variables(V)]).
+    The read-options are the following::
+
+    character_escapes(+Boolean) - This option is used for temporary
+      overriding the global flag 'character_escapes', during the reading
+      of a particular term.
+
+    double_quotes(+Option) - This option is used for temporary
+      overriding the global flag 'double_quotes', during the reading
+      particular term. The possible values for this option are
+      of a 'chars', 'codes', 'atom', 'struct'.
+
+    singletons(-L) [ISO] - L is a list of pairs Var=Name, telling the
+      names of all the variables that occur only once in the term T.
+
+    variables(-L) [ISO] - L is a list of all the variables that occur
+      in the term T, in left-to-right order.
+
+    variable_names(-L) [ISO] - L is a list of pairs Var=Name, telling the
+      names of all the variables that occur in the term T.
+
+read_term(+S, -T, +Loptions) [ISO]
+    Like read_term/2 except that the input is obtained from stream S.
+
+read(-T) [ISO]
+    Reads the term T from the current output stream. The names of the
+    variables in the term T can be obtained using varnames/1.
+    Defined as::
+
+
+     read(T) :-
+         current_input(S),
+         read_term(S, T, []).
+
+read(+S,-T) [ISO]
+    Like read/1 except that the input is obtained from stream S.
+
+varnames(-L)
+    L is a list of pairs Var=Name, telling the names of
+    all the variables in the last term returned by
+    read/1, read/2 or atom_term/2.
+
+read_with_source(+S,-T,-A)
+    Similar to read/2, except that it returns in the atom A
+    the exact source text that gave rise to the term.
+
+read_tokens(-L)
+    Reads an entire line of text as a list of tokens
+    (token = atomic lexical element). If the line is
+    empty then the empty list is returned. At
+    end-of-file, the atom 'end_of_file' is returned.
+
+read_tokens(+S,-L)
+    Reads from S an entire line of text as a list of
+    tokens [token = atomic lexical element]. If the
+    line is empty then the empty list is returned. At
+    end-of-file, the atom 'end_of_file' is returned.
+
+prompt(?Ao, ?An)
+    Gets/changes the prompt that tells the user the system is waiting
+    for keyboard input. The old prompt is the atom Ao and the new prompt
+    is the atom An.
+
+write_term(+T, +Loptions) [ISO]
+    Writes the term T to the current output stream using to the current
+    operator table and the provided write-options.
+    Example: write_term(T, [quoted(true), numbervars(true)]).
+    The write-options are the following::
+
+    character_escapes(+Boolean) - This option is used for overriding
+      the global flag 'character_escapes', during the writing of a
+      particular term.
+      DEFAULT=Taken from the global flag 'character_escapes'.
+
+    ignore_ops(Boolean) [ISO] - If true then the operator table is ignored
+      and the term is written in functional notation.
+      DEFAULT=ignore_ops(false).
+
+    numbervars(Boolean) [ISO] - If true then every subterm of the form
+      '$VAR(N)', where N is an integer, is written as a variable
+      name consisting of a capital letter possible followed by a number.
+      This is appropriate to print the results of numbervars/3.
+      DEFAULT=numbervars(true).
+
+    portray(Boolean) - If true then the hook predicate portray/1 gains the
+      responsibility of printing any subterm that is not a variable.
+      If portray/1 succeeds the subterm is assumed already printed.
+      If portray/1 fails and the term is atomic, write_term writes the
+      term directly. If portray/1 fails and the term is compound,
+      write_term writes the principal functor of the term and them calls
+      itself recursively on the arguments of the term.
+      DEFAULT=portray(false).
+
+    quoted(Boolean) [ISO] - If true each atom and functor is quoted where
+      necessary so that read/1 could read the term back.
+      DEFAULT=Taken from the global flag 'force_quoted'.
+
+write_term(+S, +T, +Loptions) [ISO]
+    Writes the term T to the output stream S according to the current
+    operator table and the provided write-options, which are the same of
+    write_term/2.
+
+write(+T) [ISO]
+    Writes the term T to the current output stream. Defined as::
+
+
+     write(T) :-
+         current_output(S),
+         write_term(S, T, [numbervars(true)]).
+
+write(+S,+T) [ISO]
+    Like write/1 except that the output is sent to the stream S.
+
+writeln(+T)
+    Variant of write(T) that outputs an extra newline char.
+
+writeln(+S,+T)
+    Variant of write(S,T) that outputs an extra newline char.
+
+writeq(+T) [ISO]
+    Writes the term T to the current output stream quoting atoms where
+    necessary so that read/1 could read the term back  (assuming that the
+    operator definitions did not changed). Defined as::
+
+
+    writeq(T) :-
+         current_output(S),
+         write_term(S, T, [quoted(true), numbervars(true)]).
+
+writeq(+S,+T) [ISO]
+    Like writeq/1 except that the output is sent to the stream S.
+
+writeqln(+T)
+    Variant of writeq(T) that outputs an extra newline char.
+
+writeqln(+S,+T)
+    Variant of writeq(S,T) that outputs an extra newline char.
+
+print(+T)
+    Writes the term T to the current output stream allowing the user
+    to specify how the term is printed. Defined as::
+
+
+    print(T) :-
+         current_output(S),
+         write_term(S, T, [portray(true), numbervars(false)]).
+
+print(+S,+T)
+    Like print/1 except that the output is sent to the stream S.
+
+write_canonical(+T) [ISO]
+    Variant of write(T) that quotes atoms and ignores operators, so that
+    read/1 can read the term back even if the operator definitions changes.
+    Defined as::
+
+
+    write_canonical(T) :-
+         current_output(S),
+         write_term(S, T, [quoted(true), ignore_ops(true), numbervars(false)].
+
+write_canonical(+S,+T) [ISO]
+    Like write_canonical/1 except that the output is sent to the stream S.
+
+display(+T)
+    Writes term to stream user_output, ignoring operators. Defined as::
+
+    display(T) :-
+         current_output(S),
+         write_term(S, T, [ignore_ops(true), numbervars(false)].
+
+displayi+S,+T)
+    Like display/1 except that the output is sent to the stream S.
+
+displayln(+T)
+    Variant of display(T) that outputs an extra newline char.
+
+displayln(+S, +T)
+    Variant of display(S,T) that outputs an extra newline char.
+
+write_depth(+N1,+N2)
+    Sets the maximum term depth and the maximum list
+    length used by predicates write/1, write/2, etc.
+    0 (zero) means no limit. The initial values are
+    respectively 30 and 999.
+
+Streams: Reading and Writing Characters
+---------------------------------------
+This section describe the character oriented I/O predicates. All of them operate
+exclusively over text streams. Some are explicit stream based and require
+an explicit stream argument; the others other are implicit stream based
+and do not have a stream argument.
+
+
+In most encoding, e.g. UTF-8, characters are represented using multi-byte
+strings. However, this is transparent to the programmer who only has to
+deal with characters represented as one-char atoms or by numeric
+character codes
+
+get_char(-C) [ISO]
+    Gets the next char from the current input stream. At end-of-file,
+    the atom 'end_of_file' is returned.
+
+get_char(+S,-C) [ISO]
+    Gets the next char from stream S. At end-of-file,
+    the atom 'end_of_file' is returned.
+
+get_code(-N) [ISO]
+    Gets the Unicode code of the next char from the current
+    input stream. At end-of-file, the code specified by the
+    'eof_code' Prolog flag is returned.
+
+get_code(+S,-N) [ISO]
+    Gets the Unicode code of the next char from stream S.
+    At end-of-file, the code specified by the 'eof_code' Prolog flag
+    is returned.
+
+get(-N)
+    Gets the Unicode code of the next printing char from
+    the current input stream. End-of-file is denoted
+    by the value associated with the 'eof_code' Prolog flag.
+
+get(+S,-N)
+    Gets the Unicode code of the next printing char from S.
+    End-of-file is denoted by the value associated with the
+    'eof_code' Prolog flag.
+
+get_line(-A)
+    Reads an entire line of text as an atom. At end of
+    file return the code specified by the 'eof_code' Prolog flag.
+
+get_line(+S,-A)
+    Reads an entire line as an atom. At end-of-file returns
+    the code specified by the 'eof_code' Prolog flag.
+
+get_single_char(-N)
+    Gets the Unicode code of the next char from stream 'user_input'.
+    Does not wait for the return key, unlike get_code/1. The character
+    is not echoed. Useful for games and for keyboard menu selection.
+    The name of this predicate is from SWI-Prolog.
+    In some installations it might not possible to support this
+    behaviour. When such is the case, an entire line is read and
+    the code of the first non-space character is returned.
+
+peek_char(-C) [ISO]
+    Similar to get_char(C), but does not consume the
+    returned char.
+
+peek_char(+S,-C) [ISO]
+    Similar to get_char(S,C), but does not consume the
+    returned char.
+
+peek_code(-N) [ISO]
+    Similar to get_code(N), but does not consume the
+    returned char.
+
+peek_code(+S,-N) [ISO]
+    Similar to get_code(S,N), but does not consume the
+    returned char.
+
+peek(-N)
+    Gets the Unicode code of the next printing char from
+    the current input stream, but does not consume the returned char.
+    End-of-file is denoted by the value associated with the 'eof_code'
+    Prolog flag.
+
+peek(+S,-N)
+    Gets the Unicode code of the next printing char from S,
+    but does not consume the returned char.
+    End-of-file is denoted by the value associated with the
+    'eof_code' Prolog flag.
+
+
+put_char(+C) [ISO]
+    Writes the given char to the current output stream.
+
+put_char(+S,+C) [ISO]
+    Writes the given char to the output stream S.
+
+put_code(+N) [ISO]
+    Writes the char with Unicode code N to the current output stream.
+
+put_code(+S,+N) [ISO]
+    Writes the char with Unicode code N to the output stream S.
+
+nl
+    Writes a newline to the current output stream.
+
+nl(+S)
+    Writes a newline to the output stream S.
+
+tab(+N)
+    Writes N spaces to the current output stream.
+
+tab(+S,+N)
+    Writes N spaces to the output stream S.
+
+Streams: Reading and Writing Bytes
+----------------------------------
+This section describe the byte oriented I/O predicates. All of them operate
+exclusively over binary streams. Some are explicit stream based and require
+an explicit stream argument; the others other are implicit stream based
+and do not have a stream argument.
+
+The end-of-file code for binary file streams is -1, and this
+cannot be changed, unlike the end-of-file code for text file streams.
+
+
+get_byte(-N) [ISO]
+    Gets the next byte from the current input stream.
+    At end-of-file, -1 is returned.
+
+get_byte(+S,-N) [ISO]
+    Gets the next byte from the input stream S.
+    At end-of-file, -1 is returned.
+
+peek_byte(-N) [ISO]
+    Similar to get_byte(N), but does not consume the returned byte.
+
+peek_byte(+S,-N) [ISO]
+    Similar to get_byte(S,N), but does not consume the returned byte.
+
+put_byte(+N) [ISO]
+    Writes the byte N to the current output stream.
+
+put_byte(+S,+N) [ISO]
+    Writes the byte N to the output stream S.
+
+Streams: Reading and Writing Characters or Bytes
+------------------------------------------------
+This section describe some I/O predicates that can operate over
+both text streams and binary streams. Some are implicit stream
+based and the other are explicit stream based.
+
+
+at_end_of_stream [ISO]
+    Succeeds if the position of the current input stream is end-of-stream
+    or past-end-of-stream.
+
+at_end_of_stream(+S) [ISO]
+    Succeeds if the position of the input stream S is end-of-stream or
+    past-end-of-stream. If S is a text stream, the goal at_end_of_stream(S)
+    is almost equivalent to the goal peek_char(S,end_of_file). The only
+    difference is that no error message will be issued if eof_action(error)
+    is set for the S and the position of S is already past-end-of-stream.
+    The same applies mutati mutandis to binary streams.
+
+flush_output [ISO]
+    Flushes the current output stream.
+
+flush_output(+S) [ISO]
+    Flushes the output stream S.
+
+flush_output_all
+    Flushes the output of all active streams.
+
+get0(-N)
+    Similar to get_code(N), if the current input stream is a text stream.
+    Similar to get_byte(N), if the current input stream is a binary stream.
+
+get0(+S,-N)
+    Similar to get_code(S,N), if S is a text stream.
+    Similar to get_byte(S,N), if S is a binary stream.
+
+skip(+N)
+    If the current input stream is a text stream, skips over chars
+    in the current input stream until the first occurrence of the
+    char with Unicode code N.
+    If the current input stream is a binary stream, skips over bytes
+    in the current input stream until the first occurrence of the
+    byte N.
+
+skip(+S,+N)
+    If S is a text stream, skips over chars in S until the first occurrence
+    of the char with Unicode code N.
+    If S is a binary stream, skips over bytes in S until the first occurrence
+    of the the byte N.
+
+peek0(-N)
+    Similar to peek_code(N), if the current input stream is a text stream.
+    Similar to peek_byte(N), if the current input stream is a binary stream.
+
+peek0(+S,-N)
+    Similar to peek_code(S,N), if S is a text stream.
+    Similar to peek_byte(S,N), if S is a binary stream.
+
+put(+N)
+    Similar to put_code(N), if the current input stream is a text stream.
+    Similar to put_byte(N), if the current input stream is a binary stream.
+
+put(+S,+N)
+    Similar to put_code(S,N), if S is a text stream.
+    Similar to put_byte(S,N), if S is a binary stream.
+
+Streams: Reading and Writing Blocks of Bytes
+--------------------------------------------
+The block oriented I/O predicates are compatible with both text
+streams and binary streams. They rely on imperative buffers,
+a primitive data-type of CxProlog (see "Imperative Buffers").
+
+All block oriented predicates are explicit stream based.
+
+The block oriented predicates allow a stream to be processed in
+large chunks, or even in just one big chunk. For example,
+the following predicate copy_file_in_one_go/1 implements file copying
+by transferring all the data in just one big chunk, via an imperative
+buffer::
+
+        copy_file_in_one_go(FName,GName) :-
+            buffer_new(Buff),
+            open(FName,read,F), get_block(F,Buff), close(F),
+            open(GName,write,G), put_block(G,Buff), close(G),
+            buffer_delete(Buff).
+
+Be careful because these predicates are not very friendly to text streams.
+They process data in binary and do not perform any kind of character
+conversion whatsoever. For instance, using them to copy a block of
+text between two text streams with different encodings will result
+in garbage at the destination.
+
+If these predicates may cause problems with text streams, why do not
+constrain them to operate over binary streams alone? The answer is that
+they are very useful for:
+
+- extracting or inserting large blocks of text in the middle of a text
+stream (as long the encodings are respected, as there is care with
+the boundaries of the multi-byte characters);
+- extracting or inserting blocks of binary data in the middle of
+a text stream (useful for handling multimedia).
+
+
+get_block(+S,+B,+N)
+    Reads N bytes from the stream S into the buffer B.
+    The previous contents of the buffer is destroyed.
+    If the end-of-file is encountered, the actual number
+    of transfered bytes can be lower than N. To find out
+    the exact number of transfered bytes use the
+    goal buffer_size(B,X,X).
+
+get_block(+S,+B)
+    Reads the entire stream S into the buffer B.
+    To find out the exact number of transfered bytes
+    use the goal buffer_size(B,X,X) (or use
+    fs_property(FName,size,X) before reading, if the stream
+    is a file stream).
+
+put_block(+S,+B)
+    Writes the entire contents of the buffer B to the stream S.
+
+OS Services
+~~~~~~~~~~~
+The following predicates provide direct access to some operating
+systems services.
+
+For the most part, the OS only understands text data in the
+character encoding indicated by the Prolog flag 'encoding_os'.
+All the necessary conversions, to and from the fixed internal
+UTF-8 encoding, are performed automatically and transparently.
+This applies to filenames, OS environment variable names, OS
+environment variable contents and command-line options and arguments.
+
+
+os_name(-A)
+    Gets the name of the underlying operating system.
+    As yet, the possible results are:
+    'unix', 'win32', 'unknown'
+
+os_run(+A)
+    Runs command A. Succeeds in case of successful
+    command completion.
+
+system(+A)
+    C-Prolog compatibly predicate. Identical to os_run/1.
+
+sh
+    C-Prolog compatibly predicate. Identical to os_run('sh').
+
+os_env(+A,-Ar)
+    Accesses environment variables.
+    Example: os_env('PATH',X)
+
+os_arg(+A,-Ar)
+    Gets the argument corresponding to an individual command-line option A.
+    The option A must be an atom starting with a hyphen. If there is no
+    option named A in the command-line then the predicate fails. Otherwise,
+    if there is no argument corresponding to that option then Ar=''.
+    Example: os_arg('--boot',X)
+
+os_args(-L)
+    Gets the entire command-line as a list of atoms.
+    Example: os_args(X)
+
+os_pid(-N)
+    Gets the current process ID.
+
+os_tid(-N)
+    Gets the current thread ID.
+
+
+Filesystem
+~~~~~~~~~~
+The hierarchic filesystem can be examined and changed using the
+predicates in this section.
+
+*Filenames* are atoms that are interpreted relative to the current directory.
+
+On predicates fs_cd/1 and fs_cd/2, the *current directory* is an absolute
+path in the filesystem that is represented as a reversed list of filenames.
+This is an OS independent representation. Examples:
+
+   - Unix: "/usr/bin/ls"    ---> CxProlog: \[ls,bin,usr\]
+   - Unix: "/"              ---> CxProlog: \[\]
+   - Windows: "c:\Files"    ---> CxProlog: \['Files,'c:']
+
+Some of the filesystem predicates are available for every operating
+system because they can be implemented on the top of the C standard library.
+Some other are operating system specific.
+
+The following predicates are implemented on the top of the C standard library
+and are available for every operating system:
+
+
+fs_exists(+F)
+    Checks if there is a file/dir named F.
+
+fs_rename(+Fo,+Fn)
+    Renames existing file/dir Fo as Fn. If Fn is the
+    empty list \[] then Fo is deleted.
+
+fs_delete(+F)
+    Deletes existing file/dir F. Only empty directories
+    can be deleted.
+
+fs_mkdir(+F)
+    Creates a new directory named F.
+
+file_exists(+F)
+    Quintus-Prolog compatibility predicate.
+    Identical to fs_exists/1.
+
+rename_file(+Fo,+Fn)
+    Quintus-Prolog compatible predicate.
+    Identical to fs_rename/2.
+
+delete_file(+F)
+    Quintus-Prolog compatibly predicate.
+    Identical to fs_delete/2.
+
+exists(+F)
+    C-Prolog compatibly predicate. Identical to fs_exists/1.
+
+rename(+Fo,+Fn)
+    C-Prolog compatibly predicate. Identical to fs_rename/2.
+
+fs_property(+F,+A,-R)
+    R is the value of the property A of existing
+    file/dir F. As yet, the supported properties are:
+
+    ========      =============================
+    Property      Possible results
+    ========      =============================
+    type          atoms 'file', 'dir', 'other'
+    size          the size of the file in bytes
+    readable      atoms 'false', 'true'
+    writable      atoms 'false', 'true'
+    time          list [access_time, modification_time]
+    ========      =============================
+
+    The two numbers of the property 'time' (access_time and
+    modification_time) represent times measured in seconds since
+    00:00:00 UTC, January 1, 1970. This applies to every OS even
+    Windows. The values are always exact to the second, despite
+    they may show up as float numbers.
+
+fs_exists_file(+F)
+    Checks if there is a file named F.
+
+fs_exists_dir(+F)
+    Checks if there is a directory named F.
+
+fs_cd(-L)
+    Obtains the current directory. L is unified with an absolute
+    path in the filesystem, represented as a reversed list of filenames.
+
+fs_cd(-Lo,+Ln)
+    Changes the current directory from Lo to Ln. Lo is unified with an
+    absolute path in the filesystem, represented as a reversed list of
+    filenames. The supplied Ln must also have the same form.
+    The goal fs_cd(X,X) gets the current directory.
+
+fs_cwd(-A)
+    Obtains the current directory. This predicate is similar to fs_cd/1
+    except that the returned value is an atom and not a list.
+
+fs_cwd(-Ao,+An)
+    Changes the current directory from Ao to An. This predicate is similar
+    to fs_cd/2 except that the directories are represented using atoms
+    and not lists. Additionally, the An parameter can also be a path
+    relative to the current directory, therefore not necessarily an
+    absolute path.
+
+fs_home
+    Resets the current directory.
+
+fs_files(-L)
+    Gets all files/dirs inside the current directory.
+
+Prolog Flags
+~~~~~~~~~~~~
+The "Prolog flags" are some internal flags that control some
+aspects of the behaviour of CxProlog.
+
+
+current_prolog_flag(?A,-T) [ISO]
+    Queries the value of flag A. Fails if the flag A is not supported.
+    Can also be used to generate, through backtracking, all the supported
+    Prolog flags and the corresponding values.
+
+set_prolog_flag(+A,+T) [ISO]
+    Sets the Prolog flag A to the value T. The goal either succeeds or
+    raises an exception (because the new value is not of the type of the
+    flag or because the flag is read-only).
+
+flags
+    Shows the current status of all Prolog flags.
+
+flag(+A,-T)  [deprecated]
+    Retro-compatibility predicate, almost equivalent to set_prolog_flag/2.
+    The only difference is that, for boolean flags, it uses the values
+    'off' and 'on' instead of 'false' and 'true'.
+
+flag(+A,-To,+Tn) [deprecated]
+    Retro-compatibility predicate that gets/changes the value of flag A.
+    The old value of the flag A is To and the new value is Tn. For boolean
+    flags, it uses the values 'off' and 'on' instead of 'false' and 'true'.
+
+The supported Prolog flags are as follows:
+
+
+address_bits [read-only] {values: -integer-}
+    Address size of the host machine. Value can be 32 or 64.
+
+all_dynamic {values: off, debug, trace}
+    Forces all local predicates to be dynamic. This saves you the trouble of
+    declaring all your predicates as dynamic if you need the flexibility
+    of working with all-dynamic predicates. Beware that the implementation
+    of the two well-defined update semantics make dynamic predicates a slower
+    than static predicates. Note also that this flag only applies to newly
+    defined predicates: previously defined static predicates remain static.
+    The possible values for this flag are::
+
+        - off - all local predicates are static, by default, as usual;
+        - dynamic - all local predicates are implicitly declared 'dynamic';
+        - dynamic_iu - all local predicates are implicitly declared 'dynamic_iu'
+        - DEFAULT=off.
+
+argv [read-only] {values: -list-}
+    List of atoms corresponding to the command line arguments passed
+    to CxProlog.
+
+bar_is_semicolon {values: false, true}
+    If 'true', the atom '|' is automatically translated
+    to the atom ';', except in contexts where '|'
+    is denoting "the reminder of a list". This achieves
+    compatibility with C-Prolog. If 'false' no translation is
+    performed, and this is what the ISO standard likes.
+    DEFAULT=false.
+
+bounded [ISO] [read-only] {values: false, true}
+    If 'true', the representation of integer atomic terms is bound by
+    the values of the min_integer and max_integer Prolog flags. In
+    some Prologs (not CxProlog), the value of this flag can be 'false'
+    meaning that arbitrary large integers are supported and 'max_integer'
+    and 'max_integer' are not defined.
+    VALUE=true.
+
+character_escapes {values: false, true}
+    This Prolog flag determines the default behavior of the the term reader
+    and the term writer concerning the interpretation of the character \
+    and whether the ISO escape sequences are active.
+    TERM READER: If 'true', the character \ is interpreted as a escape
+    character in quoted atoms and strings, allowing the ISO escape
+    sequences to be recognized. If 'false', the character \ is
+    subjected to no special interpretation and the ISO escape
+    sequences are not recognized. The ISO escape sequences consist
+    in the following literals
+         '\a', '\b', '\t', '\n',  '\v', '\f', '\r', '\'', '\\',
+      and in the following literal forms
+          \77777\ (octal sequence), \xfffff\ (hexadecimal sequence).
+      The literals '\'' and '''' represent the same single quote, but
+      '\'' is the preferred form.
+    TERM WRITER: If 'true' and if the term write option 'quoted' is also
+    true then all the special characters are written as ISO escape
+    sequences. The special characters are all characters in the Unicode
+    ranges 0 - 0x1f and 0x7f - 0x9f, plus the characters '\'' and '\\'.
+    Examples:
+        '\a', '\b', '\t', '\n', '\v', '\f', '\r', '\'', '\\',
+        '\001', '\002', '\177', '\178', '\179',  '\237'
+    DEFAULT=true.
+
+char_conversion [ISO] {values: false, true}
+    If 'true', the term reader performs character conversion using
+    the table associated with the char_conversion/2 predicate.
+    If 'false', no character conversion takes place.
+    Notice that, in CxProlog, the value of this flag does not matter
+    because the char_conversion feature has mere compatibility purposes
+    and the corresponding table always define the fixed identity
+    transformation.
+    DEFAULT=false
+
+compatible_if_then {values: false, true}
+    If 'true', *(G1->G2)* is equivalent to *(G1->G2;false)* as in most Prologs.
+    If 'false', *(G1->G2)* is equivalent to *(G1->G2;true)*, which is more
+    sound logically.
+    [This non-standard feature was an idea by António Porto.]
+    DEFAULT=true (for compatibility with most Prologs and the ISO).
+
+compatible_strings {values: false, true} [OLD]
+    If 'true', any double-quoted literal, like "hello", is
+    interpreted as a list of Unicode codes (which,
+    sometimes, is also a valid evaluable expression
+    -- see is/2). If 'false', any double-quoted literal
+    is interpreted as an application of functor '""'/1
+    to some Prolog term. Example: "1.3" --> '""'(1.3).
+    DEFAULT=true (for compatibility with most Prologs).
+
+debug [ISO] {values: off, debug, trace}
+    Controls the current debugger working mode.
+    The possible values for this flag are::
+
+        - off - debugger is off;
+        - debug - debugger is in 'debug' mode;
+        - trace - debugger is in 'trace' mode.
+        - DEFAULT=off.
+
+dialect {value: cx}
+    The value is the constant atom 'cx'.
+
+double_quotes [ISO] {values: chars, codes, atom, struct}
+    Determines the interpretation of double quoted strings in terms.
+    The possible values for this flag are::
+
+        - chars - Each string is read as a lists of one-chars atoms;
+        - codes - Each string is read as a lists of Unicode codes (which,
+                  sometimes, is also a valid evaluable expression -- see is/2);
+        - atom - Each string is read as an atom;
+        - struct - Each string is read as an structure with functor "/1 and
+                 with an atom as contents. This allows a particular program
+                 to detect the strings and assign then a different
+                 interpretation.
+    DEFAULT=codes
+
+encoding {values: -encoding- }
+    This flag indicates what is the default encoding used for
+    for opening text streams. This encoding is also the
+    encoding specified by the option encoding('text') in the
+    predicates then open streams. It is initialized using locale information
+    extracted from the OS environment. The rules of initialization are
+    the following: (1) the value 'iso_latin_1' is used if the locale
+    ends in ".iso-8859-1" or ".iso-8859-15"; (2) the value 'utf8'
+    is used if the locale ends in ".utf-8"; (3) the value 'iso_latin_1'
+    is used if the locale does not have a dot and starts with "br_",
+    "ca_", "de_", "da_", "en_", "es_", "fr_", "fi_", "fo_", "it_",
+    "nl_", "nn_", "pt_" or "us_"; (4) there are some rules specific
+    for the Windows OS; (5) otherwise the locale name, extracted
+    from the OS environment itself will be the initial value.
+
+encoding_os [read-only] {values: -encoding- }
+    This flag indicates what is the encoding used for communicating
+    with the OS, for instance for dealing with filenames and
+    environment variables. This flag is initialized in the same way
+    as the flag 'encoding'.
+
+eof_code {values: -integer- }
+    Specifies the end-of-file code for text files. -1 achieves
+    compatibility with Quintus Prolog. 26 achieves
+    compatibility with C-Prolog.
+    DEFAULT=-1 (for compatibility with most Prologs).
+
+extra_spaces_in_terms {values: false, true}
+    If 'true', the terms are written with one extra space inserted after
+    each comma separator and one extra space inserted after the bar
+    separator inside a list. Examples of output: a(1, 2, rt), [1, 2| rt].
+    If 'false' no extra spaces are added as in a(1,2,rt), [1,2|rt].
+    DEFAULT=false.
+
+file_name_variables {values: false, true}
+   if 'true', all filenames are automatically expanded when passed to the
+   built-in predicates that expect a filename. There are three different
+   supported conversions:
+       1 - All occurrences of the pattern "$ENVVAR" (starting with a '$')
+           are converted to the value of the environment variable
+           named "ENVVAR" ("ENVVAR" represents a generic variable name);
+       2 - If "~" occurs at the beginning of the filename it is converted
+           to the value of the environment variable "HOME";
+       3 - If the pattern "~user" occurs at the beginning of the filename
+           it is converted to the home directory of the user "user".
+   The predicates the accept filenames are the following:
+      fs_exists/1, file_exists/1, exists/1,
+      fs_rename/2, rename/2, rename_file/2,
+      fs_delete/1, delete_file/1,
+      fs_property/3, fs_mkdir/1, fs_cwd/2, absolute_file_name/2,
+      open/3, open/4, see/1, tell/1
+   This is a non-ISO classic flag.
+   DEFAULT=false.
+
+float_display_precision {values: -integer- }
+    Controls how floats are displayed.
+    If > 0, they are displayed with at least the
+    indicated number of significant digits and
+    using either decimal notation or scientific
+    notation, whichever is shorter.
+    If <= 0, they are displayed with the exactly
+    indicated number of decimal places and in decimal
+    notation.
+    DEFAULT=10.
+
+force_quoted {values: false, true}
+    If 'true', forces write/1, write/2, writeln/1, writeln/2
+    and atom_term/2 to behave in 'quoted' mode. Useful
+    for debugging, sometimes.
+    DEFAULT=false.
+
+garbage_collection {values: false, true}
+    Controls whether the garbage collector of atoms
+    is active or not.
+    DEFAULT=true.
+
+index_params {values: 0..3}
+    States how many parameters are used in building indexes
+    for predicates. Allowed range is 0..3, 0 meaning no
+    predicate indexing is required. Actually, this entire range
+    only applies to static predicates; the indexes of dynamic
+    predicates are more limited, always based on the first
+    parameter.
+    DEFAULT=1.
+
+info_messages {values: silent, normal, memory, most, all}
+    Determines what are informative messages that CxProlog will emit while
+    running. The possible values for this flag are::
+
+        - silent - All the informative messages are suppressed so that
+                   CxProlog operates in "silent mode". The error messages are
+                   still issued.
+        - normal - Allows the messages issued by consult/1, the startup message,
+                   the halting message, and some more useful messages.
+        - memory - Adds messages about internal memory areas growing. This is
+                   useful to become aware of the rate of memory consumption.
+        - most   - Adds messages about the reentrant calls to the Prolog engine
+                   and some other messages that may be useful for debugging.
+        - all    - Not yet used.
+    DEFAULT=normal.
+
+integer_rounding_function [ISO] [read-only] {values: down, toward_zero}
+    Possible values are: 'down', 'toward_zero'. Implementation dependent.
+    VALUE=Depends on the compiler used to compile CxProlog.
+
+java_available [read-only] {values: false, true}
+    Allows the Prolog application to check if the Java optional
+    component is available.
+
+keep_source {values: false, true}
+    If 'true', the predicates are internally stored in
+    double format: "compiled format" and "source
+    format". The built-ins clause/2, retract/1 and
+    listing/1 only work with predicates for which the
+    source is available. Setting this flag to 'false'
+    saves around 40% of database space (in subsequent
+    asserts or consults).
+    DEFAULT=true.
+
+max_arity [ISO] [read-only] {values: -integer-}
+    Tells the maximum arity of compound terms. In some Prologs
+    (not CxProlog), the value of this flag can be 'unbounded'.
+    VALUE=64.
+
+max_integer [ISO] [read-only] {values: -integer-}
+    If defined, there is an upper-bound for integers. The value of
+    the flag is such upper-bound.
+
+min_integer [ISO] [read-only] {values: -integer-}
+    If defined, there is a lower-bound defined for integers. The value of
+    the flag is such lower-bound.
+
+nil_is_special [read-only] {values: false, true}
+    If 'false', the term [] is an atom, as usual.
+    If 'true', the term [] is treated specially, instead of being treated as
+    an atom. With this semantics, [] == '[]' fails in the same way as
+    1 == '1' also fails. This flag is read-only at runtime, but can be setup
+    at startup using the command "cxprolog --flags nil_is_special=true".
+    [This non-standard feature was an idea by António Porto.]
+    DEFAULT=false
+
+occurs_check {values: false, true, error}
+    If 'false' then no occurs-checks are performed and cyclic terms are
+    allowed (note that cyclic terms have many useful applications.)
+    If 'true' then automatic occurs-checking is activated and any attempt
+    to create a cyclic term (e.g. X=f(X)) will cause failure.
+    A third possible value for this flag is 'error' which generate an
+    exception if there is any attempt to create a cyclic term; useful
+    to check if a program creates cyclic terms.
+    DEFAULT=false
+
+old_update {values: false, true}
+    If 'true', changes the semantics of the assert, retract and consulting
+    predicates to be compatible with the old C-Prolog and retro-compatible
+    with all versions of CxProlog prior to 0.92. Regarding the consulting
+    predicates, this means that consult/1 appends clauses to the database
+    and reconsult/1 tries to redefine predicates.
+    Beware that this flag activates an ad-hoc update semantics that cannot
+    easily described in the case of self-modifying predicates.
+    With the old update semantics activated all the newly predicates become
+    implicitly  dynamic with ad-hoc update semantics. But if you insist in
+    explicitly declaring some predicates as dynamic, you will get well-defined
+    update semantics for those predicates.
+    DEFAULT=false.
+
+on_error {values: exception, message, fail, hook}
+    Determines how the errors generated by the built-in predicates are handled.
+    The possible values for this flag are::
+
+        - exception - The error generates an exception;
+        - message - The error generates failure, but the error messages
+              are displayed anyway;
+        - fail - The error generates failure, with the error messages
+              suppressed.
+        - hook - The error causes an exception-term to be built, as in the
+              'exception' option, but the actual exception is not thrown.
+              Instead the hook predicate 'on_error/1' is called and the
+              exception term is passed to it. This option subsumes all the
+              other options, the other options continue to exist only for
+              convenience and speed.
+        - DEFAULT=exception.
+
+on_interrupt {values: off, debug, trace, abort, menu}
+    Controls the effects of a CTRL-C interrupt.
+    The possible values for this flag are::
+
+        - off - The interrupt is ignored;
+        - debug - The interrupt activates 'debug' mode;
+        - trace - The interrupt activates 'trace' mode;
+        - abort - The interrupt aborts the current execution;
+        - menu - The interrupt allows the user to choose an action (see below);
+        - DEFAULT=menu.
+
+    This is the menu that is presented when the the flag has the value 'menu':
+
+        Action (h for help): h
+             a abort
+             c continue
+             d debug
+             e exit
+             h help
+             t trace
+             s statistics
+         <ret> continue
+
+    The behavior of some of the actions above can be user-customized by
+    defining the hook predicate on_interrupt/1. This predicate is
+    called by the interrupt manager when an interrupt occurs. If the
+call succeeds, the interrupt
+    manager considers that the interrupt was already fully handled and
+    do nothing more.  If the call fails, the interrupt  manager performs
+    the predefined interrupt action. 
+You are allowed to raise an exception and hande that exception in your code.
+XXX
+ Below, there is an imaginary definition
+    of on_interrupt/1, that mimics the default behaviour of the interrupt
+    manager::
+ 
+        on_interrupt(debug) :- debug.
+        on_interrupt(trace) :- trace.
+        on_interrupt(abort) :- abort.
+        on_interrupt(continue) :- true.
+        on_interrupt(exit) :- exit.
+
+sys_trace {values: off, messages, built_ins, all_preds, detailed}
+    Sets the desired level of detail of the info generated by
+    the low-level runtime tracer. The debugging output is placed
+    in a file named 'sys_trace.log'. Beware, because this file can grow
+    very large. The possible values for this flag are::
+
+        - off - disabled;
+        - messages - registers only the error messages and info messages;
+        - built_ins - also registers the built-in predicate calls;
+        - all_preds - also registers the other predicate calls;
+        - detailed - also registers the complete tracing of the execution
+                     of the abstract machine, instruction by instruction.
+        - DEFAULT=off.
+
+version [read-only] {values: -integer-}
+    The current version of CxPolog identified using a single integer::
+
+        Major * 10000 + Minor * 100 + Patch * 10 + Extra.maturity
+
+    where the value of Extra.maturity is -3 (development), -2 (alpha)
+    or -1 (beta).
+
+version_data [read-only] {values: cxprolog(Major, Minor, Patch, Extra)}
+    The current version of CxPolog is identified using the usual triplet
+    of integers: Major, Minor, Patch. More information about the current
+    version may be available in the list Extra. Possible values for
+    elements of the list Extra are::
+
+        - 'development', 'alpha' or 'beta' - extra info about development stage
+        - 'variante_2', 'variant_3' or etc. - signals experimental semantic variant
+
+test_garbage_collection {values: false, true}
+    If 'true', activates a self-testing mode that makes
+    the garbage collector of atoms run continuously.
+    DEFAULT=false.
+
+test_relocation {values: false, true}
+    If 'true', activates a self-testing mode that makes
+    the relocation algorithms of the self-expanding
+    control stacks (global, local, trail e finalizers)
+    run continuously.
+    DEFAULT=false.
+
+unknown [ISO] {values: error, fail, warning}
+    Determines how calls to undefined predicates are handled. Possible
+    values are 'error', 'fail' and 'warning'.
+    DEFAULT=fail.
+
+wxwidgets_available [read-only] {values: false, true}
+    Allows the Prolog application to check if the wxWidgets optional
+    component is available.
+
+
+Extras
+~~~~~~
+
+Extras are data elements not traditionally presented in Prolog.
+The extra data elements include imperative data structures and
+interfacing data elements to the outside world.
+
+The imperative data structures are: imperative variables, dictionaries,
+queues, stacks, arrays, buffers, streams, threads and processes.
+
+The interfacing data elements are: Java objects, WxWidgets objects.
+
+The extras can be identified and manipulated using aliases but they
+can also be manipulated as anonymous entities.
+
+
+Aliases
+~~~~~~~
+The value of an extra type, e.g. a dictionary, can be identified
+by an atom that is called an alias, in that role.
+
+Aliases are global names, so they should be used sparingly.
+
+The same alias can be used to identify different extra-values, as long
+as they belong to different extra-types. The aliases are automatically
+recognized by the predicates that implement the operations of the
+extra-types, e.g. the operation dict_set/3.
+
+ISO Prolog already supports aliases for streams. CxProlog extends the idea to
+all extra-types.
+
+There are two available predicates for dealing with aliases - alias/2 and
+unalias/2 - but you seldom will need to use them because the predicates
+that create new extra-values accept alias names and do the bindings
+themselves.
+
+
+alias(+A, +T)
+    Bind the alias A with the extra-value T.
+
+unalias(+A, +T)
+    Removes an existing binding from alias A to the extra-value T.
+
+aliases
+    Shows all the existing aliases and corresponding values.
+
+
+Imperative Variables (ivars)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*** IVARS WILL BECOME ANONYMOUS ENTITIES SOON ***
+
+An "ivar" is a special name that can be freely bound/rebound to different
+Prolog terms using the "assignment operator" :=/2. The effects of the
+assignment operator are not automatically reversed on backtracking.
+
+The effects of the "backtrackable assignment operator" - &:=/2 - are
+automatically reversed on backtracking. There is also a meta predicate -
+with_ivar/3 - which proves a goal with some ivar temporarily set to some value.
+
+
+ivar(+A)
+    A is a currently defined ivar.
+
++A := ?T
+    Normal assignment. Sets ivar A to term T. Always succeeds.
+    In this and following predicates, the term T can be cyclic.
+
++A &:= ?T
+    Backtrackable assignment. Sets ivar A to T, but
+    automatically restores the previous state and value
+    of A on backtracking. Always succeeds.
+
++A ?:= ?T
+    Creation assignment. Initializes ivar A with T
+    only if A does not exist already. Nothing is done if A
+    already exists. Always succeeds.
+
++A #:= ?T
+    Constant assignment. Sets the ivar A to T and makes it a
+    CONSTANT. The ivar A is automatically created if
+    necessary. Always succeeds.
+
++A =: -T
+    Gets the current value of ivar A. Fails if A is undefined.
+
+with_ivar(+A,+T,+G)
+    Proves goal G with the ivar A temporarily set to term T.
+    Here is an approximate definition:
+    *with_ivar(A,T,G) :- A =: X, A &:= T, G, A &:= X.*
+    The real version also deals with cuts and with the
+    case A is undefined.
+
+ivar_delete(+A)
+    Deletes the ivar A. Always succeeds.
+
+current_ivar(-A,-T)
+    Generates, through backtracking, all the existing
+    ivars and the corresponding values.
+
+ivars
+    Shows all the existing ivars and corresponding values.
+
+Imperative Queues
+~~~~~~~~~~~~~~~~~
+On the predicates of this section, Q stands for a queue (a new primitive
+type) or for an alias bound to a queue.
+
+A queue can store terms of any kind: for example it can mix integers,
+queues and dictionaries. The queues are "imperative" in the sense that
+the effects of the queue operations are not automatically undone
+on backtracking.
+
+
+queue(+Q)
+    Q is a queue.
+
+queue_new(-Q)
+    Creates a new queue Q.
+
+queue_clear(+Q)
+    Clears the queue Q.
+
+queue_delete(+Q)
+    Deletes the queue Q.
+
+queue_put(+Q,?T)
+    Puts the term T at the end of the queue Q.
+
+queue_get(+Q,-T)
+    Gets the term T from the front of the queue Q.
+
+queue_peek(+Q,-T)
+    Examines the front of the queue Q.
+
+queue_write(+Q)
+    Writes info about Q to the current output stream.
+
+queue_write(+S,+Q)
+    Writes info about Q to the stream S.
+
+queue_as_list(+Q,-L)
+    Converts the queue Q to a list L of terms.
+
+current_queue(?Q)
+    Generates, through backtracking, all the existing queues.
+
+queues
+    Shows all existing queues.
+
+Imperative Stacks
+~~~~~~~~~~~~~~~~~
+On the predicates of this section, K stands for a stack (a new primitive
+type) or for an alias bound to a stack.
+
+A stack can store terms of any kind: for example it can mix integers,
+queues and dictionaries. The stacks are "imperative" in the sense that
+the effects of the stack operations are not automatically undone on
+backtracking.
+
+
+stack(+K)
+    K is a stack.
+
+stack_new(-K)
+    Creates a new stack K.
+
+stack_clear(+K)
+    Clears the stack K.
+
+stack_delete(+K)
+    Deletes the stack K.
+
+stack_push(+K,?T)
+    Pushes the term T on the stack K.
+
+stack_pop(+K,-T)
+    Pops term T from the stack K.
+
+stack_top(+K,-T)
+    Examines the top of the stack K.
+
+stack_write(+K)
+    Writes info about K to the current output stream.
+
+stack_write(+S,+K)
+    Writes info about K to the stream S.
+
+stack_as_list(+K,-L)
+    Converts the stack K to a list L of terms.
+
+current_stack(?K)
+    Generates, through backtracking, all the existing stacks.
+
+stacks
+    Shows all existing stacks.
+
+Imperative Dictionaries
+~~~~~~~~~~~~~~~~~~~~~~~
+On the predicates of this section, D stands for a dict (a new primitive
+type) or for an alias bound to a dict.
+
+A dict is a heterogeneous container that can store terms of any kind,
+indexed by terms of any kind as long as they are ground (note that
+the groundedness of the index terms is not checked for speed.) A dict
+is "imperative" in the sense that the effects of the dict operations
+are not automatically undone on backtracking.
+
+Each key has a single value associated. So the retrieve predicate,
+dict_get/3, is deterministic.
+
+The dicts are kept automatically sorted by index (using the standard order @<)
+and the items are retrieved through binary search.
+
+
+dict_new(-D)
+    Creates a new dictionary D.
+
+dict_clear(+D)
+    Clears the dict D.
+
+dict_delete(+D)
+    Deletes the dict D.
+
+dict_set(+D,+Key,?T)
+    Associates the term T with the key Key in the
+    dictionary D.
+
+dict_get(+D,+Key,-T)
+    Gets T associated with Key in dictionary D.
+
+dict_delete_item(+D,+Key)
+    Deletes the key Key from the dictionary D.
+
+dict_write(+D)
+    Writes info about D to the current output stream.
+
+dict_write(+S,+D)
+    Writes info about D to the stream S.
+
+dict_as_list(+D,-L)
+    Converts the dictionary D to a list L of K-T pairs.
+
+current_dict(?D)
+    Generates, through backtracking, all the existing dicts.
+
+dicts
+    Shows all existing dictionaries.
+
+Imperative Arrays
+~~~~~~~~~~~~~~~~~
+On the predicates of this section, D stands for an array (a new primitive
+type) or for an alias bound to an array.
+
+An array is a specialized dictionary which is indexed by (small) positive
+integers, starting at 1. An array grows automatically, as needed.
+The store and retrieve operations are very fast and performed in
+constant time.
+
+
+array(+D)
+    D is a array.
+
+array_new(-D)
+    Creates a new array D.
+
+array_clear(+D)
+    Clears the array D.
+
+array_delete(+D)
+    Deletes the array D.
+
+array_set(+D,+Idx,?T)
+    Associates the term T with the index Idx in the
+    array D.
+
+array_get(+D,+Idx,-T)
+    Gets T associated with Idx in array D. Fails if there
+    is no term associated with index Idx in D.
+
+array_delete_item(+D,+Idx)
+    Deletes the term at Idx from the array D.
+
+array_write(+D)
+    Writes info about D to the current output stream.
+
+array_write(+S,+D)
+    Writes info about D to the stream S.
+
+array_as_list(+D,-L)
+    Converts the array D to a list L of Idx-T pairs.
+
+current_array(?D)
+    Generates, through backtracking, all the existing arrays.
+
+arrays
+    Shows all existing arrays.
+
+Imperative Buffers
+~~~~~~~~~~~~~~~~~~
+On the predicates of this section, B stands for a buffer (a new primitive
+type) or for an alias bound to a buffer.
+
+A buffer is a specialized array which stores small integers in the range
+0..255 (bytes). A buffer grows automatically, as needed. The store and retrieve
+operations are very fast and performed in constant time.
+
+Unlike the imperative arrays, all positions of a buffer are automatically
+initialized with zero. Therefore there are never undefined positions and the
+retrieve operation - buffer_get/1 - never fails.
+
+CxProlog supports opening a stream over a buffer in order to perform
+sequential reads and writes via the normal input/output operations (cf. section
+_`Buffer Streams`).
+
+CxProlog also supports reading large chunks of information from a file to
+a buffer, and writing large chunks of information from a buffer to a file (cf.
+section _`Binary File Streams`).
+
+
+buffer(+B)
+    B is a buffer.
+
+buffer_new(-B)
+    Creates a new buffer B.
+
+buffer_clear(+B)
+    Clears the buffer B.
+
+buffer_delete(+B)
+    Deletes the buffer B.
+
+buffer_size(+B,-No,+Nn)
+    Queries and changes the size of the buffer B. The old size
+    is No and the new size is Nn. The size of the buffer is
+    managed automatically, but you may need to truncate a
+    portion at the end.
+
+buffer_set(+B,+Idx,+N)
+    Associates the value N with index Idx in buffer B.
+
+buffer_get(+B,+Idx,-N)
+    Gets N associated with Idx in buffer B. Never fails as
+    all non assigned positions implicitly have the value zero.
+
+buffer_write(+B)
+    Writes info about B to the current output stream.
+
+buffer_write(+S,+B)
+    Writes info about B to the stream S.
+
+current_buffer(?B)
+    Generates, through backtracking, all the existing buffers.
+
+buffers
+    Shows all existing buffers.
+
+Handling Transient Text
+~~~~~~~~~~~~~~~~~~~~~~~
+In CxProlog, the recommended way of dealing with transient text is
+through atoms, because CxProlog includes a garbage collector of
+atoms that safely recycles again and again the space taken by transient
+text. In addition to the get_line/1, get_line/2, atom_concat/3, sub_atom/5,
+CxProlog offers the extra flexible predicates concat/2 and slice/4.
+
+
+slice(+A,+Na,+Nb,-Asub)
+    Asub is the subatom of atom A that includes the characters of A in
+    the closed interval defined by offsets Na and Nb. Two different
+    coordinate systems are supported: (1) positive offsets are relative
+    to the beginning of A; (2) negative offsets are relative to the
+    ending of A. Examples::
+
+        slice('ABC',1,2,Asub)        -->  Asub = 'AB'
+        slice('ABC',-2,-1,Asub)      -->  Asub = 'BC'.
+        slice('ABC',2,-1,Asub)       -->  Asub = 'BC'.
+        slice('ola.pl',-3,-1,'.pl')  -->  true.
+        slice('ABC',1,-1,Asub)       -->  Asub = 'ABC'
+        slice('ABC',2,1,Asub)        -->  Asub = ''
+        slice('ABC',10,100,Asub)     -->  Asub = ''
+        slice('ABC',-20,-10,Asub)    -->  Asub = ''
+
+concat(+L,-A)
+    Takes the textual representations of all the terms
+    in L and concatenates everything into the returned
+    atom A. Sublists in L are subjected to the
+    recursive application of concat/2. Example::
+
+        ?- concat(['ole ',f(a),'Az',[[a]]],X), writeln(X).
+        ole f(a)Aza
+        X='ole f(a)Aza'
+
+-A === +L
+    Same as concat(+L,-A). Note the reversed order of the
+    parameters, comparing with concat/2. This is because we
+    want ===/2 to be used as a kind of assignment operator.
+
+
+Threads (coroutines)
+~~~~~~~~~~~~~~~~~~~~
+On the predicates of this section, Z stands for a thread (a new kind of
+primitive type) or for an alias bound to a thread.
+
+The threads are organized in TREE. Killing a thread also kills all
+its descendants
+
+
+thread(+Z)
+    Z is a thread.
+
+thread_new(-Z, +Goal, +RestartGoal)
+    Creates a new thread Z. Goal is the startup goal.
+    RestartGoal is the goal that is activated
+    in case of error or explicit abort/0 call.
+
+thread_transfer(+Z,-A)
+    Transfers control to the thread Z. Possible results
+    are: 'going', 'completed', 'failed', 'killed', 'error'.
+
+thread_kill(+Z)
+    Kills the thread Z.
+
+active_thread(-Z)
+    Z is the active thread.
+
+active_thread_completed
+    Finishes the active thread making it return
+    'completed'.
+
+active_thread_failed
+    Finishes the active thread making it return 'failed'.
+
+current_thread(?Z)
+    Generates, through backtracking, all the existing threads.
+
+threads
+    Shows all existing threads.
+
+Sockets
+~~~~~~~
+These four predicates enable CxProlog to act either as a server or as a
+client over an Internet link.
+
+The first three are "server predicates". As a piece of advice, it is a good
+idea to span a new process with the purpose of handling each incoming
+connection. This way the client does not have to wait for too long.
+
+The last predicate is the sole "client predicate".
+
+
+net_install(+N)
+    Activates a local server socket listening to port N.
+    Only one server per process is supported.
+
+net_uninstall
+    Closes the local server socket.
+
+net_accept(-S1,-S2)
+    On the server side, waits for the next incoming connection
+    and then opens 2 streams for handling the communication.
+    S1 is the input stream where the requests arrive.
+    S2 is the output stream to where the replies are sent.
+
+net_connect(+A,+N,-S1,-S2)
+    Connects, as a client, to the server A, port N, and
+    open two streams to handle the communication.
+    S1 is the input stream where the replies arrive.
+    S2 is the output stream to where the requests are sent.
+
+Processes (experimental)
+~~~~~~~~~~~~~~~~~~~~~~~~
+On the predicates of this section, P stands for a process (a new kind of
+primitive type) or for an alias bound to a process.
+
+**Note:** These predicates only work under Unix. They are implemented using the
+Unix primitives 'fork', 'pipe', 'write' and 'read'.
+
+The father process may create as many child processes as it wishes.
+The father process cannot kill any of its child processes.
+But a child process can kill itself using halt/0 or exit/0.
+
+There is a private unidirectional channel of communications between each
+child and father. Messages are non-negative integer number.
+
+Internally, some negative numbers may also be send through the channel, for
+bookkeeping purposes. For example, when a child dies, the message -1 is
+passed to the father, instructing it to set the child descriptor
+to "not-alive" state. This update is automatic.
+
+
+process(+P)
+    P is a process.
+
+process_new(-P, +Goal, +RestartGoal)
+    Creates a new child process P. Goal is the startup goal.
+    RestartGoal is the goal that is activated
+    in case of error or explicit abort/0 call.
+
+process_send_father(+N)
+    Child sends message N to its father.
+    N is a non-negative integer.
+
+process_send_father_max(-N)
+    N is the number of consecutive sends that puts
+    the system in a dead-lock state, if the father
+    never reads the messages.
+
+process_receive_from_child(-P,-N)
+    Father receives message N from its child process P.
+    This is a blocking primitive: if there is no message
+    available, the father waits. N is a non-negative integer.
+
+process_receive_from_child_ready
+    Non-blocking primitive that checks whether or not
+    there is a message available.
+
+current_process(?P)
+    Generates, through backtracking, all the existing child processes.
+
+processes
+    Shows all the child processes.
+
+Unit tests
+~~~~~~~~~~
+Support for unit tests was introduced in CxProlog with the purpose of
+validating CxProlog itself. Nevertheless, you may also take advantage of
+the unit test predicates to validate your own Prolog programs.
+
+GTest ::: GExpected
+    GTest is the goal being tested and GExpected is a simpler goal that
+    describes the expected effects of GTest. If GTest does not match
+    GExpected in terms of RESULT or OUTPUT, then a written report is generated.
+    As for the RESULT, there are three possible RESULTS from testing a
+    goal: success, failure and exception. As for the OUTPUT, the output
+    used in the comparison is the output sent to the current output
+    stream.
+    Some examples. Here are some unit test in which GTest matches
+    GExpected - so no reports are generated in these cases::
+
+      :- X=1 ::: true.
+      :- 1==2 ::: fail.
+      :- see(nosuchfile) ::: throw(_).
+      :- X=1, writeln(X), X==2 ::: writeln(1), fail.
+
+GTest ::: GExpected <<: GGuard
+    The predicate <<:/2 allows a guard to be placed at the end of a unit
+    test, so that a unit test is run conditionally.
+
+Debugger
+~~~~~~~~
+There is a overview of the debugger in a separated section, further below
+in this document.
+
+Is this section we restrict ourselves to describing the built-in predicates
+related to the debugger.
+
+
+debug
+    Switches "debug mode" on. The debugger will
+    trace the execution of the first encountered
+    predicate with a spy point set. Equivalent to
+    *set_prolog_flag(debug,1).*
+
+trace
+    Switches "trace mode" on. The debugger will
+    trace the execution of the first encountered
+    non built-in predicate (even if it has not a
+    spy point set. This allows exhaustive
+    tracing of a program. Equivalent to
+    *set_prolog_flag(debug,2).*
+
+nodebug
+    Switches debug mode off and removes all spy points.
+    Equivalent to *set_prolog_flag(debug,0).*
+
+notrace
+    Same as nodebug/0.
+
+debugging
+    Displays information concerning the current state of
+    debugger, including the list of active spy points
+    and the current leashing mode.
+
+leash(Mode)
+    Sets "leashing mode" to Mode, where Mode is one of
+    the following atoms:
+
+    - 'full'  - prompt on call, exit, next, fail
+    - 'tight' - prompt on call, next, fail
+    - 'half'  - prompt on call, next
+    - 'loose' - prompt on call
+    - 'off'   - no prompt
+    - DEFAULT = 'half'
+
+    When an event causes the debugger to display
+    information, if that event is "leashed"
+    then the debugger stops there to allow user to
+    interact.
+    The events 'redo' and 'cut' cannot be leashed.
+
+spy +AFPredSpec
+    Sets spy points on all predicates described by AFPredSpec.
+    AFPredSpec can be an atom, a predicate indicator (Name/Arity),
+    a comma-separated sequence of atoms/predicate indicators or
+    a list of atoms/predicate indicators.
+    All events associated with a predicate with a spy point set,
+    will force the debugger to prompt the user (even if
+    leashing is off). Example: *spy a, b/4, c.*
+
+nospy +AFPredSpec
+    Removes the spy point for the predicates given by AFPredSpec.
+
+nospyall
+    Removes all spy points from all predicates.
+
+Foreign Interfaces
+~~~~~~~~~~~~~~~~~~
+
+Currently, CxProlog support the following three foreign interfaces::
+
+        - to the C/C++ programming languages;
+        - to the Java programming language and the Java Platform;
+        - to the wxWidgets application framework.
+
+In the future, CxProlog may support more foreign interfaces, say a Python
+interface.
+
+
+foreigns.
+    Shows the foreign interfaces available in the current building
+    of CxProlog.
+
+
+Foreign Interface to C/C++
+--------------------------
+
+The foreign interface to the C/C++ languages is part of the CxProlog
+core and most built-in predicates of CxProlog were developed using this
+interface.
+
+The C/C++ interface is reentrant meaning that CxProlog can call C/C++ code,
+which can call Prolog code, which can call C/C++ code again, etc., at depth
+of recursion.
+
+Some information on using the C/C++ interface is available in the
+source file "YourExtensions.c" of the CxProlog distribution.
+
+*** This section is yet very incomplete. ***
+
+
+Foreign Interface to Java
+-------------------------
+
+The foreign interface to Java in an optional CxProlog component.
+To activate the Java interface, the CxProlog application must be build 
+using 'make' with the option 'JAVA=y'. This is also explained in the
+file 'INSTALL.txt'. Some examples related to this Java interface are
+available inside the directory "examples".
+
+The Java interface allows Prolog code to invoke Java code, making
+the full functionality of the Java platform available inside CxProlog.
+The implementation is based on the Java Native Interface (JNI),
+a standard component of the Sun's Java distribution. As now, the
+Java interface is unidirectional: Prolog can call Java, but not the
+other way around.
+
+The integration between Java and CxProlog is fairly seamless. For example,
+the Java exceptions are automatically converted to regular Prolog exceptions
+which are handled by Prolog code.
+
+For the Java interface to work, you need to install jre-1.5.0, or a newer
+version of the Java Runtime Environment. You also need to ensure that the
+JRE is accessible, which in some installations require you to
+change the PATH environment variable. For example, in the case of Windows
+you will need to add to the PATH a pathname similar to the following::
+
+C:\Program Files\Java\jdk1.6.0_12\jre\bin\client
+
+Even if it is not required by the Java interface, if you want to
+compile Java programs, you also eed to install the jdk-1.5.0, or a
+newer version of the Java Development Toolkit. In the case of Windows
+you will need to add to the PATH a pathname similar to the following::
+
+C:\Program Files\Java\jdk1.6.0_12\bin
+
+To represent on the Prolog side values of the eight Java primitive types,
+CxProlog uses values of existing Prolog types according to the
+following table:
+
+   =======    ================================================================
+   JAVA       PROLOG
+   =======    ================================================================
+   boolean    atoms 'false' and 'true'
+   byte       integer in the range -128 .. 127
+   char       char
+   short      integer in the range -32768 .. 32767
+   int        number (Prolog integer or Prolog float with exact precision)
+   long       number (Prolog integer or Prolog float with exact precision)
+   float      number
+   double     number
+   =======    ================================================================
+
+To represent on the Prolog side values of the reference types (that is
+Java objects and Java arrays), CxProlog introduces the new primitive type of
+"internalized Java object". A internalized Java object is a special Prolog
+term that contains a reference to an external Java object or external Java
+array and is printed like this: *1'JOBJ_404ad640*. The Java null reference
+is treated in a special way and is internalized as the term 1'null,
+which is a special term of an unique type. Note that the the null reference
+will be represented in this way in all the foreign interfaces of CxProlog.
+The following table summarizes the codification of Java reference types
+in CxProlog:
+
+   ==============    =========================================================
+   JAVA              PROLOG
+   ==============    =========================================================
+   Java object       internalized Java object
+   Java array        internalized Java object
+   null reference    1'null
+   ==============    =========================================================
+
+One important property of the Java interface is that distinct internalized
+Java object always denote distinct extern Java objects (so this is a
+one-to-one relation). Therefore, the identity between two extern Java
+objects can be checked by applying ==/2 or =/2 to the corresponding
+internalized objects.
+
+Some predicates of the Java interface require explicit Java types to be
+supplied among the other arguments. Such Java types are called "JNI types"
+because they are written in the, so called, Java Native Interface
+format. The syntax of the "JNI types" is defined by the following grammar::
+
+    <type> ::=
+         Z                   // boolean
+       | B                   // byte
+       | C                   // char
+       | S                   // short
+       | I                   // int
+       | J                   // long
+       | F                   // float
+       | D                   // double
+       | L<classname>;       // object of class "classname"
+       | [<type>             // array of type "type"
+       | (<typeseq>)<type>   // method returning "type"
+       | (<typeseq>)V        // void method
+    <classname> ::=
+         <name>
+       | <name>/<classname>
+    <typeseq> ::=
+         // can be empty
+       | <typeseq><type>
+
+For example: a simple integer has JNI type *'I'*; a simple array of
+integers has JNI type *'[I'*; a two dimensional arrays of strings has
+JNI type *'[[Ljava/lang/String;'*.
+
+The Java predicates that deal with methods and fields require
+the explicit indication of a Java signature also written in the
+Java Native Interface format. A "JNI signature" consists of a
+predicate or field name, followed by a ':', followed by a JNI type.
+For example, the signature of the Java method 'newInstance', from
+class 'java.lang.reflect.Array', is:
+*'newInstance:(Ljava/lang/Class;I)Ljava/lang/Object;'*.
+
+
+jobjs
+    Shows all existing java objects and also information
+    concerning the hash table where they are stored.
+
+java_new(+Class, +ArgTypes, +ArgList, -Result)
+    Invoke a constructor of a Java class. All constructors are accessible,
+    even the private ones.
+ 
+    Class is either an atom, representing the name of a class e.g.
+    'java/lang/System', or an internalized Java object, representing a class,
+    previously returned by other Java predicate invocation.
+
+    ArgTypes is the JNI sequence of argument types of the constructor,
+    e.g. 'IIILjava/lang/String;DD'. In the case of the creation of arrays,
+    the only sequence of argument types allowed is 'I', as in
+    java_new('[I', 'I', [100], R). Note that in this example '[I' is used
+    as a class name.
+
+    ArgList is the list of arguments and can be the empty list. The arguments
+    are automatically converted from Prolog to Java.
+
+    Result is the object returned by the constructor.
+ 
+java_call(+ClassOrInstance, +MethodSignature, +ArgList, -Result)
+    Invoke a Java method or constructor. All methods and constructors are
+    accessible, even the private ones.
+
+    ClassOrInstance is either an atom, representing the name of a class
+    e.g. 'java/lang/System', or an internalized Java object previously
+    returned by other Java predicate invocation.
+
+    MethodSignature is the JNI signature of the method, e.g.
+    'getName:()Ljava/lang/String;'. If the first argument represents a class,
+    the method is assumed to be either a constructor, a static method
+    or a method of the metaclass java.lang.Class; otherwise the first argument
+    represents a regular object and the method is assumed to be an instance
+    method. Every constructor has the conventional name '<init>' and must
+    return void, as in this example '<init>:(Ljava/lang/String;)V'. In the
+    case of the creation of arrays, the only constructor signature allowed is
+    '<init>:(I)V', as in java_call('[I', '<init>:(I)V', [100], R). Note
+    that in this example '[I' is used as a class name.
+
+    ArgList is the list of arguments and can be the empty list. The arguments
+    are automatically converted from Prolog to Java.
+
+    Result is the object returned by the method. If the return type
+    is void, then the value returned is the atom 'void'.
+
+java_field(+ClassOrInstance, +FieldSignature, -To, +Tn)
+    Get or change the value of a class variable or an instance variable. All
+    variables are accessible, even the private ones. ClassOrInstance is either
+    an atom representing the name of a class, or a internalized Java object
+    previously returned by other Java predicate invocation.
+    FieldSignature is the JNI signature of the variable, e.g. 'intArr:[I'.
+    The old value of the variable is To and the new value is Tn.
+
+java_array(+ArrayType, +Array, +Index, -To, +Tn)
+    Get or change the value of an array element.
+    ArrayType is the JNI type of the array e.g. '[[[I'. Array is an
+    internalized Java array. Index is the position to access (starting
+    at 0). To is the old value and Tn is the new value.
+    Example:  java_array('[I', JArray, 3, _, 99999).
+
+java_convert(+Type, ?JavaTerm, ?PrologTerm)
+    Further converts values between the normal representation of Java values
+    in Prolog and a more practical Prolog representation. The intended
+    conversion is specified by Type. The supported conversions are described
+    in the  following table:
+
+   =====================   ===================================================
+   Normal representation   Further conversion
+   =====================   ===================================================
+   internalized string     atom
+   internalized class      atom (class name)
+   internalized array      list
+   primitive type          none
+   =====================   ===================================================
+
+    The conversion is recursive: for example, a java array of java
+    strings is converted to a list of atoms, and vice-versa.
+    Example: java_convert('[Ljava/lang/String;', JArray, [ola, ole]).
+
+    Note that this conversion is already automatically applied to the
+    input parameters of the Java predicates when it makes sense. This is
+    very convenient. Also note that this conversion is not automatically
+    applied to the input parameters of the Java predicates because this
+    would lead to unnecessary conversions that would hamper the
+    efficiency of the system.
+
+    More examples:
+           java_convert('Ljava/lang/Object;', J, 12.7).
+           java_convert('Ljava/lang/Float;', J, 12.7).
+           java_convert('Ljava/lang/Float;', J, 12).
+
+java_check
+    Checks if the Java interface is properly installed and working well.
+
+
+Foreign Interface to wxWidgets
+------------------------------
+
+The foreign interface to wxWidgets in an optional CxProlog component. It
+comes inactive in the CxProlog source code distribution but can be
+activated in the file "src/Makefile", before building CxProlog.
+
+*** This section is yet to be written. ***
+
+
+wxobjs
+    Shows all existing wx objects and also information
+    concerning the hash table where they are stored.
+
+wx_check
+    Checks if the WX interface is properly installed and working well.
+
+
+Foreign Events Handling
+-----------------------
+
+Some foreign interfaces provide support for the creation of
+graphical user interfaces (GUIs). It is the case of the Java
+and the wxWidgets foreign interfaces.
+
+Two basic characteristics apply to all foreign interfaces
+supporting GUIs::
+
+  - The CxProlog application runs in a thread and the GUI low-level activity
+is handled by a different threads.
+
+  - From the user interaction result high-level events (e.g. menu
+selection) which are placed in an event queue. This queue is the only
+data structure shared by the two threads.
+
+
+It there are multiple GUI-supporting foreign interfaces in action
+(let's say, Java and wxWidgets) then the number of running GUI threads
+gets larger. However, there is always a single event queue, shared by
+all those threads.
+
+The CxProlog application handles the event queue using the predicates
+described below.
+
+foreign_event_get(-Event)
+    Gets the next event from the event queue. If the queue
+    is empty, this predicate blocks the Prolog execution until a foreign
+    interface thread inserts the next event in the queue.
+
+foreign_event_is_available
+    Checks if there is a event waiting in the event queue.
+
+foreign_event_discard_all
+    Clears the event queue, in effect ignoring all the events
+    stored there.
+
+
+
+Customising CxProlog
+====================
+
+Alternative Boot Files
+~~~~~~~~~~~~~~~~~~~~~~
+It is possible to specify an alternative boot file, using the command
+line argument '--boot'. Another method is to invoke the C-function
+'SpecifyBootFile(.)' from inside C-function 'YourPrologue()' - as in
+SpecifyBootFile("MyBootFile.pl").
+
+Through the definition of a boot file, the user is able to customize the
+following aspects of the CxProlog system:
+
+   - Replace the default top-level user-iteration;
+   - Add extra built-in predicates written in Prolog: all predicates
+     defined inside the boot file, or loaded from commands inside
+     the boot file, are taken as built-in;
+   - REDEFINE predefined built-in predicates: it is necessary to issue
+     an abolish_builtin/2 command, prior to each such redefinition;
+   - RENAME predefined built-in predicates: this is done by issuing
+     a rename_builtin/3 command;
+   - Define MUTABLE built-in predicates: it is necessary to issue
+     an mutable_builtin/2 command, prior to each such definition.
+
+Every alternative boot file MUST provide a definition for the following
+two predicates:
+
+'$cxprolog_initialise'
+    Perform any initialization that might be required.
+    It is activated on startup.
+
+'$cxprolog_top_level_goal'
+    Perform the top-level user-iteration concerning a
+    SINGLE goal. It is reactivated again and again
+    after every:
+
+    - top-goal completion;
+    - explicit 'abort/0' call;
+    - error message
+    - CNTL-C interrupt (depending on the status of
+      the 'interrupt' Prolog flag).
+
+These predicates may fail or succeed after doing their job. It doesn't
+matter.
+
+Nothing else is required or assumed by CxProlog, concerning alternative
+boot files.
+
+The accompanying file "CxBoot.pl" serves as an example of a simple boot
+file. Actually, the contents of this file match the default used by
+CxProlog when no boot file is provided (see `Default Boot`_).
+
+Default Boot
+~~~~~~~~~~~~
+Missing the conventional command-line option '--boot' (or a
+'SpecifyBootFile' C-function invocation) CxProlog does not load any
+boot file whatsoever. Instead, it installs a default top-level
+interaction oriented toward program development.
+
+There are some minor built-in predicates introduced in the default boot:
+
+
+push +U
+    Pushes the unit designator U on top of current
+    context. Therefore changes the current unit
+    to be used in the top-level iteration.
+
+pop
+    Pops the current context. Therefore restores the
+    previous current unit, which will be used in
+    the top-level iteration
+
+Adding Built-in Predicates Written In C
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is done inside the function YourExtensions(), in file "YourExtensions.c".
+Please read the cautionary notes and guidelines included in the file.
+
+
+Overview of the Debugger
+========================
+
+The built-in predicates related to the debugger are presented above, in the
+subsection _`Debugger` of the the section _`CxProlog Built-in Predicates`.
+
+Here we present an overview of the debugger and describe the user interaction.
+
+Introduction
+~~~~~~~~~~~~
+The CxProlog debugger is based on the classical "procedure box" control
+flow model: during execution, at each procedure call, the debugger builds
+a "procedure box" containing a copy of the invoked predicate. Each procedure box
+includes four ports named 'call', 'exit', 'redo' and 'fail'.
+
+During execution the debugger keeps building procedure boxes so that the flow
+of control would proceed through those ports. Each kind of port
+is transversed (entered or exited) in different circumstances:
+
+- call - entered on predicate activation;
+- exit - exited on success;
+- redo - entered on backtracking (so to consider the next alternative);
+- fail - exited on failure (when there are no alternatives left).
+
+Transversing a port generates a "port event" that makes the debugger display
+a line of debugging information.
+
+CxProlog considers two further kinds of events - "cut events"
+and "next events" - that occur inside the procedure boxes and are activated
+in the following circumstances:
+
+- cut  - activated when the control directive !/0 is executed, in a clause;
+- next - activated when, after "deep backtracking" (via a 'redo' port) the next
+  clause is tried; "shallow backtracking" (inside the box) does not generate
+  'next' events.
+
+The debugger allows the user to creep, that is single-step, through the
+debugging events while they are generated. This is bound to produce
+too much information but the commands 'skip' and 'leap' allow the
+user to trim unwanted information:
+
+- skip  - focus on information concerning a specific procedure box (usually
+ the current one; each box is identified by a unique sequential number);
+- leap - focus on information concerning some predicates of interest
+ previously marked with a "spy points".
+
+Important rules concerning built-in predicates:
+
+- The internal execution of a built-in predicate is untraceable.
+  In other words, the box of a built-in predicate is a "black box"
+  for debugging purposes: what's happening inside cannot be seen.
+- The internal execution of an user predicate is always traceable,
+  even if the user predicate is activated from a built-in predicate.
+- spy points can be placed on user predicates, but not on built-in
+  predicates.
+
+Debugging Line
+~~~~~~~~~~~~~~
+Consider this small program::
+
+   z:-a,!,b,fail.
+   z.
+   a.
+   b.
+   b.
+
+Here is the result of single-stepping through this program, in trace
+mode, with a spy point placed on a/0 and with leashing set to 'half'::
+
+ (trace) [main] ?- z.
+      2 (  1) call: [main]: z ?
+     * 1 (  2) call: [main]: a ?
+     * 1 (  2) exit: [main]: a ?
+      0 (  1)  cut: [main]: z
+       2 (  3) call: [main]: b ?
+       2 (  3) exit: [main]: b
+       b (  4) call: [main]: fail ?
+       b (  4) fail: [main]: fail
+       2 (  3) redo: [main]: b
+       1 (  3) next: [main]: b ?
+       1 (  3) exit: [main]: b
+       b (  5) call: [main]: fail ?
+       b (  5) fail: [main]: fail
+       1 (  3) redo: [main]: b
+       0 (  3) fail: [main]: b
+     * 1 (  2) redo: [main]: a ?
+     * 0 (  2) fail: [main]: a ?
+      0 (  1) fail: [main]: z
+ no
+
+About the meaning of "leashing", please consult the information about the
+predicate 'leash/1'.
+
+Each component of the debugging line has a meaning:
+
+Component 1 (1 char)
+    "\*" - if present, indicates a spy point;
+
+Component 2 (1 char)
+    ">" - if present marks an event that has been reached in a special way,
+          that is not by single-stepping. The alternatives are:
+
+        - point of return from a 'skip' command;
+        - point of return from a leap command;
+        - point where a CNTR-C interrupted activated the debugger,
+        - point where a CNTR-C forced the debugger to stop skipping or leaping.
+
+Component 3 (1 char)
+    The possibilities are:
+
+      - b - built-in predicate;
+      - i - imported predicate;
+      - u - predicate undefined in the current unit;
+      - 0..9# - number of remaining clauses, not yet considered in the
+        execution of an user-defined predicate, plus the current clause
+        (# represents any number >= 10);
+
+Component 4 (a number in parenthesis)
+    Unique invocation number associated with each procedure box.
+    The invocation number is incremented for every fresh invocation
+    that is displayed by the debugger. In other words, it is
+    incremented whenever a call event shows up on the console.
+    Some commands accept an invocation number as argument (see below).
+
+Component 5 (event type)
+    Type of the event that caused the line to be displayed.
+
+Component 6 (context)
+    The current context
+
+Component 7 (goal)
+    The current goal, printed using the current instantiation state.
+
+Component 8 (char)
+    "?" - if presents, prompts the user. Only appear on leashed ports.
+
+Debugging Commands
+~~~~~~~~~~~~~~~~~~
+Each debugging command consists of one letter mnemonic, optionally followed
+by a positive integer argument. Here we describe all the
+available debugging commands:
+
+
+Command h (help)
+    Displays the following menu of available debugging commands.
+
+    The CxProlog debug options are the following::
+
+    CxProlog debug options:
+          <ret> creep              + spy this             h help
+           s<i> skip               - nospy this           d debug
+           q<i> quasi-skip         i info                 t trace
+           l leap                  g<n> ancestors         n nodebug
+           r<i> retry              = debugging            a abort
+           f<i> fail               : statistics           e exit
+
+Command <ret> (creep)
+    Continue execution, displaying debugging information for all the events,
+    until a leashed event is reached. If leashing if off, a complete trace of
+    the execution is given.
+
+Command s<i> (skip)
+    Continue execution, omitting all debugging information, until the next
+    event concerned with the port <i> is reached. Argument <i> is optional:
+    if not given, the number of the current box is used.
+
+Command q<i> (quasi-skip)
+    Combination of 'skip' and 'leap'. Continue execution, omitting all
+    debugging information, until the next event concerned with the port <i>
+    OR with a predicate with a spy point is reached. Argument <i> is optional:
+    if not given, the number of the current box is used.
+
+Command l (leap)
+    Continue execution, omitting all debugging information, until the next
+    event concerned with a predicate with a spy point is reached.
+    By leaping throughout predicates with spy points, the user can follow
+    the execution at a higher level than exhaustive tracing.
+
+Command r<i> (retry)
+    Execution is transferred back to the call port of box <i>, so an
+    earlier state of computation is resumed. Argument <i> is optional:
+    if not given, the number of the current box is used.
+
+Command f<i> (fail)
+    Execution is transferred to the fail port of box <i>. This amounts to
+    manually fail the invocation associated with box <i>. Argument <i> is
+    optional: the default is the number of the current box.
+
+Command + (spy this)
+    Place a spy point on the predicate in the current box.
+
+Command - (nospy this)
+    Remove any spy point from the predicate in the current box.
+
+Command i (info)
+    Shows information about the current goal and corresponding predicate,
+    about the current context and about the current historic context.
+
+Command g<n> (ancestors)
+    Displays, in the current instantiation state, the goal that called the
+    current one, then the one that called it, and so on. Some ancestors may
+    be missing because only goals with associated procedure box are shown.
+    Note that while skipping or leaping (see commands 'skip' and 'leap'), no
+    procedure box is built.
+
+Command = (debugging)
+    Show the current debugging state. Equivalent to predicate debugging/0.
+
+Command : (statistics)
+    Show runtime information. Equivalent to predicate statistics/0.
+
+Command n (nodebug)
+    Turn off debugging. Equivalent to the predicate nodebug/0.
+
+Command d (debug)
+    Debugging proceeds in "debug mode". Equivalent to the predicate debug/0.
+
+Command t (trace)
+    Debugging proceeds in "trace mode". Equivalent to the predicate trace/0.
+
+Command a (abort)
+    Abort execution. Equivalent to the predicate abort/0.
+
+Command e (exit)
+    Exit CxProlog. Equivalent to predicate halt/0.
+
+
+
+Writing CxProlog scripts for Unix
+=================================
+
+A CxProlog script is an executable text file starting with a "shebang #!" line
+like this::
+
+    #!/usr/local/bin/cxprolog <more-options> --script
+
+On Unix systems, use the command "chmod u+x file.pl" to make a script
+file executable. The script can then be activated by simply entering its name
+in the Unix command-line::
+
+    $ file.pl
+
+The script can also be activated by calling::
+
+    $ cxprolog --script file.pl
+
+The script is expected to contain at least one Prolog command like this::
+
+    :- run, exit_script.
+
+or nothing happens.
+
+The "shebang" line works on all platforms, including Windows. CxProlog
+includes special support for this.
+
+Sample Script
+~~~~~~~~~~~~~
+The following script runs a system command with the output redirected to a
+temporary file. The temporary file is then processed using the tokenizer
+predicate read_tokens/2.
+
+    #!/usr/local/bin/cxprolog --script
+
+    % Displays the PID of all processes with "log" as part of their name.
+
+    run :-
+        system('ps -A | grep log > /tmp/aux'),
+        open('/tmp/aux', read, S), read_pids(S, Ps), close(S),
+        writeln(Ps).
+
+    read_pids(S, Ps) :-
+        read_tokens(S,T),
+        (T == end_of_file
+            -> Ps=[]
+            ; T=[const_tk(P)|_], Ps=[P|Z], read_pids(S,Z)).
+
+    :- run, exit_script.
+
+The End
+~~~~~~~

@@ -1,0 +1,56 @@
+
+CXPROLOG INSTALLATION PROCEDURE FOR WINDOWS
+===========================================
+
+
+* AUTOMATIC PART OF THE INSTALLATION
+
+  You are already running the automatic installer, which is a program
+  named CxProlog-<version>.exe.
+
+  After installing, please do not mess with the relative positions of the
+  files inside the application folder because those positions are important
+  for some features of CxProlog to work, like accessing libraries or
+  using the Java services.
+
+
+* MANUAL PART OF THE INSTALLATION
+
+  - A Java nuisance (sorry...)
+
+    Currently, you need to install a recent version of the Java SE JDK,
+    even if you do not intend to use the Java services of CxProlog.
+    I hope to be able to eliminate this requirement sometime in a
+    future version. Se below how to install the Java SE JDK in your
+    system.
+
+
+  - Manual customization of the console
+
+    You need to customize the console where CxProlog runs to properly
+    display non-ANSI characters (e.g. accented characters)! Simply
+    select a no-raster font, e.g. Lucida, in the Properties menu of
+    the console.
+
+
+  - Manual installation of Java SE JDK
+
+    For the Java interface to work, you have to install jdk-1.5.0,
+    or a newer version, and you need to setup the PATH environment
+    variable to make the command 'javac' and the library 'jvm.dll'
+    accessible from CxProlog. Please don't move files around; change
+    only the PATH variable to include something like this:
+
+"C:/Program Files/Java/jdk1.5.0/bin;C:/Program Files/Java/jdk1.5.0/jre/bin/client"
+
+    Also, beware that CxProlog initializes the Java interface only when
+    a Java predicate is called for the first time. So a Java installation
+    problem may go unnoticed for sometime. To check if the Java interface
+    is working you can use the predicate "java_check/0".
+
+
+
+Enjoy using CxProlog.
+
+amd@di.fct.unl.pt
+                           - * - * - * - * -

@@ -1,0 +1,2189 @@
+*** KNOWN IMPERFECTIONS ***
+
+ - As now, the Window version of CxProlog requires that the Java
+   Runtime Environment (JRE) is installed, even if one does not intend
+   to use the Java services of CxProlog. More details on this in the
+   file "INSTALL-windows.txt".
+
+ - Not every CxProlog built-in predicate has yet been checked to
+   be conformant to the ISO standard.
+
+ - The error classification in CxProlog is completely different from the
+   error classification in the ISO standard. (This part will be slow
+   to change.)
+ 
+
+*** CHANGELOG ***
+
+18/Sep/2016: version 0.98.2
+  -semantic changes:
+      * None
+  -additions:
+      * Added the methods iVarGet and iVarSet to the Java lib class
+        prolog.Prolog, allowing Java to access the ivars of CxProlog.
+        [In the MANUAL, a section on how to use CxProlog from the Java
+         side is still missing.]
+      * New predicate 'code_summary/3', analyzes a code fragment and
+        obtains the coordinates of all the clauses and the coordinates
+        of all the clauses with syntactic errors. This predicate is
+        used in the CxProlog IDE for Eclipse.
+  -improvements:
+      * Now, the conversion of atomic Prolog terms to Java values is
+        more flexible. For example, now a Prolog integer is
+        automatically converted to an object of type Integer when
+        the context requires an object. 
+      * The CxProlog coroutining facilities have been improved and now
+        can also be used from the C and Java sides. This is used in
+        the CxProlog IDE for Eclipse
+  -bug fixes:
+      * Old and subtle bug lurking in the predicate retract/1,
+        randomly occurring at the automatic stacks sifts. Fixed.
+        [Paulo Moura led to the discovery of this bug.]
+
+20/Mar/2016: version 0.98.1
+  -semantic changes:
+      * None
+  -additions:
+      * New Java predicate - java_new/4 - simplifies the instantiation
+        of Java classes. It is not anymore required to use java_call/4
+        with an '<init>' method representing a constructor.
+      * Added the ISO predicate subsumes_term/2 and the two non-standard
+        predicates subsumes_chk/2 and subsumes/2 for retro-compatibility.
+  -improvements:
+      * Much improved support for Java in the CxProlog dynamic library.
+        Now, there is the same level of Java support in the CxProlog
+        application and in the CxProlog dynamic library. Embedding
+        CxProlog inside a Java application is now easier and more
+        effective.
+  -bug fixes:
+      * Predicate term_variables/2 was generating the variables in a
+        non-standard order. Fixed. [Paulo Moura reported the bug.]
+
+18/Sep/2015: version 0.98.0
+  -semantic changes:
+      * None
+  -additions:
+      * New stream property - position/1 - provides access to the current
+        position of a stream, encoded as an opaque term. *** As now, only
+        works with text file streams ***.
+      * New predicate stream_position_data/3 gets info from a
+        stream-position opaque term. 
+      * New stream predicates: character_count/2, line_count/2,
+                       line_position/2, byte_count/2.
+      * New determinism detection predicate - deterministic/1. See the example
+        in the MANUAL.
+  -improvements:
+      * The top level interaction now takes advantage of determinism
+        detection. During the interactive generation of solutions,
+        the user does not need anymore to insert the last ';'.
+      * The memory manager now deals better with situations of
+        memory exhaustion: the "Out of memory" error is generated
+        sooner, avoiding the extreme slow down associated with excessive
+        use of virtual memory.
+  -bug fixes:
+      * The predicate throw/1 was accepting free variables. Fixed.
+        [Paulo Moura reported the bug.]
+      * In some rare contexts, the term reader was not dealing well with
+        negative number literals. For example, the reader could not parse the
+        term f(5 ** -1). Fixed. [Paulo Moura reported the bug.]
+      * The predicate bagof was going too deep in the structure of the
+        generator searching for existentially quantified variables X^T. This
+        could interfere with other legitimate uses of the operator '^'. Fixed.
+        [Paulo Moura reported the bug.]
+      * Now the predicate keysort/2 uses the mergesort algorithm so that the
+        sorting is stable regarding the second component of the pairs Key-Value.
+        [Paulo Moura reported the bug.]
+      * A dot appearing after some digits was always interpreted as a decimal
+        point. Fixed. Now the reader is more clever and reads terms such as
+        1.a, which should be interpreted as [1|a].
+        [António Porto reported the bug.]
+      * A previous fix of a bug in the predicates ins/4, ins_start/3 and
+        ins_end/3 has introduced a new bug. Fixed, at last, we hope.
+        [António Porto reported this bug.]
+      * Fixed some bugs involving rare forms of accessing elements
+        of extra-type.
+
+26/Jul/2013: version 0.97.6
+  -semantic changes:
+      * Now, the Java null reference is internalized as the term 1'null,
+        which is a special term of an unique type. Previously, the
+        representation was the atom 'null', but this could lead
+        to ambiguity. [Ricardo Amador request.]
+      * The predicates gui_event_* was renamed foreign_event_*, to make
+        their names neutral and prepare the predicates to more uses in
+        the future [Ricardo Amador suggestion.]
+      * Now, atom_term/2 and atom_termq/2 fail if the first argument is an
+        atom made of blanks. The following goals also fail:
+                                       atom_term(X,X), atom_termq(X,X).
+  -additions:
+      * New option "s - statistics" added to the interrupt (Cntr-C) handling
+        menu.
+      * New predicate fs_set_prefix_dir/1, dynamically overrides
+        the value of PREFIX, set on 'Makefile'.
+      * New evaluable arithmetic predicate - ivar/1 - gets the value of an ivar.
+        The argument is the name of an ivar containing a numeric value.
+      * New predicate build_indexes_now/0, forces the indexes of all the
+        static predicates to be build immediately. This built-in predicate
+        can be called before spawning extra cxprolog processes, to take
+        advantage of the copy-on-write optimization strategy than many
+        operating systems use.
+      * New non-standard Prolog flag 'cut_is_solo'. If false, the lexer
+        treats '!' as a symbol character, instead of as a solo character.
+        Furthermore, the particular symbol sequence beginning "!." is
+        handled in a special way and '!' is still seen as a solo character
+        in this particular context. The flag is on by default.
+        [António Porto request.]
+      * Added the non-ISO but traditional Prolog predicate soft cut *->/2.
+        Implementation not optimized yet. [Paulo Moura request.]
+  -improvements:
+      * Now, the Java services of CxProlog require only the Java
+        Runtime Environment (JRE). The JDK is not required anymore because
+        the classes of the Java services of CxProlog are now distributed
+        already compiled inside a jar file. 
+      * The details of the handling of the CNTL-C interrupts was improved.
+        This also includes a better implementation of the on_interrupt/1
+        hook predicate, which now can raise exceptions.
+      * Now, the Makefile automatically uses the GNU readline library, if
+        available. No need anymore to supply a special argument when building
+        the application using the 'make' command.
+      * The call 'write((p,o))' produced '(p),o'. Now it writes 'p,o' because
+        the term 'p,o' can be read back without any problem. [António Porto
+        request.]
+  -bug fixes:
+      * Active Edinburgh streams could be incorrectly garbage collected. Fixed.
+      * The internal Java support function 'FindClass' was masking all
+        exceptions generated by the function. This was fixed and now, the
+        function propagates all exceptions except the noClassDefFoundClass
+        exception, which is properly handled. [Ricardo Amador reported the bug.]
+      * Sometimes, but very rarely, the wrong result was returned when
+        atom_concat/3 was called with the first argument uninstantiated.
+        This  bug was caused by a subtle side-effect. Fixed. [Paulo Moura
+        reported the bug.]
+      * The type of the operator ":" was wrong. Because of a misspelling in the
+        source code, the type of operator ":" was "xfx" instead of "xfy".
+        Fixed. [Stanislav Maslovski reported the bug.]
+      * When consulting a file, occurrences of invalid unit descriptors could
+        led to the creation of "zombie units". Fixed. [Roy Slater reported
+        the bug.]
+      * The arithmetic operator 'mod' was not behaving according to
+        the standard. Fixed. [Ulrich Neumerkel reported the bug.]
+      * Subtle bug in the handling of circular terms that could manifest
+        even when dealing with non-circular terms [Paulo Moura came across the
+        bug when using the predicate numbervars/3 in a particular context.]
+      * With the flag 'nil_is_special' on, the term reader was still
+        accepting the term [] as an atom in some wrong contexts (e.g. "[](9)"),
+        causing crashes. Fixed. [António Porto reported the bug.]
+      * Solved some issues with the prompt when using an alternative
+        top-level command-line interface. [António Porto reported the bug.]
+      * The predicate absolute_file_name/2 was ignoring the  prolog flag
+        'file_name_variables'. Fixed. Now that the automatic filename expansion
+        is applied when the prolog flag 'file_name_variables' is on.
+        [Paulo Moura reported the bug.]
+      * The predicates write_canonical were writing an extra spurious newline
+        character at the end. Fixed. [Paulo Moura reported the bug.]
+      * Subtle bug in the predicates ins/4, ins_start/3 and ins_end/3. In some
+        rare circumstances, a reference to a local variable was placed in the
+        global stack, violating an invariant of the abstract machine. Fixed.
+        [António Porto reported this bug.]
+      * The predicates array_set/3 and dict_set/3 now accept free vars as
+        last argument. Some useful uses of the predicates require this. Besides,
+        this is necessary to achieve consistency with the ivars, stacks and
+        queues. [António Porto reported the problem.]
+      * Subtle bug in the predicate sub_atom/5. Fixed. [Paulo Moura
+        reported the bug.]
+
+05/Jul/2010: version 0.97.5
+  -semantic changes:
+      * None
+  -additions:
+      * New command line option "--flags <spec>", allows most Prolog flags
+        to be setup at startup time. 
+      * New non-standard Prolog flag 'nil_is_special' makes the term [] a
+        special term of a unique type.
+        Using this semantics, [] == '[]' fails like 1 == '1'.
+        This is read-only flag can be setup at startup using the command
+        "cxprolog --flags nil_is_special=true". The flag is off by default.
+        [This new behavior was an idea and a request by António Porto.]
+      * [Windows] Introduced supports for the "shebang #!" line in scripts,
+        emulating the Unix versions. 
+      * Added the Prolog flag 'dialect' plus the arithmetic constant 'epsilon'.
+        [Requests by Paulo Moura.]
+      * Added the integer predicates between/3 and plus/3.
+      * New predicate hide_par/2, helps dealing with the terms generated by
+        the term reader when the 'parenthesised' operator flag is active
+        on some operators.
+   -improvements:
+      * Now the existing Makefile option "make test" runs the new command
+        "cxprolog --test", which tests if CxProlog is operating correctly.
+        Some unit tests are run in a special CxProlog stress testing mode
+        the exposes the execution to every opportunity to crash.
+      * On the Mac OS, the GNU readline feature is now supported in
+        the Makefile using the MacPorts version of readline. [Paulo
+        Moura told me all about it. Thanks.]
+  -bug fixes:
+      * CxProlog can run again on 64-bit machines. The incompatibility
+        with 64-bit machines started in version 0.94 with the introduction
+        of a new tag scheme that never have been tested on a 64-bit machine.
+      * Now, the macros va_start and va_end are always invoked in
+        corresponding pairs. This solves a potential memory leak
+        on systems where va_start allocates memory. This was never a
+        problem on Linux, Mac OS or Windows running on conventional
+        Intel/AMD hardware.
+      * Fixed an oversight in the term writer. [Discovered by António Porto.]
+        For example, write(+ (x,y)), produced "+(x,y)" instead of "+ (x,y)",
+        which are distinct structures. The space separator is necessary.
+        This happened with all prefix operators made of symbols.
+      * Fixed a mishandling of EOF in the term reader. [Discovered by A.Porto.]
+      * Fixed a bug in the relocation algorithm. There is a chance that the
+        runtime stack and the trail are adjacent, and if the trail
+        also happens to be empty, the address corresponding to the top
+        of the empty trail was being treated as belonging to the local
+        stack, causing that particular address to be wrongly relocated.
+      * The function ZPushCompoundTerm, which is the function that internally
+        pushes terms on the local stack, might leave the local stack almost
+        full and this could cause a crash. Now ZPushCompoundTerm leaves
+        a memory reserve at the top of the local stack. This bug was created
+        in version 0.96, with the introduction of cyclic terms.
+        [Crash discovered by Nuno Soares e Ricardo Amador.]
+
+29/Nov/2009: version 0.97.4
+  -semantic changes:
+      * The possible values for the Prolog flag occurs_check have changed.
+           Previous values: 'off',  'active', 'exception'
+           New values:      'false' 'true',   'error'
+       This is for compatibility with SWI and other Prologs. [Thanks to
+       Ulrich Neumerkel for the suggestion.]
+  -additions:
+      * Finally the CxProlog dynamic library has been finished. This
+        library allows CxProlog to be used as an extern service in
+        any C/C++ application. (Java support will come soon.) For example,
+        now the library supports the ability of C code to iterate through
+        all the solutions of a Prolog goal, while CxProlog generates
+        these solutions.
+        [Note: The dynamic library is yet to be documented in the MANUAL.]
+      * Added some quasi-standard Prolog flags:
+             version_data, version, address_bits, argv
+        [Paulo Moura suggested the 'version_data' flag and then reported
+        a bug in the initial implementation. Thanks.]
+      * Double-clicking on the icon of a ".pl" file in the file browser
+        now makes CxProlog start and that file to be automatically
+        consulted - this assuming that the file name extension ".pl" has
+        already been associated with the CxProlog application. If there
+        are commands contained in the file, they will run automatically.
+        In some systems, e.g. Linux, it may also be required that the
+        particular ".pl" file has the executable attribute set before
+        it can run. This feature was implemented by simply interpreting
+        the command "cxprolog file.pl" as to be equivalent to
+        "cxprolog --script file.pl". [I was prompted to do this after
+        a comment by Antonio Maschio. Thanks.]
+  -improvements:
+      * The implementation of the command-line user interaction was
+        improved in some ways. Above all, it does not rely anymore
+        on the C standard library when dealing with common character
+        encodings like UTF-8 or UTF-16. As a matter of fact, this was the
+        last place in the code where the internal support for common
+        character encodings was still not in use. [Hopefully the non
+        reproducible glitch that António Porto once noticed never
+        happens again.]
+  -bug fixes:
+      * The C library function "stat" seems to be buggy in MinGW and
+        was not accepting pathnames ending in '/' or '\'. Implemented
+        a work around. [Thanks to Paulo Moura, for the bug report.]
+      * In some situations, the term writer failed to insert one
+        space between consecutive atoms made of symbols. For
+        example, "writeq(a>(=(1,2,3,4)))" produced "a>=(1,2,3,4)";
+        now it produces "a> =(1,2,3,4)". [Thanks to António Porto for
+        the bug report.]
+      * [Windows] The interrupt (Cntr-C) is active again. By mistake, I
+        disabled it in the previous version.
+      * An erroneous statement in the MANUAL concerning the compatibility
+        of occurs-check with the ISO Prolog standard was fixed (yes, it is
+        compatible.) [Thanks to Ulrich Neumerkel for pointing this out.]
+  
+03/May/2009: version 0.97.3
+  -semantic changes:
+      * The Prolog flag 'interrupt' was renamed 'on_interrupt'.
+  -additions:
+      * New hook predicate on_interrupt/1, allows a bit more control
+        over the behavior on the interrupt key.
+  -improvements:
+      * Now CxProlog can be compiled using gcc inside the MinGW environment
+        on Windows. The generated executable is a fully native Windows
+        application that supports the full range of features that are included
+        in the Linux and Mac OS versions. The same Makefile is used in
+        all the systems.
+      * Now CxProlog can be compiled as a dynamic library, both on Linux
+        and Windows, with included support for wxWidgets and Java. However,
+        there are more work to be done, because the design of CxProlog
+        relies too much on the assumption that there is a console available.
+  -bug fixes:
+      * Fixed a crash on startup that manifested only on the MacOS.
+      * Fixed a grave memory corruption bug that manifested only on very
+        large Prolog applications. Fortunately, it was possible to
+        fix the bug quickly with the help of the miraculous Valgring tool.
+        This bug was introduced in version cx97.2.
+      * The built-in predicate hide_builtin/2 was crashing when trying
+        to issue an error message.
+      * Fixed a bug on predicates atom_concat/3 and sub_atom/5.
+      * The output of, for example, writeq(p('$VAR'('X'))) was "p('X')",
+        with the inner atom wrongly quoted.
+      * The output of, for example, writeq('.a') was ".a", with the
+        quotes wrongly missing.
+      * With the flag 'character_escapes' off, the output of, for example,
+        writeq('a''b') was "'a'b'", with one quote wrongly missing.
+      * Now, the built-in top-level user-iteration works correctly, even if
+        some important built-in predicates (like >>/2) are deleted using
+        hide_builtin/2.
+      * With the GNU readline feature active, all the blank spaces where
+        suppressed at both ends of every input line entered in the console.
+        The intention was to keep the readline history tidy, but this
+        interfered with predicates such as get0/1 or get_line/1. Now this
+        tidying is only performed for lines that correspond to genuine top
+        level goals (that is, only in the context of '$$_top_read'/3.)
+
+03/Oct/2008: version 0.97.2
+  -semantic changes:
+      * The literals '\'' and '''' represent the same single quote. However,
+        now '\'' is the preferred form.
+      * Dropped the non-ISO Prolog flag 'compatible_strings' and replaced
+        it with the more general ISO flag 'double_quotes'.
+  -additions:
+      * New ISO predicates
+           read_term/2, read_term/3
+        read terms in flexible ways using a read-options list.
+        Example: read_term(T, [singletons(S), double_quotes(chars)]).
+      * New ISO predicate ensure_loaded/1 is similar to consult/1 but
+        does nothing if the file has already been loaded.
+      * New ISO predicate discontiguous/1 declares predicates that
+        are allowed to be defined using clauses that are not consecutive
+        in the source file.
+      * Added all the ISO Prolog flags missing in CxProlog:
+             bounded, max_integer, min_integer,
+             integer_rounding_function, char_conversion,
+             max_arity, double_quotes.
+      * Added a non-ISO Prolog flag 'character_escapes', to control
+        if ISO escape sequences are enabled and if the character "\" is
+        subjected to a special interpretation. The option
+        'character_escapes' was also added to predicate write_term/2.
+      * Added a dummy implementation, only for compatibility purposes,
+        of the rarely used ISO predicates
+           char_conversion/2, current_char_conversion/2
+      * There has been development work on new features to simplify
+        embedding CxProlog in C/C++/Java applications (cf. file
+        "CallProlog.c".) The interface was already 90% completed by the
+        end of August, but the development was temporary stopped
+        due to lack of time.
+      * Thanks to Yosifov Pavel who contributed to make CxProlog run
+        on FreeBSD.
+  -improvements:
+      * Trying to write a character unsupported by the encoding of an
+        output stream used to throw a program exception. Now, any
+        output stream that is attached to a console is treated in a
+        special way. Now, trying to write a character unsupported by
+        the encoding of a console stream causes the character to be
+        printed as a hexadecimal ISO escape sequence. This is useful
+        to overcome the limitations of consoles that do not
+        support Unicode.
+  -bug fixes:
+      * Fixed the last problems with the standard order @<. This bug
+        started to be fixed in version cx97.1 and was originally
+        introduced in version cx94, because of the new tag scheme
+        for terms.
+      * Fixed an instantiation bug in sub_atom/5.
+      * Not all special characters, like '\\' and '\t', were being
+        written as ISO escape sequences by writeq/1 and other similar
+        output predicates.
+      * Some undesired interactions between the relocation mechanism and
+        reentrant Prolog calls, specially when using the new call_cleanup/2
+        predicate, was discovered. Solved by introducing a new mechanism
+        for registering local C-variables for automatic relocation.
+
+27/Jun/2008: version 0.97.1
+  -semantic changes:
+      * The semantics of the cut now follows the ISO standard, that is now
+        the cut is "local" inside most meta-predicates, like call/1,
+        \+/1, once/1, etc. The cut is "transparent" only in the
+        meta-predicates ,/2, ;/2, and in the body on ->/2.
+        Previously the cut was transparent inside all meta-predicates.
+      * The new default value for the 'bar_is_semicolon' flag is 'false'.
+        This new default is compatible with ISO Prolog. To achieve C-Prolog
+        compatibility you need to set the flag to 'true'.
+  -additions:
+      * The quasi-standard predicate
+           call_cleanup/2 
+        ensures that a cleanup goal (also called "finalizer goal") is
+        automatically executed after the main goal has completed execution,
+        that is after any one of the following four situations:
+           deterministic success, failure, cut, exception.
+        Example: call_cleanup(process_file(S), close(S)).
+      * The ISO predicates
+           write_term/2, write_term/3
+        write terms in flexible ways using a write-options list.
+        Example: write_term(T, [quoted(true), numbervars(true)]).
+      * The ISO predicates
+           write_canonical/1 and write_canonical/2
+        write terms that can read the term back, even if the operator
+        table has changed. This is achieved by quoting some atoms
+        and by ignoring the operator table.
+      * Now, the predicates that read terms understand the ISO escape
+        sequences such as '\n' or '\xfffff\' are. Those escape sequences
+        can be used in quoted atoms and Prolog strings, like 'hello\n'
+        and "hello\n".
+      * Two new predicates support writing unit tests:
+           :::/2, <<:/2
+        Actually, CxProlog started to use these two predicates to
+        test itself (see the files test_* in directory "pl/".)
+      * The GNU readline history is now saved between sessions.
+      * Added built-in support for storing text in files and buffers
+        using the character encoding UTF-8. Previously, this encoding was
+        externally supported via the C standard library, using such
+        primitives as mbrtowc and fgetwc. This was a bit of a problem
+        because UTF-8 tends not to be supported on the Windows platform.
+      * Beyond the UTF-8 encoding, more built-in character encodings
+        were added, including: UTF-16BE, UTF-16LE, UTF-32BE, UTF-32LE,
+        UCS-2BE, UCS-2LE. There are many more details described in
+        the MANUAL.
+      * Now, the BOM marker may be detected/generated in files (not
+        buffers) to indicate that contents is encoded in any variant
+        of UTF-8, UTF-16 or UTF-32. There is also a new stream
+        property bom/1.
+      * New mutable Prolog flag 'encoding', indicates the default
+        encoding used for opening text streams. This flag is initialized
+        from locale information extracted from the OS environment. This is
+        also the encoding represented by the special encoding name 'text'.
+      * New read-only Prolog flag 'encoding_os', indicates the encoding
+        used for communicating with the OS (filenames, etc.)
+-improvements:
+      * None
+  -bug fixes:
+      * The "finalizer functions" (a feature introduced in cx82) were not
+        working properly in response to exceptions. This problem concerned
+        only non-deterministic predicated written in C that use that feature.
+      * Corrected the output of writeq((a|b)). Now it prints a|b instead
+        of a'|'b.
+      * Fixed a bug in the standard order @< of terms. Bug introduced in
+        version cx94.
+ 
+21/Jan/2008: version 0.97.0
+  -semantic changes:
+      * None.
+  -additions:
+      * New ISO arithmetic evaluable predicates:
+           rem/2, **/2, abs/1, ceiling/1, float/1, float_fractional_part/1,
+           float_integer_part/1, sign/1, truncate/1.
+      * Some new non-ISO arithmetic evaluable predicates:
+           integer/1, max/2, min/2, local/0, global/0.
+      * Two new predicates, available on Linux and on Windows:
+           os_pid/1, os_tid/1.
+      * New predicate prints information about certain features of CxProlog
+        that may vary between installations:
+           features/0
+      * New fs_property/3 property "writable". Therefore, now it is possible
+        to test whether a file or a directory has write permissions.
+      * New predicate acts like exit/0 inside running scripts and like true/0
+        elsewhere:
+           exit_script/0
+      * The Prolog flag 'memory_warnings' has been dropped in favor of
+        a more general 'info_messages' flag. But retro-compatible support
+        for the old flag is kept.
+      * [Windows] Now the Windows version is distributed as a traditional
+        "_.exe" installer that the user runs on the desktop. Many thanks
+        to Paulo Moura for the installer-builder script, a very
+        worthy contribution to CxProlog. Also thanks to Jordan Russell
+        for "Inno Setup", an excellent freeware installer generator
+        for Windows programs.
+      * [Windows] Now, at last, the wxWidgets part of CxProlog works
+        in Windows as correctly as in Linux.
+-improvements:
+      * We developed a new method for managing the interactions between
+        the main CxProlog thread and the GUI thread of wxWidgets. This
+        method is safer and also easier to use by the programmer.
+      * The Java ".class" files that CxProlog generates on demand where being
+        always placed besides the corresponding ".java" source files, in the
+        same directory. But this was not a good idea for the classes located
+        in the supposedly read-only directories $PREFIX/lib/cxprolog/ and
+        $PREFIX/share/cxprolog/examples/. Now CxProlog uses a temporary "cache
+        directory" to store the ".class" files generated from
+        $PREFIX/lib/cxprolog ".java" files.
+        In the case of Linux, the cache directory is "~/.cxprolog/cache";
+        in the case of windows, the cache directory is "~/Temp/CxProlog/Cache".
+  -bug fixes:
+      * Serious problem concerning the use of the interrupt key when
+        wxWidgets is active was solved on Linux (no such problem
+        on Windows.) The root of the problem: the main Prolog thread
+        should receive all the interrupt signals; instead it was a
+        randomly selected thread that was getting each signal.
+        Tough problem, but fixed.
+      * The term reader was handling the syntactic errors simply by
+        printing an error report and failing. This was fixed and
+        now an exception is thrown for each syntactic error. Following this
+        fix, the consulting predicates had to be slightly changed to
+        handle the syntactic errors with catch/3.
+      * The expansion of the symbol '~' was not being performed as expected
+        (with the Prolog flag 'file_name_variables' activated.) Problem fixed,
+        both in Linux and Windows.
+  
+19/Dec/2007: version 0.96.3
+  -semantic changes:
+      * The Prolog flag 'old_consult' has been dropped in favor of a more
+        useful 'old_update' that changes the semantics of the assert, retract
+        and consulting predicates to be compatible with the old C-Prolog and
+        retro-compatible  with all versions of CxProlog prior to 0.92.
+        Beware that this flag activates an ad-hoc update semantics that cannot
+        easily described in the case of self-modifying predicates.
+      * The Prolog flag 'fail_on_error' was renamed 'on_error' and now accepts
+        a new option - 'hook' - that specifies that the hook predicate
+        'on_error/1' should be the handler of all the errors caused by the
+        built_in predicates.
+  -additions:
+      * New predicate 'write_exception/1' writes an exception-term in
+        the stream 'user_error' using the The CxProlog error messages format.
+      * The existing general implementation of the Prolog flags has been
+        revised and now most of the values of the flags became descriptive
+        atoms. However numeric values are still accepted for backward
+        compatibility.
+  -improvements:
+      * Now the main functor of the exception-terms is error/2, preparing
+        for future support of the exception-terms of the ISO standard 
+        (http://www.sju.edu/~jhodgson/prolog_proj/exceptions.html).
+      * Improved use of aliases in the management of the streams user_input,
+        user_output and user_error.
+  -bug fixes:
+      * None.
+
+13/Dec/2007: version 0.96.2
+  -semantic changes:
+      * In the previous versions of CxProlog, any predicate generating
+        new values of extra-types, e.g. dict_new/1, returned the result
+        either on a logical variable or on an ivar. If the programmer passed
+        an atom to the predicate then that atom was interpreted as an ivar
+        name and the predicate's result was stored in that ivar. Now, with
+        the new semantics, the atom is interpreted as an alias that is
+        associated with the newly created extra to identify it.
+  -additions:
+      * Now, any value of an extra-type, e.g. a dictionary, can be identified
+        by an atom that, in that role, will be called an alias. Aliases
+        are global names, so they should be used sparingly. The same alias
+        can be used to identify different extra-values, as long as they
+        belong to different extra-types. The aliases are recognized by
+        the predicates that implement the extra-types, e.g. dict_set/3.
+        The ISO Prolog supports aliases for streams. The alias predicates of
+        CxProlog are:
+              alias/2, unalias/2, aliases/0.
+  -improvements:
+      * None.
+  -bug fixes:
+      * When a top level goal contained  an extra-literal, e.g.
+        1'DICT_b7414758, the corresponding extra-value was being made
+        permanent. Fixed.
+
+04/Dec/2007: version 0.96.1
+  -semantic changes:
+      * None.
+  -additions:
+      * None
+  -improvements:
+      * Now CxProlog automatically invokes the javac Java compiler
+        on demand to generate Java classes from ".java" source files.
+        So the CxProlog distribution does not need to include any
+        ".class" file, and the generated ".class" files will be compatible
+        with the currently installed version of Java.
+      * Now CxProlog automatically extends the CLASSPATH environment
+        variable (the one local to the current process) with the path of
+        the CxProlog library directory and the path of the current directory.
+        Therefore, now the Java interface works for the most part even if
+        the global CLASSPATH environment variable is undefined.
+      * [Windows] The files ChangeLog, MANUAL, COPYING, README and others
+        are now distributed in the MS-DOS text format, with all the lines
+        being terminated with a CR-LF marker.
+  -bug fixes:
+      * [Windows] The predicate fs_cwd/2 was not working for absolute
+        pathnames, e.g. 'C:/CxProlog/examples', when they were passed in the
+        second parameter (it was working for relative pathnames, though.) Fixed.
+
+28/Nov/2007: version 0.96
+  -semantic changes:
+      * None.
+  -additions:
+      * The Java optional component and Prolog code are now mutually
+        reentrant.
+      * The wxWidgets optional component and Prolog code are now mutually
+        reentrant.
+  -improvements:
+      * [Windows] Support for the Windows version of CxProlog has been
+        revised and extended to embrace the features of CxProlog added
+        in the last two years. However, the wxWidgets optional component is
+        not yet supported in the current Windows version.
+  -bug fixes:
+      * The multiple character encodings that CxProlog supports were not
+        working at all for input processed via the GNU readline library. Fixed.
+      * It should be forbidden to alter the operator ',' and now
+        this rule is enforced.
+      * [Windows] To make the Windows version compatible with non-ansi
+        characters it was necessary to explicitly manage the input "code page"
+        and the output "code page" of the console.
+
+31/Out/2007: version 0.96.beta1
+30/Sep/2007: version 0.96.alpha5
+28/Sep/2007: version 0.96.alpha4
+19/Sep/2007: version 0.96.alpha3
+12/Sep/2007: version 0.96.alpha2
+02/Sep/2007: version 0.96.alpha1
+  -semantic changes:
+      * Predicate free_vars/2 was renamed term_variables/2.
+  -additions:
+      * Added support for command-line editing and command-line history
+        using the well known GNU readline library. To activate this
+        functionality you need to build CxProlog using the command:
+              make USE_READLINE=y
+      * New predicate allows control over the prompt used by the input
+        predicates:
+              prompt/2
+      * Now, even if the GNU readline library is not available, all the
+        prompts issued by the console input predicates will still be the same.
+      * New ISO predicate unifies its two arguments with the restriction
+        that both unify to an acyclic (finite) term:
+              unify_with_occurs_check/2
+      * New predicates for testing the cyclicity of terms:
+              acyclic_term/1, cyclic_term/1
+      * Introduced support for cyclic terms in the manner of Prolog II.
+        Now the following predicates understand cyclic terms and process them
+        in finite time:
+              =/2, \=/2,
+              compare/3, ==/2, \==/2, @</2, @>/2, @=</2, @>=/2,
+              sort/2, msort/2, keysort/2,
+              ground/1, term_variables/2, numbervars/3, subterm/2,
+              :=/2, copy_term/2.
+        Asserting cyclic terms is not supported though.
+      * New Prolog flag 'occurs_check' enables a special execution mode
+        supporting occurs-check. This can be useful for some specialized
+        applications, as described in the MANUAL.
+      * New Prolog read-only flags 'java_available' and 'wxwidgets_available'
+        allow the Prolog application to check if the Java and wxWidgets
+        optional components are installed.
+      * Added to the MANUAL the new section "Occurs-check and cyclic terms".
+  -improvements:
+      * Some of the instruction of the abstract machine have been adapted to
+        support the new occurs-check execution mode (cf. 'occurs_check' flag.)
+  -bug fixes:
+      * None.
+
+23/Jul/2007: version 0.95
+02/May/2007: version 0.95.beta1
+10/Apr/2007: version 0.95.alpha2
+02/Apr/2007: version 0.95.alpha1
+  -semantic changes:
+      * None.
+  -additions:
+      * New atom handling predicates that follow the ISO standard:
+              atom_length/2, atom_concat/3, sub_atom/5
+      * New stream predicate that follows the ISO standard:
+              stream_property/2
+      * New meta-call predicates:
+               call/7, call/8, call/9
+      * New filesystem predicates:
+               fs_cwd/1, fs_cwd/2, fs_mkdir/1,
+               fs_exists_file/1, fs_exists_dir/1
+      * New predicates that are available only at booting time:
+               hide_builtin/2, hide_non_core_builtins/0
+      * Added ISO directive for consult:
+               initialization/1
+        saves its argument to be executed later, at the end of the consult.
+      * Added ISO directive for consult:
+              include/1
+        textually includes a file at the current point of a source-file.
+      * New Prolog flag 'file_name_variables', controls whether file names
+        are automatically expanded when passed to the specific built-in
+        predicates that expect them. Details of the expansion are in
+        the MANUAL.
+      * Introduced a CxProlog language variant, called "variant n.3",
+        which is part of the CxProlog distribution, but has not been
+        documented yet. This variant was used in the implementation
+        of a modular version of P-FLAT.
+      * Introduced a CxProlog language variant called "variant n.4" and
+        devised by A. Porto. It was not yet decided if or when the
+        implementation will be made public. As now, it is not part of the
+        CxProlog distribution.
+  -improvements:
+      * Now the system-supported command line options start with a
+        double-hyphen "--", following the GNU convention. The available
+        options are:
+                --boot, --script, --goal, --quiet, --test.
+      * The new gcc 4.1 comes with the "strict-aliasing" flag turned on
+        by default. To avoid the warnings we adjusted some details in the
+        CxProlog code.
+      * Now CxProlog automatically recognizes whether the standard input
+        stream is associated with a console or not; if not, the
+        interactive prompts are suppressed.
+      * Now it is possible to consult files without the ".pl" extension.
+        For example, [a] tries first to consult the file "a". If it does
+        not exist then tries to consult the file "a.pl".
+      * In the internal details of the term writer implementation, now the
+        term reader treats "[]" as an empty list and not as a regular atom.
+        For example, the goal write((a-->[])) now produces "a-->[]" instead
+        of "a--> []" (notice the extra space.) The new form is nicer and
+        can still be read back.
+  -bug fixes:
+      * When applied to files, the predicates at_end_of_stream/1 and
+        at_end_of_stream/2 were detecting the end of stream condition
+        a bit too late, after 'end_of_file' (or -1) had already been
+        returned by get_char/1 (or get_byte/1.) Fixed.
+      * The predicate '=..'/2 was not dealing correctly with cases like this
+        "f =.. [f,X|Y]"; it was generating an error instead of failing. Fixed.
+      * The predicates check_imports/0 and listing/0 was issuing phony
+        warnings when importing from an unit parameter representing a unit.
+        Fixed.
+      * In the errors messages, the name of non-deterministic built-in
+        predicates were displayed with the added prefix '$$$$_'. This prefix
+        is internally used, but it is a bad idea to display it. Fixed.
+      * Fixed bug on garbage-collecting non-used streams.
+
+08/Jan/2007: version 0.94.2
+  -semantic changes:
+      * None.
+  -additions:
+      * Introduced a compatibility mode with the ancient version cx90.3.
+        The compatibility comprises the syntax of the terms, the initial
+        operators, the consult/reconsult predicates, and some more details.
+        The compatibility is needed because some existing applications still
+        rely on several cx90.3 oddities. This mode is activated by setting
+        to "1" the symbol COMPAT_0_90_3 in the file CxProlog.h. This
+        compatibility mode will be discontinued, some time in the future.
+  -improvements:
+      * The code related with streams was revisited. Handling of EOF
+        was improved and corrected, for all kinds of streams. The source
+        file "Stream.c" was extensively reorganized and the new source file
+        "File.c" was created.
+  -bug fixes:
+      * The predicate buffer_get/3 was returning values in the range -128..127
+        when it should be returning values in the range 0..255. This bug
+        was introduced in cx92 during the adaptation to gcc 4.0. Fixed.
+      * The predicate atom_term/2 did not work when when the first argument
+        contained non-ascii characters. This bug was introduced in cx92
+        during the adaptation to gcc 4.0. Fixed
+
+ 28/Dec/2006: version 0.94.1
+  -semantic changes:
+      * None.
+  -additions:
+      * None.
+  -improvements:
+      * None.
+  -bug fixes:
+      * The following fixes resulted from a systematic search for bugs
+        using the stress-testing modes of CxProlog.
+      * In the body of each clause, not every permanent variable (Y-variable)
+        was initialized before the first predicate call. This seemed
+        to be a reasonable optimization. However, our garbage collector of
+        extra-values requires every cell in the machine state to be in a
+        meaningful state at the start of each predicate call. To add the
+        missing initialization, we introduced a new machine instruction that
+        sets an individual permanent variable to a meaningful state. We also
+        adapted the compiler to generate the new instruction. Fortunately
+        the new instruction needs to be issued very rarely, so it does not
+        impair the performance of the language.
+      * Fixed a flaw in the garbage collector of extras. The function
+        'ExtraGCMarkRange' failed to propagate during the building of the
+        graph of reachable objects.
+      * The output stream associated with the 'sys_trace' Prolog flag had
+        to be made a permanent stream, simply to avoid the premature
+        garbage collection of that stream.
+
+ 20/Dec/2006: version 0.94
+  -semantic changes:
+      * None.
+  -additions:
+      * Introduced the predicates current_atom/1, jobjs/0, wxobjs/0.
+  -improvements:
+      * The general functionality of the extra-types (dicts, stacks,
+        queues, streams, java objects, wxwidgets objects, etc.) got richer.
+        Now there are two new universal features, previously only available
+        for atoms and floats: (1) garbage collection; (2) hash tables for
+        fast access of extra-values.
+      * The implementations of each existing extra-type had to be
+        adjusted to conform to the new rules for extra-types. For
+        example, now each extra-type must be aware that its values
+        are subjected to the influence of a garbage collector.
+      * The atoms and floats were reimplemented as extra-types, benefiting
+        from the new generic functionality of the extra-types.
+      * Introduced a new tag scheme that uses only the lower 2 bits, and
+        in some cases the lower 3 bits, of the machine addresses. The new
+        tags take advantage of the fact that atoms and floats are now
+        represented as values of extra-types: note that more commonality
+        implies that less bits are needed for tags. The new tag scheme is
+        important because it removes some complications that always existed
+        when running CxProlog on top of certain hardware/OS combinations
+        (the concept of "backwards machine" is not need anymore.)
+      * The memory manager of CxProlog had to be partially reimplemented
+        to serve the needs of the new tag system.
+      * The memory manager now offers the option of each allocated block
+        not having to keep track of their own size. This saves some memory.
+      * Some graphical predicates are now available to create and manage
+        graphical elements such as: text windows, drawing windows, alert boxes,
+        file chooser dialogs, etc. All this was implemented taking advantage of
+        the CxProlog interface to Java and wxWidgets.
+        The graphical predicates are yet to be documented and their
+        implementation is still "alpha quality". You can have an idea about
+        what is available by peeking inside the files "JavaAddOns.c" e
+        "WxWidgetsAddOns.cpp" of the distribution of CxProlog. This is an
+        optional component of CxProlog that can be activated in "Makefile".
+        (The implementation of these predicates is a recent and valuable
+        contribution of Sergio Lopes and Henrique Oliveira, two graduated
+        students of our Department.)
+  -bug fixes:
+      * None.
+
+23/Jul/2006: version 0.93.1
+  -semantic changes:
+      * The predicate property 'builtin' (supported by predicate_property/2)
+        was renamed 'built_in' for compatibility with other Prologs.
+  -additions:
+      * Introduced the ISO predicates: current_prolog_flag/2, set_prolog_flag/2.
+        The existing Prolog flags can be manipulated via these predicates,
+        further to the flag/2 and flag/3 predicates. But there is a
+        difference: when dealing with boolean flags, the new predicates
+        use the values 'false' and 'true' instead of the values 'off' and 'on'.
+      * Introduced the ISO Prolog flag 'unknown' which determines how calls
+        to undefined predicates are handled. Possible values are 'error',
+        'fail', warning'.
+  -improvements:
+      * None.
+  -bug fixes:
+      * Predicates close/1 and close/2 were not working properly on the Mac
+        when applied to input streams.
+
+31/May/2006: version 0.93
+  -semantic changes:
+      * Now the arguments of predicate open/4 adhere to the ISO standard.
+        Also the arguments of open_buffer_stream/4 were made consistent
+        with the arguments of open/4.
+  -additions:
+      * New predicate close/2, follows the ISO standard.
+      * Introduced support to the wxWidgets platform independent API.
+        This new component of CxProlog can be optionally activated in the
+        "Makefile" file. When this component is active, the CxProlog core runs
+        in one thread and the wxWidgets graphical user interface runs in
+        a different thread. The services of wxWidgets can be accessed
+        from the CxProlog side by defining new built-in predicates written
+        in C++. All the synchronization and inter-thread communication issues
+        are already solved in an easy-to-use framework. See one example of
+        use of this framework in the file "WXWidgetsDemo.cpp".
+      * Introduced support for GUI interfaces based on Java.
+      * Introduced three new predicates to manage high-level events coming
+        from the GUI interface. It is supported getting events from Java and
+        wxWidgets in the same program. The predicates are:
+              gui_event_get/1,
+              gui_event_is_available/0,
+              gui_event_discard_all/0.   [** NOT IN THE MANUAL YET **]
+      * Introduced a CxProlog language variant called "variant n.2" and
+        devised by A. Porto. It was not yet decided if or when the
+        implementation will be made public. As now, it is not part of the
+        CxProlog distribution.
+  -improvements:
+      * Part of the code was reorganized and generalized to ease the future
+        exploration of alternative semantics for the contexts.
+      * CxProlog can now be safely activated as a thread inside a
+        multi-threaded program.
+      * Improved 'sys_trace' = 3. Now it also shows the predicate calls
+        in the middle of the abstract machine instructions.
+      * Improved the predicate abolish_builtin/2 to allow code compiled
+        before the deletion of a built-in predicate to still access
+        the original predicate definition.
+  -bug fixes:
+      * At startup, now CxProlog handles gracefully any invalid setup of
+        the environment variable LC_CTYPE by using the fallback 'C' locale.
+      * The interrupt key now works when the Java component is installed.
+      * Fixed a subtle bug in the management of the references to Java objects.
+
+06/Nov/2005: version 0.92.1
+  -semantic changes:
+      * The default value of the flags 'undef_warnings' and
+        'memory_warnings' changed to 'off' because the corresponding
+        behavior is less confusing to the new users.
+  -additions:
+      * New Prolog flag 'old_consult', if 'on', forces the consulting
+        predicates to be compatible with C-Prolog and also retro-compatible
+        with older versions of CxProlog. When 'old_consult' is 'on',
+        consult/1 appends clauses to the database and reconsult/1 tries
+        to redefine predicates. More details in the MANUAL.
+  -improvements:
+      * Improved the predicate rename_builtin/3 to allow code compiled
+        before the renaming of a built-in predicate to still access
+        the original predicate definition.
+      * Removed the upper limit to the number of distinct named variables
+        occurring in a asserted clause. The limit was 64. This is
+        useful because clauses automatically generated by some
+        program transformers may contain a very large number of
+        distinct named variables.
+  -bug fixes:
+      * When invoked from a command, during consult, assert/1 was
+        causing the unwanted deletion of the predicate referred to by
+        its argument. Fixed.
+
+25/Sep/2005: version 0.92
+  -semantic changes:
+      * Following the ISO standard, now CxProlog distinguishes
+        between static predicates and dynamic predicates with
+        coherent update semantics. A dynamic predicate is directly
+        declared using dynamic/1 and is indirectly declared through
+        the assert predicates. The static predicates are created
+        by consult/1.
+      * CxProlog abandoned the old C-Prolog model of consulting
+        (incompatible with static predicates) and adopted the
+        "modern model" of most modern Prologs: the predicates reconsult/1
+        and silent_reconsult/1 were dropped and much of their behavior
+        was transferred to renewed and improved predicates consult/1 and
+        silent_consult/1.
+      * current_predicate/1 was changed to comply with the ISO standard.
+        Now the argument is a predicate indicator (a term of the
+        form Name/Arity), not anymore a term whose main functor
+        identifies the predicate (note there is a new predicate
+        current_predicate/2 very similar to the old current_predicate/1
+        - see below.)
+      * The term reader changed the way it handles ambiguities involving
+        operators with multiple definitions: the prefix alternative is
+        tried first, next the infix alternative, finally the postfix
+        alternative . Previously the alternative tried first was the infix
+        alternative. Using the new rule, the term "not - a" is now read as
+        "not(-(a))" instead of "-(not,a)", and the term "a(- - -,- -)" is
+        now read as "a(-(-(-)),-(-))" instead of "a(-(-,-),-(-))". The new
+        rule is maybe more natural and reflects the way many Prologs handle
+        operator ambiguities.
+      * Now distinct internalized Java objects denote distinct extern
+        Java objects. The predicate java_same/2 was deleted and now
+        the identity between two Java objects is checked using ==/2 or =/2.
+  -additions:
+      * New predicates dynamic/1 and dynamic_iu/1 declare dynamic
+        predicates with coherent update semantics: dynamic/1 selects
+        the "logical update semantic view" and dynamic_iu/1 selects
+        the "immediate update semantic view".
+      * New Prolog flag 'all_dynamic', if 'on', forces all local predicates
+        to be dynamic.
+      * New ISO predicate multifile/1 declares predicates that may
+        be defined over multiple files.
+      * New predicates visible/1 and import/2 declare visible predicates
+        and imported predicates, respectively.
+      * New quasi-standard predicate predicate_property/2 explore the
+        predicates in the database and their properties.
+        The supported properties are:
+                    'builtin', 'user_defined', 'local',
+                    'static', 'dynamic', 'dynamic_iu',
+                    'imported_from(U)', 'visible', 'private',
+                    'multifile', 'source, file(F),
+                    'number_of_clauses(N)', 'full_name'(T),
+                    'undefined'.
+      * New quasi-standard predicate current_predicate/2 provides another
+        useful method of accessing the user-defined predicates of the
+        current unit.
+      * New quasi-standard predicate absolute_file_name/2 generates
+        canonized absolute pathnames. It is used in consult/1 to uniquely
+        identify source files.
+      * New predicates error/1 and warning/1 allow issuing errors and
+        messages using the CxProlog format.
+      * New arithmetic function currtime/0 gives the absolute time in
+        seconds since 00:00:00 UTC, January 1, 1970.
+      * New arithmetic functions random/0, random/1 and e/0.
+  -improvements:
+      * Predicates clause/2 and retract/1 were updated to be consistent
+        with the two semantic views of dynamic predicates.
+      * The debugger was updated so to support the two semantic views
+        of dynamic predicates.
+      * Parts of the code was rewritten to cope with the new found
+        fussiness of gcc 4.0.
+      * [Windows] Now the implementation of the fs_*/N filesystem predicates
+        is compatible with Microsoft Visual Studio in Windows.
+      * Some built-in predicates previously written in C,
+        e.g. check_imports/0 and check_missing/0, were rewritten in
+        Prolog, taking advantage of the new predicates predicate_property/2,
+        error/1, and warning/1.
+      * The cpp preprocessor is now used in a sophisticated way to simplify
+        the management of the abstract machine instructions.
+      * All the arithmetic functions, e.g. sin/1 and exp/1, are now
+        implemented using the maximum available numeric precision
+        (usually 80-bit.)
+  -bug fixes:
+      * Now the term writer places parenthesis around some operators
+        when this is needed to ensure the written term can be read back.
+        Example: the term with structure "-(not,a)" is written as
+        "(not)-a" because "not-a" would be read as "not(-(a))".
+      * A unit clause, such as 'f(5)', that previously could only be
+        retracted using retract(f(5)), can now be also retracted using
+        retract((f(5):-true)) or retract((f(5):-X).)
+
+27/Jul/2005: version 0.91
+  -semantic changes:
+      * Non-standard predicate call/2 was replaced by the quasi-standard
+        family of call/* predicates. More on this below.
+      * Non-standard predicate unique/1 was replaced by the quasi-standard
+        new predicates gensym/2 and gensym/1.
+      * Predicates flush/0 and flush/1 were renamed flush_output/0 and
+        flush_output/1 following the ISO standard.
+  -additions:
+      * Introduced the ISO datatype 'character': an ISO Prolog character is
+        simply a one-char atom, e.g. 'a', '$', ' '.
+      * Introduced the ISO predicate char_code/2 which converts between
+        ISO characters and Unicode codes.
+      * The new predicates char_reorder/0, char_reorder/1 and char_reorder/2
+        control the order of characters, in this way influencing the order of
+        atoms and terms defined by @</2, @=</2, etc. The behavior of
+        compare/3, sort/2, etc. also change accordingly.
+      * Introduced the ISO predicates atom_chars/2 and number_chars/2
+        which are similar to the existing atom_codes/2 and number_codes/2
+        except they accept and return lists of characters.
+      * Introduced several new ISO predicates that operate over streams:
+              at_end_of_stream/0, at_end_of_stream/1,
+              get_char/1, get_char/2, get_code/1, get_code/2,
+              peek_char/1, peek_char/2, peek_code/1, peek_code/2,
+              put_char/1, put_char/2, put_code/1, put_code/2,
+              get_byte/1, get_byte/2, peek_byte/1, peek_byte/2,
+              put_byte/1, put_byte/2.
+      * New experimental predicates to verify the lexical class of
+        characters or Unicode codes. As now, they only work properly within the
+        latin-1 subrange (outside this range, everything is a low case letter.)
+              char_isalnum/1, char_isalpha/1, char_islower/1,
+              char_isupper/1, char_isdigit/1, char_isspace/1,
+              char_issymbol/1, char_isprint/1, char_ispunct/1.
+      * New predicate get_single_char/1 reads one char from 'user_input'
+        without waiting for the return key.
+      * New quasi-standard predicates check the type of terms:
+              compound/1, callable/1, is_list/1, ground/1.
+      * New predicate forall/2 checks whether a goal G2 can be proved for
+        all the alternative bindings of a goal G1. Defined as
+              forall(G1, G2) :- \+ (G1, \+ G2).
+      * New standard predicate compare/3 checks the order between
+        two terms.
+      * New meta-call predicates support flexible and efficient ways to
+        invoke predicates (specially useful in higher-order predicates):
+              apply/2, call/2, call/3, call/4, call/5, call/6.
+      * New Prolog flag 'info_messages'. If 'off', all the info messages not
+        controled by other Prolog flags are suppressed, including the startup
+        message and the messages issued by consult/1.
+      * New command line option "-quiet" can be used to turn off, at startup,
+        the Prolog flags 'memory_warnings' and 'info_messages'.
+  -improvements:
+      * Predicates listing/0 and listing/1 were updates to consider
+        all the new properties of the predicates in the database.
+      * [Windows]  Improved compatibility with djgpp-gcc on Windows. Now the
+        filesystem predicates, that is the predicates of the family fs_*/N,
+        work on Windows if compiled with djgpp-gcc.
+      * Fixed two compatibility problems with compilers that are not fully
+        compliant with the ISOC99 standard. Now CxProlog relies less on
+        the ISOC99 standard. The problems where: handling the 'inf' and 'nan'
+        real constants; missing function 'vsnprintf'.
+-bug fixes:
+      * The order between terms in CxProlog didn't followed the ISO
+        standard. Fixed.
+
+25/Sep/2005: version 0.90.6
+   -semantic changes:
+      * The term reader changed the way it handles ambiguities involving
+        operators with multiple definitions: the prefix alternative is
+        tried first, next the infix alternative is tried, finally the
+        postfix alternative is tried. Previously the alternative tried
+        first was the infix alternative. Using the new rule, the term
+        "not - a" is now read as "not(-(a))" instead of "-(not,a)",
+        and  the term "a(- - -,- -)" is now read as "a(-(-(-)),-(-))"
+        instead of "a(-(-,-),-(-))". The new rule is maybe more natural
+        to the user and reflect the way many Prologs handle operator
+        ambiguities.
+  -bug fixes:
+      * Now the term writer places parenthesis around some operators
+        when this is needed to ensure the written term can be read back.
+        Example: the term with structure "-(not,a)" is written as
+        "(not)-a" because "not-a" would be read as "not(-(a))".
+
+11/Apr/2005: version 0.90.5
+  -semantic changes:
+      * None.
+  -improvements:
+      * The Scratch Pad is a automatically growing block of memory that is
+        used and reused inside CxProlog. For example, it is used as a code
+        buffer by the compiler, as token buffer by the term reader, as an
+        auxiliary stack by several internal procedures such as the unification
+        procedure, etc. Now, the Scratch Pad has been made a reentrant
+        structure by introducing segmentation, the various segments being
+        managed under a stack discipline. This will make the Scratch Pad
+        even more useful and safer to use in the long run.
+  -bug fixes:
+      * The three versions of the sort predicate was generating garbled results,
+        in some circumstances, because of an erroneous use of the Scratch Pad.
+        Even if there were quicker fixes for the problem, we decided to
+        re-implement the Scratch Pad as a bull blown reentrant structure.
+
+12/Mar/2005: version 0.90.4
+  -semantic changes:
+      * None.
+  -additions:
+      * Predicate fs_property/3 has been extended to support the new file
+        property 'time'. The returned term is a list containing two
+        integers representing the time of the last access and the time
+        of the last modification.
+      * The three block oriented predicates - get_block/2, get_block/3
+        and put_block/2 - now work over any kind of stream, not only
+        over binary file streams.
+      * The variant 'type' of the predicate fs_property/3 now has
+        three possible results: 'file', 'dir' and 'other'. This last
+        value is new and is returned if the file is not a regular
+        file neither a directory.
+      * Created a new Prolog type for representing wxWidgets external objects.
+  -improvements:
+      * Now, CxProlog seems to be compatible with Mac X when
+        compiled using gcc (thanks for Joaquim Baptista and Paulo Moura
+        for the patches.)
+  -bug fixes:
+      * We had to disable the "memory grow warnings" during
+        string (gstr) expansions.
+
+13/Feb/2005: version 0.90.3
+  -semantic changes:
+      * None.
+  -additions:
+      * The Makefile now allows CxProlog to be compiled as a shared library.
+        (Use 'make lib' to create the library 'libcxprolog.so', and
+         'make shared' to create the testing application 'cxprolog_shared'.)
+  -bug fixes:
+      * atom_term/2 was generating error messages instead of failing
+        silently. Bug introduced in cx89, when the #HERE# feature was added.
+        Fixed.
+
+09/Feb/2005: version 0.90.2
+  -semantic changes:
+      * None.
+  -additions:
+      * New predicate locale/1 shows the default locale.
+  -improvements:
+      * Improved the low level debugging facilities associated with the
+        Prolog flag sys_trace.
+  -bug fixes:
+      * CxProlog crashed if the locale environment was invalid.
+        Fixed. Now it issues an error message and exits gracefully.
+      * Couldn't create an isolated free var in the "code area". This
+        bug only showed up on "backwards machines". Fixed.
+
+03/Feb/2005: version 0.90.1
+  -semantic changes:
+      * None.
+  -bug fixes:
+      * There was a subtle bug concerning the ordering of updates
+        when the stacks were expanded and relocated. This bug only
+        showed up on "backwards machines". Fixed.
+      * By mistake, the predicate dict/1 was renamed 'DICT'/1 on version
+        cx90. Fixed this silly bug.
+      * Fixing the comparison of real numbers in cx90 caused another bug.
+        By mistake the implementation of =\=/2 became identical to the
+        implementation of =:=/2. Fixed this silly bug.
+
+05/Jan/2005: version 0.90
+  -semantic changes:
+      * The default value of the 'interrupt' Prolog flag changed to 4 as the
+        corresponding behavior is less surprising to the user.
+      * Now the precedence in op/3 can be "0", so to cancel one of the
+        active interpretations (prefix, infix or postfix) of
+        an operator. This follows the ISO standard (and is useful.)
+      * The precedence/associativity of the following operators
+        changed to be ISO compliant: mod \+ = \ **
+      * Predicate slice/4 is now more flexible as positive
+        and negative offsets can be combined in the same
+        invocation. It is also more sane when dealing with offsets
+        outside the atom limits.
+      * The following predicates now accept Unicode char codes:
+        name/2, atom_codes/2, get0/1, get0/2, get/1, get/2,
+        peek0/1, peek0/2, peek/1, peek/2, skip/1, skip/2,
+        put/1, put/2.
+      * Dropped the concept of "current output error stream" and
+        the associated predicates current_output_error/1 and
+        set_output_error/1.
+  -additions:
+      * Now, Prolog code can invoke Java code. This is an optional
+        component of CxProlog, so it is not installed by default.
+        There are five Java predicates available:
+              java_call/4, java_field/4, java_array/4,
+              java_convert/3, java_same/2.
+        Read the new section "External Interface with Java" in the MANUAL.
+      * New Prolog flag 'extra_spaces_in_terms' forces all terms to be
+        written with one extra space inserted after each comma separator
+        and after a bar separator appearing inside a list.
+  -improvements:
+      * Now CxProlog supports the Unicode character set (minus
+        composing characters.) Internally, the compact UTF-8 encoding
+        is used, but this is transparent and the programmer simply
+        has to deal with 21-bit character codes. CxProlog seems to be
+        one of the first open-source implementations of Prolog supporting
+        the Unicode character set.
+      * For the most part, the OS only understands text data in the
+        default char encoding. All the necessary conversions, to and
+        from the fixed internal UTF-8 encoding, are performed
+        automatically and transparently. This applies to filenames,
+        OS environment variable names, OS environment variable contents
+        and command line arguments.
+      * The built-in debugger was fully revised. Now it is more
+        mature and its behavior improved in many details.
+        Also, any unhandled exception now prints a stack-trace,
+        if debugging is on.
+      * [Windows] For the first time, CxProlog is compatible with the
+        Windows OS where it can be compiled using djgpp-gcc or MS Visual
+        Studio (albeit, as now with some features disabled.)
+      * The memory manager now tries to obtain memory from
+        the operating system using the low level 'mmap' primitive.
+        The primitive 'malloc' proved not to be reliable enough to
+        allow fine tuning the memory usage and to allow having complete
+        control over "backwards systems".
+        'malloc' is still used in systems where 'mmap' is not available.
+      * writeq((a,b)) now writes "a, b" instead of "a',' b". The new form
+        is simpler and still can be read back by the reader.
+  -bug fixes:
+      * Transferring data between two buffers via a binary stream
+        previously opened over one of them didn't work. Fixed.
+      * The trail was allocated as a permanent block and then released as
+        a temporary block. This bug was introduced in cx89. Fixed.
+      * Surprisingly, some goals such as (1.5+1) =:= 2.5 were failing. We
+        were wrongly assuming there was an unique representation for each
+        float number. Fixed.
+      * The "*BADTERM*" feature in the term writer gave rise to a bug.
+        This bug was introduced in cx89. Fixed.
+      * The debugger didn't know how to handle the non-deterministic
+        predicates written in C. Fixed.
+      * The debugger didn't know how to handle exceptions. Fixed.
+
+22/Dec/2004: version 0.90.alpha3
+29/Nov/2004: version 0.90.alpha2
+08/Nov/2004: version 0.90.alpha1
+
+25/Jul/2004: version 0.89
+  -semantic changes:
+      * None.
+  -additions:
+      * New predicate open_buffer_stream/4, complements the existing predicate
+        open_buffer_stream/3. Allows any character encoding, e.g.
+        'sr_YU.iso88595@cyrillic' to be selected when opening a stream over
+        a buffer. It also allows opening a stream over a buffer in binary mode
+        (using the conventional encoding 'binary'.)
+      * Now each file stream memorizes its full pathname, which can be obtained
+        using current_stream/4.
+      * New Prolog flag 'force_quoted', forces write/1, write/2, writeln/1,
+        writeln/2 and atom_term/2 to behave in "quoted" mode. Might be
+        useful for debugging.
+      * Added the concept of "current output error stream" and now all the
+        warnings and errors are automatically issued through this implicit
+        stream. There are two new related predicates: current_output_error/1 and
+        set_output_error/1. The first obtains the implicit stream and the
+        second changes it (this allows redirecting all error messages to
+        a log file, for example.) [WARNING: dropped in cx90.]
+      * New predicate consulting/1, obtains the stream being consulted or
+        reconsulted. May succeed only if used in directives :-/1 or ?-/1
+        that show up in the stream itself.
+      * New predicate read_with_source/3, similar to read/2 except that it
+        returns an atom with the exact source text that gave rise to the term,
+        spaces, newlines and comments included.
+      * New predicate get_block/2, complements the existing predicate
+        get_block/3. The new predicate loads a buffer with the entire contents
+        of a binary stream.
+      * Introduced the new source file "Version.c", which supplies facilities
+        for manipulating the CxProlog application identification: name, version,
+        subversion and revision. The new predicate version/1 accesses the
+        identification of the running application.
+  -improvements:
+      * When reporting an error, now the term reader inserts the token #HERE#,
+        indicating the exact place where the syntactic error occurred.
+      * When displaying technical information, now CxProlog writes all the
+        terms in "quoted mode" (even if the Prolog flag 'force_quoted' is
+        'off'.) This applies to: error messages and warnings; information
+        displayed by the built-in debugger; information displayed by the
+        "showing predicates" (ivars/0, arrays/0, dicts/0, etc.); listings
+        generated by the predicates code/1 and listing/0; etc.
+      * Now the term writer goes to some lengths in dealing with malformed
+        terms. The token "*BADTERM*" indicates the exact point of damage, inside
+        the written term. This is the normal behavior now: no Prolog flag
+        needs to be set. This might be helpful for detecting bugs earlier.
+      * Ids of values of extra-types, e.g. 1'STREAM_4005e2e0,
+        are now allowed to occur in asserted clauses.
+      * New hash function for atoms considers only the first 16 bytes of its
+        text, not the entire text anymore. This saves time when computing the
+        hash value of very long atoms.
+      * Now open/3, see/1, etc. accept very long filenames: now there is no
+        maximum length; previously the limit was 256.
+      * Introduced support for "backwards systems", systems that use memory
+        addresses with the high-bit on. The Makefile file contains a new
+        configuration step that analyzes the system and handles automatically
+        and transparently the problem.
+  -bug fixes:
+      * with_ivar/3 didn't work with undefined ivars. Fixed.
+      * get_line/1 was at odds with the empty lines. Fixed.
+      * Removed incompatibility between the garbage collection of atoms and the
+        backtrackable assignment '&:=' for ivars.
+      * Fixed a bad bug in the exception handling mechanism.
+      * Fixed bug in array_set/3.
+
+16/Apr/2004: version 0.88-5
+  -semantic changes:
+      * Now the ISO predicates open/3 and open/4 always open streams afresh.
+        This is the ISO standard that shields the programs from filename
+        ambiguities and working directory changes.
+      * Now the Edinburgh-style predicates see/1 and tell/1 only consider as
+        candidates for reusing, currently opened streams originally opened
+        by see/1 or tell/1 (not by open/3 or open/4.) This is a very minor change.
+      * Now the Edinburgh-style predicates see/1 and tell/1 also accept opened
+        streams as arguments, making them current. This should not break any
+        existing program.
+      * Now the Edinburgh-style predicates seeing/1 and telling/1 return streams
+        instead of filenames, for better coexistence with the ISO predicates.
+        This should not break most existing programs, but may break some.
+  -additions:
+      * None.
+  -improvements:
+      * Now the term reader can interpret operators as simple atoms in some
+        contexts. For instance, now the reader is able to interpret
+        "a(- - -,- -)" as "a(-(-,-),-(-))", instead of rejecting the term. This
+        is possible because the reader started using two tokens of look-ahead in
+        some places. (In case the interpretation of the previous term seems
+        inconsistent, note that the infix reading of an operator always takes
+        precedence.)
+  -bug fixes:
+      * ISO predicates open/3 and open/4 were not behaving like the standard.
+        They should open streams afresh, but instead they reusing already opened
+        same-named streams, like see/1 and tell/1 do. Fixed.
+      * Now, the term writer inserts one space between consecutive atoms if
+        they are made of non-alphanumeric chars, so that some terms could be
+        read back. For example, write($ - $) now produces "$ - $"; previously
+        it produced "$-$" which is read back as an atom.
+      * In some contexts, the term writer needs to place parenthesis around
+        negative integer literals, so that the term where they occur could be
+        read back. For example, write(>(-3)) now produces ">(-3)"; previously
+        it produced ">-3" which could not be read back. (Note that "> -3" is
+        interpreted as "-(<,3)".)
+      * writeq/1 now deals correctly with ','. For example, writeq(a(',')) now
+        produces "a(',')" instead of "a(,)" which could not be read back.
+      * Now the syntax of real numbers is immune to the current locale
+        configuration.
+
+27/Feb/2004: version 0.88
+  -semantic changes:
+      * None.
+  -additions:
+      * New predicate rename_builtin/3 allows any predefined built-in predicate
+        to be renamed in an alternative boot file. For example, the command
+        ":-rename_builtin(get,1,stream_get)" renames the predicate get/1 as
+        stream_get/1: note that this frees the name "get", making it available
+        to more important uses.
+      * New predicates atom_codes/2, number_codes/2, are ISO inspired
+        replacements for the ambiguous predicate name/2.
+        [Note: you can "fix" the semantics of name/2, redefining it in a
+        non-standard way, by issuing the command
+                    ":-rename_builtin(atom_codes,2,name)."]
+      * New predicates op_flag/3, op_flag/4 allows changing and testing
+        internal flags associated with each operator. As now, the only
+        supported operator flag is the "parenthesised" flag, explained next.
+      * New operator flag 'parenthesised' controls how the operator is
+        processed by the term reader. If a "parenthesised operator" occurs
+        as principal functor of a term surrounded by parenthesis, as in
+        "(TERM)", then the resulting term will have the form "'$PAR'(TERM)".
+        (This feature allows programs to deal with some concrete syntax issues.)
+      * Two new ivar predicates: &:=/2 and with_ivar/3. The first implements a
+        backtrackable assignment operation. The second proves a goal with
+        respect to some ivar, temporarily set to some value.
+      * New stream predicate current_stream/3, provides read-only access to the
+        internal stream table.
+  -improvements:
+      * Now the term writer always insert one space between two consecutive
+        operators, ensuring they don't touch. Probably, now every term written
+        using writeq/1 can be read back with read/1.
+      * The term reader is now slightly more discerning. When trying to deal
+        with two adjacent ambiguous operators placed in the middle of a complex
+        term, the priorities are now taken in account: and the first operator
+        is taken as infix whenever possibly; otherwise it is taken as postfix.
+  -bug fixes:
+      * Two bugs fixed in the term reader, both related with the handling of
+        operators.
+      * Fixed an elusive bug in the relocation algorithm. Now, the register ZT
+        is relocated before the register H, as it should always been.
+      * Fixed the internal definition of printable character. The predicates
+        buffer_write/1/2 rely on that definition, and they were not
+        working properly.
+      * Predicates get_line/1/2 were generating and extra empty line at the end
+        of file, improperly delaying the report of the end of file situation.
+
+30/Set/2003: version 0.87
+  -semantic changes:
+      * None.
+  -additions:
+      * New arithmetic function round/1, round numbers to the nearest
+        integer, away from zero.
+      * Predicate fs_property/3 was extended to support a new file
+        property: 'size'.
+      * Imperative buffers introduced. A buffer is an array of bytes. The
+        buffer predicates are:
+           buffer/1, buffer_new/1, buffer_clear/1, buffer_delete/1,
+           buffer_size/3, buffer_set/3, buffer_get/3, buffer_write/1,
+           buffer_write/2, current_buffer/1, buffers/0.
+      * The new predicate open_buffer_stream/3 allows a stream to be opened
+        over a buffer. All the existing input and output operations are
+        compatible with buffer streams.
+      * Introduced two new block processing predicates for binary file streams:
+           get_block/3, set_block/2.
+  -improvements:
+      * Arithmetic functions floor/1 and ceil/1 now implemented using
+        80-bit precision (they supported only 64-bit precision before.)
+  -bug fixes:
+      * Arithmetic functions floor/1 and ceil/1 was producing incorrect
+        results when applied to numbers outside the range min_int .. max_int.
+        This bug was as old as CxProlog itself. Fixed.
+      * atom_term/2, writeq/1 and writeq/2 has broken in the previous version
+        due to the introduction of support for multiple encodings. Fixed.
+      * Certain type errors, such as name(X,[A|B]), was generating a fatal
+        internal error. Fixed.
+      * Predicate array_delete_item/2 was not really deleting the item and could
+        led to an inconsistent state in case of a structured item. Fixed.
+      * name/2 didn't know how to deal with numbers. Fixed.
+      * By mistake, support for binary streams has been deactivated in the
+        previous version (sorry...). Fixed.
+
+04/Set/2003: version 0.86
+  -semantic changes:
+      * None.
+  -additions:
+      * New debugger tool: a low-level runtime tracer which is controlled via
+        a new Prolog flag 'sys_trace'. This new flag sets the level of detail
+        to be produced by the new low-level runtime tracer. 0 means "off",
+        3 means "maximum detail".
+      * New predicate open_null_stream/1 creates an output stream that throws
+        away characters and terms written to it.
+      * Predicates print/1 and print/2 are now fully supported: their default
+        behavior can be changed by providing clauses for the user predicate
+        portray/1. (The implementation of this depended on the new generalized
+        framework for streams and on the "C calling Prolog" facility.)
+      * Introduced an exception handling mechanism, similar to the one available
+        in Java, for example. CxProlog support the ISO Prolog predicates
+        catch/3 and throw/1, and also the Quintus-Prolog counterparts:
+        on_exception/3 and raise_exception/1. Furthermore CxProlog implements
+        a new predicate catch/4, similar to catch/3 except that it produces a
+        stack trace of the current execution environment. (The implementation of
+        exceptions interfered with the abstract machine, the relocation
+        procedure, the finalizers, the debugger and the call-prolog mechanism.)
+      * Now any Linux supported character encoding can be associated to a
+        file stream. The third parameter of open/4 allows this to be specified.
+        When no encoding is specified it is used the default encoding defined
+        in the current locale Linux environment.
+        LIMITATION: As yet CxProlog knows only how to handle characters with
+        Unicode code less or equal 255: all the other characters are implicitly
+        converted to the conventional character '?'.
+  -improvements:
+      * Introduced new generalized framework for streams. Preparing new ground
+        to the introduction of Unicode streams, streams over buffers and string,
+        etc.
+      * Term reader and term writer adapted to take advantage of the new
+        streams over strings and over buffers.
+  -bug fixes:
+      * None.
+
+26/Jun/2003: version 0.85
+  -semantic changes:
+      * Now, the end-of-file code for text files can be changed and its default
+        value is -1 (as in Quintus Prolog.) Previously, the end-of-file code
+        could not be changed and its value was 26 (as in C_Prolog.) See new
+        Prolog flag 'eof_code' in the MANUAL.
+  -additions:
+      * Introduced the command line option "-script". This allows Prolog to
+        be used as a scripting language on Unix. More details in the
+        MANUAL. The MANUAL includes one example.
+      * Introduced interoperability between C code and Prolog code. The
+        reentrant function "Bool CallProlog(Pt goal)" provides the C-built-in
+        predicates with the new ability of invoking Prolog code.
+      * Support for binary files was introduced. The predicate open/3 gained
+        an extra optional parameter, with two possible values: 'text', 'binary'.
+        Predicates get0/1, get0/2, peek0/1, peek0/2, put/1, put/2 were
+        upgraded to handle binary files. The end-of-file code for binary
+        files is -1, and this cannot be changed.
+      * The new Prolog flag 'eof_code' specifies the end-of-file code for
+        text files. Its default value is -1 as in Quintus Prolog. Set it to
+        26 if you want to achieve compatibility with C-Prolog.
+  -improvements:
+      * Now, the CallVar and ExecuteVar instructions do not waste time
+        dereferencing the X arguments.
+  -bug fixes:
+      * The abstract machine support for the "meta cut" (cut occurring inside
+        the meta-predicates ;/2, ->/2, , not/1, call/1, etc.), was not taking
+        into account the relocation procedure and also the finalizers. Fixed.
+      * The relocation procedure was not taking into account the debug
+        instructions that are stored in the debug frames. Fixed.
+      * The compiler now treats UnifyYLocalValue as a non-globalizing
+        instruction, to ensure that all the invariants of the WAM are satisfied.
+
+20/Apr/2003: version 0.84
+  -semantic changes:
+      * Added special support for cuts (!/0) occurring in the
+        context of the historic context predicates >/1 and </1.
+      * File README was renamed MANUAL.
+  -additions:
+      * New predicate 'flushall/0' flushes all the currently open
+        output streams.
+      * Imperative arrays introduced. The array predicates are:
+           array/1, array_new/1, array_clear/1, array_delete/1, array_set/3,
+           array_get/3, array_delete_item/2, array_as_list/2, array_write/1,
+           array_write/2, current_array/1, arrays/0.
+  -improvements:
+      * The stress-testing modes, which are activated using Prolog flags
+        'test_relocation' and 'test_garbage_collection' are now more
+        exhaustive. This allowed a subtle bug in predicate varnames/1 to be
+        discovered.
+      * Changed the method of internally accessing units, operators
+        and ivars. Previously they were accessed via hash tables.
+        Now, they are accessed using a direct link placed at each atom.
+        Direct access is much faster and much simpler to implement and
+        therefore less error prone. On the down side, each atom has grown
+        3 words.
+      * The implementation of contexts was revised and simplified. Now
+        each context operation is implemented as a regular built-in predicate.
+        This makes the general implementation of CxProlog more uniform, using
+        a smaller number of concepts.
+      * Some optimizations in the context ops. The speedup is around 20%.
+  -bug fixes:
+      * Now the predicate 'os_run/1' flushes all the output streams
+        before running the command.
+      * Bug in predicate name/2, concerning the automatic growing stacks
+        feature. This bug went unnoticed since version 0.79. Fixed.
+      * Bug in predicate varnames/1, because the variables in the variable
+        table were not relocated when the stacks moved. Now these variables are
+        relocated.
+
+26/Jul/2002: version 0.83
+  -semantic changes:
+      * Minor change: arg/3 now simply fails if the first argument
+        is out of range. This is the standard behavior.
+      * Using the default boot, all the goals issued at the top level
+        are now compiled. They were interpreted before. Therefore, now
+        the effects of a top-level goal match accurately the effects
+        of the same goal when used as part of a compiled program.
+        (As the sole practical effect of this, a top level goal may now
+        contain cuts, e.g. "a, !, b, !." Note that CxProlog only
+        supports "compiled cuts", that is it does not support "dynamically
+        interpreted cuts.)
+  -additions:
+      * Introduced control meta predicates \+/1, try/1, once/1,
+        possible/1, gen/1. There is special support for the cut (!/0)
+        occurring inside these predicates.
+      * Introduced predicates bagof/3, setof/3 (definitions can be checked
+        in 'pl/CxDefs.pl'.)
+      * New predicate subterm/2, checks if a term is part of another.
+      * New predicates repeat/1 and repeat/2, succeed on backtracking
+        a given number of times.
+      * Four new predicates enables CxProlog to communicate though sockets:
+        net_install/1, net_uninstall/0, net_accept/2, net_connect/4. (See
+        example in pl/net.pl)
+  -improvements:
+      * Simpler reimplementation of predicate reconsult/1.
+      * Now, CxProlog deals better with unit parameters. Now it is possible
+        to import from a unit parameter, or to use a unit parameter in a
+        context extension goal such as UP>>get(X).
+  -bug fixes:
+      * Bug in the automatic expansion of the trail stack. This bug was
+        introduced along with the "finalizers" in version 0.82. Fixed.
+      * findall/3 was not reentrant. Fixed.
+      * arg/0 was accepting 0 as first argument. Fixed.
+
+23/Apr/2002: version 0.82
+  -semantic changes:
+      * None.
+  -additions:
+      * New predicate unique/1, generates unique atoms.
+      * New predicates ins/4, ins_start/3, ins_end/3, insert extra
+        argument in term.
+      * New predicate free_vars/2 gathers all free variables in a term.
+      * New Prolog flags 'test_relocation' and 'test_garbage_collection'
+        allow the activation of a stress-testing mode that forces the
+        continuous execution of those critical algorithms that seldom
+        run: relocation of the control stacks and the garbage
+        collection of atoms.
+  -improvements:
+      * Now, it is possible to associate a "finalizer function" to any
+        non-deterministic predicate written in C. The finalizer is
+        automatically activated at the end, when the predicate naturally
+        runs out of alternatives OR when the remaining alternatives
+        of the predicate are discarded due to the use of the cut (!/0).
+        (To setup a finalizer function, you call the C function
+        "SetupFinalizer" in the initializing code of your
+        non-deterministic predicate written in C.)
+  -bug fixes:
+      * dict_as_list/2 was working on Macintosh/MacOS but not
+        on PC/Linux. A machine independent fix was devised.
+      * Erroneous /=/2 could instantiate variables as a side-effect.
+        Fixed.
+      * The relocation algorithm for the self-expanding control stacks
+        was buggy. Fixed, we hope.
+      * Now, all error and warning messages are sent to the standard
+        output error stream 'user_error'.
+
+07/Feb/2002: version 0.81
+  -semantic changes:
+      * Now, the possible values for the 'fail_on_error' Prolog flag are 0..2:
+           0 means OFF;
+           1 means ON but the error messages are displayed anyway;
+           2 means ON and the error messages are suppressed.
+  -additions:
+      * New set of predicates allows Unix communicating processes
+        to be used:
+           process/1, process_new/3, process_send_father/1,
+           process_send_father_max/1, process_receive_from_child/2,
+           process_receive_from_child_ready/0, current_process/1,
+           processes/0.
+  -improvements:
+      * The code of all extra-types (dicts, stacks, queues,
+        streams and threads) was revised to enhance commonalty.
+        All common aspects of this implementation of those types has been
+        centralized in the new file "Extra.c". This increases reliability
+        and will make it easier to create more extra-types.
+      * Now, the imperative dictionaries (dicts) are kept sorted and
+        they items are retrieved through binary search.
+      * A direct link to the last clause of each predicate was added
+        in the predicate descriptors. This way, a quadratic factor that
+        was hampering somewhat the efficiency of assertz/1 was removed.
+        However, we discovered that this only benefits really large
+        predicates, with more than 1000 clauses. The following table
+        shows the time taken to assertz the clauses a(1) ... a(N)
+        on a Mac Classic:
+                N   PREVIOUSLY  NEW VERSION
+              100     0.30 sec     0.28 sec
+             1000     3.63 sec     2.82 sec
+             2000     8.93 sec     5.60 sec
+             3000    15.90 sec     8.45 sec
+             5000    34.80 sec    14.05 sec
+            10000   110.80 sec    28.30 sec
+  -bug fixes:
+      * The term reader was not handling properly the atoms '[]'
+        and '{}'. For example, legit terms such as [](1) or {}(1) was
+        incorrectly taken as syntax errors. Problem fixed.
+      * The predicate 'abolish_builtin/2' has broken in version 0.80.
+        Fixed.
+
+21/Dec/2001: version 0.80
+  -semantic changes:
+      * The new debugger forced some minor changes in the boot file:
+         - $cxprolog_startup/0 was renamed $cxprolog_initialise/0
+           (no real change here)
+         - $cxprolog_restart/0 was discontinued and replaced by the
+           new predicate $cxprolog_top_level_goal/0. The difference is
+           that the new predicate performs the top-level user-iteration
+           concerning a SINGLE GOAL and not concerning a sequence of goals.
+           (Therefore, the new predicate is reactivated more often.)
+        Both predicates may fail or succeed after doing their job: it doesn't
+        matter. [Sample boot file in pl/CxBoot.pl.]
+      * Now, the predicate concat/2 (===/2) can be applied to a
+        list of general Prolog terms.
+      * When the 'fail_on_error' Prolog flag in ON, the runtime errors
+        generate "failure" instead of "restart", as before. But now
+        the error messages are simply discarded. They are not anymore
+        stored in the queue "errors", which is discontinued.
+      * Discontinued all the "unix_" prefixed predicates and replaced
+        them with a revised set of "os_" prefixed predicates.
+      * Discontinued the Prolog flags "debugging" and "trace" and replaced them
+        with the better flags "debug" and "interrupt".
+      * Discontinued the predicate top_call/1. In its place, you use the
+        standard predicate call/1.
+  -additions:
+      * The file "YourExtensions.c" now includes several cautionary
+        warnings at the beginning.
+      * New reasonably featured debugger, based on the traditional
+        "procedure box" control flow model. The README file includes
+        a section explaining the CxProlog debugger and its predicates.
+        These are the supported debugger predicates:
+          debug/0, trace/0, nodebug/o, notrace/0, debugging/0,
+          leash/1, spy/1, nospy/1, nospyall/2.
+        These are the available debug options:
+          <ret> creep            l leap             h help
+           s<i> skip             + spy this         i info
+           q<i> quasi-skip       - nospy this    g<n> ancestors
+           r<i> retry            n nodebug          = debugging
+           f<i> fail             a abort            : statistics
+                                 e exit
+      * New set of filesystem predicates allow the hierarchic
+        filesystem to be examined and manipulated. As now, some of
+        these predicates are only available under Unix and
+        Classic MacOS. The hierarchic filesystem predicates are:
+           fs_exists/1, fs_rename/2, fs_delete/1, file_exists/1,
+           rename_file/2, delete_file/1, exists/1, rename/2,
+           fs_property/3, fs_cd/1, fs_cd/2, fs_home/0, fs_files/1.
+      * New set of predicates provides access to selected operating
+        system services:
+           os_name/1, os_run/1, system/1, sh/0, os_env/2,
+           os_arg/2, os_args/1.
+      * New database command, mutable_builtin/2, allows user-defined
+        built-in predicates to be declared as mutable in the boot file.
+        By default, built-ins are immutable.
+      * New Prolog flag "debug" controls the current debugger working mode.
+      * New Prolog flag "interrupt" controls the effects of the
+        CTRL-C interrupt.
+  -improvements:
+      * Developed an iterative algorithm for predicate is/2, so that
+        is/2 could deal properly with very large terms, such as
+        1+1+...+1  [100000 times, for example.] The previous algorithm
+        was recursive and couldn't deal with large terms because of the
+        C language runtime stack is limited in size.
+  -bug fixes:
+      * The predicate univ, =../2, was not reliable enough. Now, all the
+        required checks are made. For example, previously, the nonsensical
+        call X =.. Y makes =../2 entering an infinite loop; now, the same
+        makes generates an error.
+      * CxProlog was crashing, completely out of control, if the boot file
+        does not follows the rules. Now, diagnosis messages are issued
+        in this situation.
+
+30/May/2001: version 0.79
+  -semantic changes:
+      * Reversed the order of parameters in ===/2 to make it resemble
+        an assignment operator.
+      * Discontinued the confusing convention, introduced in
+        version 0.56, concerning the automatic translation of '|' to ';'.
+        Now, there is a new Prolog flag, 'bar_is_semicolon', which cleanly
+        controls whether the automatic translation of '|' to ';'
+        is ON or OFF.
+  -additions:
+      * New predicates read_tokens/1 and read_tokens/2 read entire
+        line as list of tokens.
+      * New predicate top_call/1 specializes in activating goals in
+        the top level iteration.
+      * New Prolog flag 'compatible_strings' controls the interpretation of
+        double-quoted literals (strings.)
+      * New Prolog flag 'bar_is_semicolon' controls whether '|' is, or is not,
+        automatically translated to ';'.
+      * New Prolog flag 'garbage_collection' controls whether the garbage
+        collector of atoms is active or not.
+  -improvements:
+      * A new rationale for the management of the global stack is
+        introduced. Finally, the global stack becomes a fully fledged
+        growing structure. Previously, the global stack couldn't
+        grow in the context of any term-creating predicate.
+        All the following predicated had to rewritten in order to
+        comply to the new rationale: read/1, read/2, copy_term/2,
+        copy_term/3, sort/2, msort/2, keysort/2, name/2,
+        dict_get/3, dict_as_list/1, =:/2, current_ivar/1,
+        clause/2, retract/1, queue_get/2, queue_peek/2,
+        queue_as_list/2, stack_pop/2, stack_top/2, stack_as_list/2.
+      * We did away with the existing intern limit of 64
+        distinct variables per term (except on asserted clauses.)
+      * As now, many CxProlog internal routines are implemented as
+        recursive functions. This is a bit dangerous because the C
+        language may fail to provide a large enough runtime stack,
+        when dealing with very large terms. Therefore we started
+        developing iterative versions of the more critical
+        algorithms used inside CxProlog. These are the iterative
+        algorithms already developed: "CopyTerm", "Unify", "Compare".
+  -bug fixes:
+      * atom_term/2 and atom_termq/2 were not dealing properly with
+        atoms '', ' ', '  ', '   ', etc.
+      * The cut predicate (!/0) was not working in the context
+        of predicates ;/2, not/1, call/1, etc. [This bug was introduced
+        in version 0.76 and remained unnoticed until now.]
+      * The generation of indexes for predicates with many
+        clauses was making CxProlog crash. This was a problem in
+        the management of the auto-expanding buffer. [As a matter of
+        fact, we had disregarded testing for extreme conditions during
+        the creation of indexes. Bug introduced in version 0.76.]
+
+27/Mar/2001: version 0.78
+  -semantic changes:
+      * The interpretation of the sublists in predicate concat/2 (===/2)
+        has changed.
+      * The 'show_text' and 'smart_atoms' Prolog flags are discontinued.
+      * The 'super_indexes' Prolog flag is replaced by the more flexible
+        flag 'index_params'.
+  -additions:
+      * New Prolog flag 'float_display_precision' controls how floats are
+        displayed.
+      * New predicate atoms/0 presents information concerning the
+        internal hash table of atoms.
+      * New predicate floats/0 presents information concerning the
+        new internal hash table of very large precision floats.
+      * New float constant 'inf' represents "infinite" (inf = 1/0).
+      * New integer constants 'int_size' and 'float_size' tell the
+        bit-length of the integers and floats in your installation of
+        CxProlog.
+  -improvements:
+      * A garbage collector of atoms is introduced. "Texts", the
+        previous special representation of transient text are
+        discarded. Replacing "texts" by garbage collected atoms
+        makes CxProlog easier to maintain and more reliable.
+  -bug fixes:
+      * By mistake, some trans-127 characters could not be recognized
+        as belonging to any valid lexical character category. This was
+        an issue with predicates atom_term/2, atom_termq/2, writeq/1
+        and writeq/2. Fixed the problem.
+      * Due to "integer overflow", reading a very long integer used
+        to generating a meaningless value. Now, such long integers
+        are automatically converted to float numbers. Example:
+            ?- X is 11111111111111111111111111111111111111111111111.
+            X=1.11111111111111111e+46
+            yes
+      * Due to "integer overflow", when applied to large integer
+        numbers, the operators +/2, -/2, -/1, */2 could generate
+        meaningless results. Now the operands of these operators are
+        always converted to float numbers, meaning the problem has been
+        fixed. Conclusion: predicates is/1, =:=/2, =\=/2, </2, >/2, =</2,
+        >=/2 can now be used with peace of mind as each and every form
+        of integer overflow has been ruled out from CxProlog.
+      * We backtracked on the decision of introducing higher precision
+        integers. Instead, we introduce large precision floats. Now, we
+        use the largest precision floats supported by the host machine.
+        This amounts to 80-bit precision floats in most machines (check
+        the value of the new constant 'float_size' in your installation.)
+        As for integers, currently CxProlog supports 29-bit integers on
+        32-bit machines and 61-bit integers on 64-bit machines (check
+        the value of the new constant 'int_size' in your installation.)
+
+03/Mar/2001: version 0.77
+  -semantic changes:
+      * The environment variable 'CXPROLOG_SIZE' has been discontinued.
+      * The command line argument '-size' has been discontinued.
+  -additions:
+      * None.
+  -improvements:
+      * Tighter detection of local stack and global stack overflows.
+      * The trail stack becomes an growing (or "elastic") structure.
+      * The local stack becomes an growing structure.
+        (Growing the local stack involves a complex relocation
+        algorithm, but it has been very thoroughly tested.)
+      * The global stack becomes a growing structure, but, in this case,
+        only PARTIALLY: as yet, certain operations (such as
+        reading an extremely large term via read/1) may still generate
+        the "Global stack overflow" error. Improving from here requires
+        reconsidering and rewriting large portions of code. This will
+        be done at a later time.
+        [Due to the "elastic" stacks, the INITIAL memory requirements of
+        CxProlog dramatically reduced from 1.000Kb to 200Kb!]
+      * Introduce higher precision integers in the context of
+        32-bit machines. Previously, CxProlog only supported 29-bit
+        integers (8-digit precision) on 32-bit machines.
+        This gain of precision depends on the subjacent C compiler:
+        using most compilers, it amounts to merely a single digit;
+        using GCC, it amounts to 10 digits. Check out the values
+        of 'max_int' and 'min_int' in your version of CxProlog.
+        [Implementation detail: Integers not fitting in the
+        original 29-bit limit are stored in a table of large integers.]
+  -bug fixes:
+      * Dubious implementation of the GetXValue instruction revised.
+        Theoretically, due to side-effects, some C compilers might
+        generate the "wrong code" for this instruction.
+
+24/Jan/2001: version 0.76
+  -semantic changes:
+      * Predicates readv/2 and readv/3 are replaced by the more
+        flexible new predicate varnames/1.
+      * Predicate debugging_call/1 is deleted and replaced by the
+        more convenient Prolog flag 'debugging'.
+  -additions:
+      * Introduced support to '?-T' questions in the consult/reconsult
+        predicates.
+      * Revised the support to ':-T' commands in the consult/reconsult
+        predicates.
+      * Introduced support to ':-T' commands in the top level iteration.
+      * New predicate question/2 handles '?-T' questions at the top level
+        iteration and consult/reconsult predicates.
+      * New predicate varnames/1 gathers the names of all the variables
+        in the term last read using read/1 or read/2.
+      * New Prolog flag 'debugging' allows debugging to be enabled/disabled.
+        The effects of the CNTL-C interrupt, now depend on the status of this
+        flag.
+  -improvements:
+      * None.
+  -bug fixes:
+      * Problems with the handling of the CNTL-C interrupt fixed.
+
+15/Jan/2001: version 0.75
+  -semantic changes:
+      * Old predicate read/2 is renamed readv/2. Now read/2
+        denotes a new stream predicate.
+      * The method for changing and testing the internal flags of
+        CxProlog has changed. The new method is based on the new
+        predicates flag/2, flag/3.
+      * The 'silent' Prolog flag is discontinued.
+      * The predicate undef/0 is renamed check_missing/0.
+  -additions:
+      * Now, the user is allowed to specify a boot file of his own. More
+        on this on the "ALTERNATIVE BOOT FILE" section near the end of
+        this document.
+      * "Flexible streams" introduced. There is a new set of "stream
+        predicates" which require an explicit stream argument:
+           open/3, close/1, stream/1, set_input/1, current_input/1,
+           read/2, readv/3, get0/2, get/2, peek0/2, peek/2, skip/2,
+           get_line/2, set_output/1, current_output/1, flush/1, write/2,
+           writeln/2, writeq/2, writeqln/2, print/2, put/2, nl/1, tab/2,
+           streams/0.
+      * Handy new set of predicates for spying selected aspects of the
+        CxProlog internal state:
+           show/0, builtins/0, flags/0, ops/0, stacks/0, streams/0,
+           version/0, dicts/0, ivars/0, queues/0, statistics/0, units/0
+      * A bunch of new ivar predicates:
+           ivar/1, ?:=/2, #:=/2, ivar_delete/1, current_ivar/2.
+      * Three new minor control predicates:
+           false/0, exit/0, debugging_call/1.
+      * Several new queue/stack/dict predicates:
+           queue_as_list/2, stack_as_list/2, dict_as_list/2,
+           queue_write/2, stack_write/2, dict_write/2.
+      * Six new term predicates:
+           numbervars/3, write_depth/2, copy_term/2, copy_term/3,
+           add_pl/2, app/3.
+      * Predicate atom_term/2, one that deals with reversible conversions,
+        is renamed atom_termq/2. A new non-reversible version of this
+        predicate is introduced and named atom_term/2 (that is, the old
+        predicate name was recycled.)
+      * Two new minor thread predicates:
+        active_thread_completed/0, active_thread_failed/0.
+      * New predicates silent_consult/1 and silent_reconsult/1 are
+        similar to consult/1 and reconsult/1 but produce no output
+        on their own.
+      * New Prolog flag 'compatible_if_then' establishes the exact semantics of
+        predicate ->/2.
+      * New database command abolish_builtin/2 allows predefined
+        built-in predicates to be redefined in an alternative boot file.
+      * New predicate check_imports/0 produces warnings concerning
+        possible inconsistency in the import/visibility declarations
+        graph.
+  -improvements:
+      * This file, "_README", was completely rewritten.
+  -bug fixes:
+      * Fixed bug on replacing a "text" by another term in an imperative
+        var.
+      * Fixed bug on reading an erroneous terms appearing at the ending of a
+        file.
+
+03/Dec/2000: version 0.74
+  -semantic changes:
+      * None.
+  -additions:
+      * New predicate unix_arg/2 allows access to individual command
+        line arguments.
+      * New predicate unix_args/1 gets entire command line as a
+        list of atoms.
+      * Predicate slice/4 is generalized. Now, it allows negative
+        integer arguments, representing offsets relative to the ENDING of
+        the input atom.
+      * Two new ivar predicates: ivar/1, ivar_delete/1.
+      * Imperative stacks introduced. The stack predicates are:
+           stack/1, stack_new/1, stack_clear/1, stack_delete/1,
+           stack_push/2, stack_pop/2, stack_top/2, stack_write/1,
+           current_stack/1
+  -improvements:
+      * None.
+  -bug fixes:
+      * None.
+
+11/Out/2000: version 0.73
+  -semantic changes:
+      * Slight change of the behavior induced by the "fail_on_error"
+        Prolog flag: now, when this flag is 'on', the error messages are
+        silently appended to a queue placed in the new predefined
+        ivar "errors". The previous ivar "last_error" is discontinued.
+  -additions:
+      * The standard order over the terms is introduced. The related
+        predicates are: @<, @>, @=<, @>=, sort/2, msort/2, keysort/2
+      * Introduced super-indexes,ebased on the three first parameters of
+        each predicate, instead of only the first.
+      * Imperative queues introduced. The queue predicates are:
+           queue/1, queue_new/1, queue_clear/1, queue_delete/1,
+           queue_put/2, queue_get/2, queue_peek/2, queue_write/1,
+           current_queue/1
+      * Imperative dictionaries introduced. The dict predicates are:
+           dict/1, dict_new/1, dict_clear/1, dict_delete/1, dict_set/3,
+           dict_get/3, dict_delete_item/2, dict_write/1, current_dict/1
+      * Introduced lots of Prolog flags. As yet, the supported flags
+        are: trace, fail_on_error, smart_atoms, silent, keep_source,
+           undef_warnings, memory_warnings, show_text, super_indexes.
+  -improvements:
+      * Ongoing work on "elastic internal structures": in other words,
+        the "growing" feature of the "code area space" is being
+        extended to all the other internal buffers.
+      * This file, "_README", expanded. Tried to be exhaustive.
+  -bug fixes:
+      * Fixed a nasty bug that showed up whenever a "text" was stored in
+        an imperative var.
+
+31/Aug/2000: version 0.72
+  -semantic changes:
+      * "Smart atoms" are introduced. "Texts" are discarded. NOW, THE
+        PROGRAMMER ONLY DEALS WITH ATOMS, as it is the implementation that
+        decides on the best internal representation for each atom
+        depending on its usage (classic representation or text
+        representation.) The "back-quotes" notation is
+        discontinued. [Turning 'on' the 'show_text' Prolog flag makes write/1
+        display in a special way (using a prefixing "@") the atoms that
+        are internally represented as "texts".]
+      * Removed all "text" predicates and some "string" predicates. They
+        are not needed anymore since the introduction of the "smart
+        atoms". The removed predicates are:
+           text/1, gett/1, slicet/4, namet/2, concatt/2,
+           gets/1, puts/1, concats/2.
+      * Ivars are not explicitly declared anymore. They are automatically
+        created when assigned for the first time. Therefore, the
+        predicate create_ivar/1 is discontinued.
+  -additions:
+      * Added replacement predicates for smart atoms (as the "text"
+        predicates have been deleted):
+           get_line/1, slice/4, concat/2, ===/2.
+      * New predicate atom_term/2 converts between a term and its textual
+        representation.
+      * Turning 'on' the 'fail_on_error' Prolog flag, changes the internal
+        behavior of CxProlog so that a runtime error generates
+        "failure" instead of "restart". In this case, each error message
+        is silently stored in the ivar "last_error".
+      * New predicates unix_env/2 and unix_run/2.
+      * New predicate host_speed/1.
+  -improvements:
+      * Lots of small internal improvements.
+  -bug fixes:
+      * None.
+
+27/Jul/2000: version 0.71
+  -semantic changes:
+      * Predicates get_ivar/2 and set_ivar/2 are renamed using the
+        operators:
+           :=/2 and =:/2.
+      * Using a functor with too large an arity is certainly the result
+        of some logic mistake. Therefore a maximum arity for functors
+        is introduced: maxArity = 64.
+  -additions:
+      * "Historic contexts" are introduced in the language.
+      * New predicate quote/1 quotes text.
+      * New predicate file_exists/1 checks if a file can be opened
+        for reading.
+      * Predicates see/1, tell/1, consult/1, reconsult/1, etc., now
+        accept either atoms OR texts.
+      * Introduced the command line options "-boot" and "-size".
+      * Introduced support for the shell variables CXPROLOG_BOOT and
+        CXPROLOG_SIZE.
+  -improvements:
+      * Now the prompt is written on the C side of the system, and
+        not anymore on the Prolog side. This is required by the "readline
+        interface".
+      * File "YourExtentions.c" and functions "YourPrologue" and
+        "YourExtensions" introduced. The implementation was
+        reorganized so that all C extensions to CxProlog would
+        bottleneck through functions "YourPrologue" and "YourExtensions",
+        defined in file "YourExtentions.c".
+      * Much simpler method for introducing non-deterministic built-in
+        predicates, so that extending the system will be easier.
+      * Now the code area space of CxProlog grows automatically, as
+        needed.
+  -bug fixes:
+      * Two bugs in write/1 fixed.
+      * Bug in functions "ceil" and "floor" fixed.
+      * Bug in the internal codification of floats fixed.
+
+10/Apr/2000: version 0.70
+  -semantic changes:
+      * None.
+  -additions:
+      * Added support for units (modules.) Units may be parametrized.
+      * Added support for the contextual logic programming paradigm.
+      * Added support for imperative variables. The ivar predicates are:
+           create_ivar/1, get_ivar/2, set_ivar/2.
+      * The sublanguage of the arithmetic expressions was enlarged.
+      * Now, the Control-C interrupt is handled
+  -improvements:
+      * Complete internal system overhaul.
+      * The error messages are now much improved.
+      * Improved the display of query results.
+      * New internal method for binding the predicates to their code.
+      * New improved technique for dealing with clause chains: two
+        parallel chains are not used anymore.
+      * New improved techniques for dealing with indexes: on the
+        invalidation of the index when a predicate changes, on the
+        relocation of the index code, etc.
+      * read/1 can now deal with V E R Y  L A R G E terms.
+      * The internal representation of floats in the host machine is now
+        automatically recognized.
+  -bug fixes:
+      * Bug in predicate clause/2 fixed. Now this predicate fails
+        if applied to a built-in predicate.
+      * Bug related to the use of trans-127 characters fixed.
+  -special changes:
+      * "NanoProlog" was renamed "CxProlog" due to the introduction for
+        the contextual logic programming paradigm.
+ 
+24/Mar/2000: version 0.57
+  -semantic changes:
+      * Removed predicate gets/2.
+      * '`' changed from _SY to '`' (Now '`' is used as delimiter for
+        the "text" literals.)
+  -additions:
+      * Added general support for the future introduction of new
+        primitive types:
+          - new tag: "extra"
+          - new instructions: the "Extra" instruction family
+          - new predicate: extra/1
+      * Added new primitive type "text" and associated predicates:
+          text/1, gett/1, slicet/4, namet/2, concatt/2.
+  -improvements:
+      * The whole program was made ANSI-conformant.
+  -bug fixes:
+      * None.
+
+27/Jun/1999: version 0.56
+  -semantic changes:
+      * ';', '#' and other trans-127 chars changes from _SO to _SY.
+      * In contexts where '|' did not indicate "the reminder of a list"
+        this char used to be translated to ";". Now, the user can
+        change this default by forcing '|' to be interpreted as a
+        regular binary operator. This is done by defining '|' as a
+        regular operator. Use, for example, the command
+           :- op(1140, xfx, '|'.)
+      * Removed predicates noindex/1 and noindex/2. (NanoProlog got
+        clever and does not need anymore to bother the user with
+        indexing issues.)
+  -additions:
+      * New I/O predicates: peek0/1, peek/1, puts/1, gets/1, gets/2
+      * New string predicate: concats/2
+  -improvements:
+      * Some small internal improvements
+  -bug fixes:
+      * "nonvar/1" bug fixed.
+      * [user] (consult(user)) bug fixed.
+
+05/Aug/1997: version 0.55
+  -semantic changes:
+      * None.
+  -additions:
+      * Introduce support for the Latin-1 character set.
+      * Now, the name of the boot file can be obtained from an optional
+        command line argument or from the unix environment variable
+        "NANO". Only as last resource an internally predefined name is
+        used. This name is "CxBoot.pl".
+      * Now, the predicates consult/1 and reconsult/1 append the
+        suffix '.pl' to the filename, if so necessary.
+  -improvements:
+      * None.
+  -bug fixes:
+      * None.
+
+08/Apr/1997: version 0.54
+  -semantic changes:
+      * Added proper support for the cut predicate (!/0) when used
+        inside the built-in predicates: ,/2, ;/2, not/1, call/1, ->/2
+        (new virtual machine instruction: PutCutLevel)
+  -additions:
+      * New built-in predicate undef/0: it lists all the undefined
+        predicates invoked in the existing clauses.
+  -improvements:
+      * None.
+  -bug fixes:
+      * None.
+
+24/Set/1996: version 0.53
+  -bug fixes:
+      * Harmless bug fixed
+
+25/Feb/1994: version 0.52
+  -improvements:
+      * 64 bit machine compatibility plus some polishing.
+      * Tested on some more machines: Alpha, Sparc, 88000, R6000, HP
+  -bug fixes:
+      * Bug in reconsult/1 fixed.
+
+20/Nov/1993: version 0.51
+  -improvements:
+      * Threaded code added
+  -bug fixes:
+      * Small bugs fixed
+
+17/Nov/1993: version 0.5
+
+...
+
+20/Mar/1990: version 0.1
