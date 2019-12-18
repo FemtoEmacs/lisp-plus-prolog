@@ -1,0 +1,38 @@
+
+usage()
+{
+	echo "Usage: java-config-mingw [--libs] [--cflags] [--cxxflags]"
+	exit 1
+}
+
+error()
+{
+	echo "java-config: The Java development kit is not installed."
+	exit 1
+}
+
+file=`type -p javac`
+if [ -z "$file" ]; then
+	error 1>&2
+fi
+
+while [ -h "$file" ]; do
+	file=`find $file -printf "%l"`
+done
+
+base=${file/\/bin\/javac/}
+
+case $1 in
+	--cflags)
+		echo "-I\"$base/include\" -I\"$base/include/win32\""
+	;;
+	--cxxflags)
+		echo "-I\"$base/include\" -I\"$base/include/win32\""
+	;;
+	--libs)
+		echo "-L\"$base/lib\" -ljvm"
+	;;
+	*)
+		usage 1 1>&2
+	;;
+esac

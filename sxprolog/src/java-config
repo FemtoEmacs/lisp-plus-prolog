@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#	This file is part of the CxProlog system
+
+#	java-config 
+#	by A.Miguel Dias - 2010/01/02
+#	CITI - Centro de Informatica e Tecnologias da Informacao
+#	Dept. de Informatica, FCT, Universidade Nova de Lisboa.
+#	Copyright (C) 1990-2016 A.Miguel Dias, CITI, DI/FCT/UNL
+
+#	CxProlog is free software; you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation; either version 2 of the License, or
+#	(at your option) any later version.
+
+#	CxProlog is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#	GNU General Public License for more details.
+
+#	You should have received a copy of the GNU General Public License
+#	along with this program; if not, write to the Free Software
+#	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+usage()
+{
+	echo "Usage: java-config [--libs] [--cflags] [--cxxflags]"
+	exit 1
+}
+
+error()
+{
+	echo "java-config: The Java development kit is not installed."
+	exit 1
+}
+
+file=`type -pf javac`
+if [ -z $file ]; then
+	error 1>&2
+fi
+
+while [ -h $file ]; do
+	file=`find $file -printf "%l"`
+done
+
+base=${file/\/bin\/javac/}
+
+case $1 in
+  --cflags)
+	echo "-I$base/include -I$base/include/linux"
+  ;;
+  --cxxflags)
+	echo "-I$base/include -I$base/include/linux"
+  ;;
+  --libs)
+	for libdir in $base/jre/lib/i386/client/ $base/jre/lib/amd64/server/
+	do
+		if [ -d $libdir ]; then
+			echo "-L$libdir -ljvm -Wl,-rpath -Wl,$libdir"
+			break
+		fi
+	done
+  ;;
+  *)
+		usage 1 1>&2
+  ;;
+esac
