@@ -963,7 +963,7 @@ static Pt ZPushCompoundTerm(Pt term, Pt env, Bool permanentExtras,
 {
 	extern Pt ZT ;  /* This variable is only used here */
 	Pt t ;
-	Size size ;
+	Size size = 0;
 	for(ZT = term
 		; (t = CompoundTermCopy(ZT, H, H + FreeHSpace(),
 						env, permanentExtras, convUnitParams,
@@ -981,7 +981,7 @@ static Pt AllocateCompoundTerm(Pt term, Pt env, Bool permanentExtras,
 {
 /* Firstly, tries to use the available space in the global stack as buffer.
    This is the faster technique	*/
-	Size size ;
+	Size size = 0;
 #if 0
 	Pt res = CompoundTermCopy(term, H, H + FreeHSpace(), env, permanentExtras, convUnitParams, cyclesAllowed, &size) ;
 #else

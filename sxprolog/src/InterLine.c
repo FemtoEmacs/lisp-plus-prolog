@@ -34,7 +34,7 @@ static Str linePrompt, savelinePrompt, topMainPrompt, topLinePrompt ;
 
 static Str InterLineGetLinePrompt(void)
 {
-    return linePrompt == nil ? "|: " : linePrompt ;
+    return linePrompt == nil ? "?- " : linePrompt ;
 }
 
 Str InterLineGetPrompt(void)
