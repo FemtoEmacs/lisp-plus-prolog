@@ -28,6 +28,11 @@ static int argc ;
 static CharPt *argv ;
 static Str bootFileName = nil ;
 
+void newargs(int n, CharPt *v) {
+  argv= v;
+  argc= n;
+}
+
 void SpecifyBootFile(Str boot)
 {
 	bootFileName = boot ;
@@ -172,3 +177,4 @@ void CmdLineInit2()
 	InstallCBuiltinPred("os_arg", 2, POSGetArg) ;
 	InstallCBuiltinPred("os_args", 1, POSGetArgs) ;
 }
+

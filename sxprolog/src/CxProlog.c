@@ -24,6 +24,8 @@
 
 #include "CxProlog.h"
 
+void newargs(int n, CharPt *v);
+
 int split (const char *txt, char delim, char ***tokens)
 {
     int *tklen, *t, count = 1;
@@ -52,14 +54,12 @@ int split (const char *txt, char delim, char ***tokens)
 
 /* wxWidgets uses it own main function. The following main function
    is provided only for the case wxWidgets is not in use. */
-int repl(int i, char *str) {
+int repl(char *str) {
    char **tokens;
    int count;
-   count= split(str, '/', &tokens);
-   for (int j=0; j < count; j++) {
-	printf("tokens[%d]= %s\n", j, tokens[j]);}
-   printf("i= %d, str=%s\n", i, str);
-   return RunInteractiveProlog(i, tokens); //
+   count= split(str, ' ', &tokens);
+   newargs(count, tokens);
+   return RunInteractiveProlog(count, tokens); //
 }
 int main(int argc, char **argv)
 {
