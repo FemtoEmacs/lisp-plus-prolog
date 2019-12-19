@@ -31,8 +31,83 @@ be sufficient:
 
 ```shell
 
-$ make lib 
+$ make lib
+$ cp libcxprolog.so libcxprolog.dylib
+
 ```
 
-Be sure that you are inside the ~/sxprolog/ folder.
+Be sure that you are inside the ~/sxprolog/ folder. You need to
+copy libcxprolog.so to libcxprolog.dylib only if you are working
+with a MacIntosh computer and needs to use the Racket language.
+
+## Test Prolog for Racket
+CxProlog for Scheme and Common Lisp does not work on the Racket IDE.
+I only succeed to make Racket work on a terminal, at a command line.
+
+```shell
+$ racket
+Welcome to Racket v7.5.
+> (require "prolog.rkt")
+> (logic "I am not from here")
+CxProlog version 0.98.2 [development]
+
+[main] ?- os_args(X).
+X = ['I',am,not,from,here]
+
+[main] ?- halt.
+% CxProlog halted.
+0
+> (logic "She walks in beauty like the night")
+
+[main] ?- os_args(X).
+X = ['She',walks,in,beauty,like,the,night]
+
+[main] ?- halt.
+% CxProlog halted.
+0
+> (exit)
+
+$ _
+```
+
+In the case of a MacIntosh computer, you will may want
+to link racket to a call from /usr/local/bin for greater
+convenience. Here is how to do it:
+
+```shell
+
+$ sudo ln -s /Applications/Racket\ v7.5/bin/racket \
+              /usr/local/bin/racket
+
+```
+
+## Test Prolog for Chez Scheme
+The foreign language interface of Chez Scheme is quite
+complex. I would suggest the adoption of a simpler
+interface, such as the one found in Chez Scheme. Anyway,
+here is the test of chezprolog:
+
+```shell
+› scheme
+Chez Scheme Version 9.5.3
+Copyright 1984-2019 Cisco Systems, Inc.
+
+> (load "chezprolog.scm")
+> (logic "She walks in beauty like the night")
+CxProlog version 0.98.2 [development]
+
+[main] ?- os_args(X).
+X = ['She',walks,in,beauty,like,the,night]
+
+[main] ?- halt.
+% CxProlog halted.
+0
+> (exit)
+```
+
+## Common Lisp
+For the time being, the only option for Common Lisp is
+wamcompiler. I already filed an issue on wamcompiler
+page. I also asked Lucas and Pedro to create a Common
+Lisp interface for cxprolog.
 
