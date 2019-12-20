@@ -1,4 +1,5 @@
-%% File: (load "fvalue.lisp")
+%% (load "prolog.scm")
+%% (logic "-f prolog-src/fvalue.pl")
 
 choose(N, [N|Rest]).
 choose(N, [_|Rest]) :- choose(N, Rest).
