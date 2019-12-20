@@ -1,8 +1,8 @@
 # wamdocs
 
-Tutorial on wam basic Prolog embedded in Common Lisp. This book will discuss both
-Lisp and Prolog programming. There is also a tutorial lispp.pdf on Lisp plus Prolog
-programming.
+The wamcompiler.pdf is a tutorial on wamcompiler, which is a wam based Prolog embedded in Common
+Lisp. It discusses both Lisp and Prolog programming. There is also a tutorial on Scheme plus
+Prolog programming -- lispp.pdf
 
 # Compiling the tutorials
 The tutorials were written in latex, and the distribution is in pdf. Therefore you
