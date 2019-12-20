@@ -1,4 +1,6 @@
-%% ?-consult('nim.pl').
+%% $ scheme
+%% (load "prolog.scm") 
+%% (logic "-f nim.pl")
 
 ap([], L, L).
 ap([H|T], L, [H|U]) :- ap(T, L, U).
