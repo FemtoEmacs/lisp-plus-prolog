@@ -50,9 +50,12 @@ commands you need to edit a file.
 In the following cheat sheet, \verb|Spc| denotes
 the space bar, \verb|C-| is the \keys{Ctrl} prefix, \verb|M-| represents 
 the  \keys{Alt} prefix and  $\kappa$ can be any key. 
+\index{Emacs!Ctrl prefix}\index{Emacs!Alt prefix}
 
+\index{Emacs!save file}\index{Emacs!exit editor}
+\index{Emacs!seach}\index{Emacs!undo}
 \paragraph{Basic commands.} \verb|C-|$\kappa$ -- Press and release \keys{Ctrl}
-and \keys{$\kappa$} simultaneously
+and \keys{$\kappa$} simultaneously\index{Emacs!kill line}
 \begin{quote}
  \verb|C-s| then type some text, and press \verb|C-s| again 
   -- search a text.\\
@@ -94,7 +97,9 @@ down and press \keys{x} and  \keys{$\kappa$}
 \paragraph{Window commands.} One can have more
 than one window on the screen. Below, you will
 find commands that deal with this situation.
-\begin{itemize}
+\begin{itemize}\index{Emacs!split window}
+\index{Emacs!other window}\index{Emacs!switch buffer}
+\index{Emacs!close window}
 \item \verb|C-x |$\kappa$ -- Press and release \keys{Ctrl}
 and \keys{x} together, then press \keys{$\kappa$} 
 \begin{quote}
@@ -1529,7 +1534,7 @@ pattern, if it is member of the tail T.\index{Prolog!member}
 
 memb(H, [H|_]).
 memb(H, [_|T]) :- memb(H, T).
-\end{verbatim}
+\end{verbatim}\index{Prolog!\verb/[H:T]/ pattern}
 
 As one would expect from the logic of the code,
 Prolog answers yes when confronted with the
@@ -1583,7 +1588,7 @@ applst([H|T], L, [H|U]) :- applst(T, L, U).
 \end{quote}
 
 This problem is an all time favorite. If you run the
-goal \verb|?-app(X,Y,[2,3,4,5])|, Prolog will find and
+goal \verb|?- applst(X,Y,[2,3,4,5])|, Prolog will find and
 print all ways of cutting the list \verb|[2,3,4,5]|:
 \begin{quote}
 \begin{verbatim}
@@ -1615,7 +1620,7 @@ backtrack to the point of bifurcation and select
 another path.\index{backtrack}
 
 Consider the definition of applst, for instance. The
-first alternative for the \verb|?-applst(X,F,[2,3,4,5])|
+first alternative for the \verb|?- applst(X,F,[2,3,4,5])|
 goal is the first clause, which makes \verb|X=[]|.
 However, if the user is not happy with this solution,
 Prolog backtracks to the point of choice, and selects
@@ -1811,13 +1816,13 @@ skilled Prolog programmer it shouldn't take you more than
 30-90 minutes to solve them. Problems marked with three
 asterisks (***) are more difficult. You may need more
 time (i.e. a few hours or more) to find a good solution. 
-\end{quotation}
+\end{quotation}\index{Prolog!Hett}
 
-I did not followed Hett's advice to the letter. In roder
+I did not followed Hett's advice to the letter. In order
 to check for bugs in the compiler, I used cuts everywhere
 to prevent backtracking. It is easy to restore the logic
 purity of the programs: Just eliminate the cuts.
-
+\index{Prolog!List examples}
 \pagebreak
 \begin{verbatim}
 %% (load "-f p99.pl")
@@ -1946,7 +1951,7 @@ decode([[N,X]|Ys],[X|Zs]) :- N > 1, !,
 decode([X|Ys],[X|Zs]) :- notlist(X),
                          decode(Ys,Zs).
 \end{verbatim}
-
+\index{Prolog!compression}
 \pagebreak
 \begin{verbatim}
 % P13 (**): Run-length encoding of a list (direct solution) 
@@ -2000,7 +2005,7 @@ split([X|Xs],N,[X|Ys],Zs) :- N > 0, !, N1 is N - 1,
                  split(Xs,N1,Ys,Zs).
 split(L,0,[],L).
 \end{verbatim}
-
+\index{Prolog!slice}
 \begin{verbatim}
 % P18 (**):  Extract a slice from a list
 %% ?- slice([1,2,3,4,5,6,7], 2,4, R).
@@ -2083,6 +2088,7 @@ lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
 rnd_permu(L1,L2) :- length(L1,N), rnd_select(L1,N,L2).
 
 \end{verbatim}
+\index{Prolog!lotto}
 
 \chapter{Shell}
 \index{Shell}
@@ -3413,10 +3419,11 @@ go for it?''
 
 
 \chapter{Arithmetic operations}
-The femto editor is designed for writing programs.
-Therefore, Nia decided
-to learn how to use it through its own scripting language,
-that is femtolisp.
+Scheme has many resources for writing and documenting programs.
+However, this book follows Occam's advice and use only those
+tools that are absolutely necessary. In this chapter, you will
+shadow Nia, while she determines which is the minimum set of
+tools she needs to perform numerical calculations.
 
 Nia entered the editor and pressed \verb|C-x C-f| 
 to create the \verb|celsius.scm| buffer. 
@@ -3428,11 +3435,11 @@ She typed the  program below into the buffer.
 ;; make comments more visible.
 
 (define (c2f x)
-(- (/ (* (+ x 40) 9) 5.0) 40)
+   (- (/ (* (+ x 40) 9) 5.0) 40)
 );;end define
 
 (define (f2c x)
-(- (/ (* (+ x 40) 5.0) 9) 40)
+   (- (/ (* (+ x 40) 5.0) 9) 40)
 );;end define
 \end{verbatim}
 Function c2f converts Celsius readings to Fahrenheit.
@@ -3457,101 +3464,87 @@ with Lisp. After this action, there are two
 windows on the screen, both 
 showing the \verb|celsius.scm| buffer. The \verb|C-x o| command
 makes the cursor jump from one window to the other.
-From the bottom window, Nia presses \verb|C-x C-f| to
-create the \verb|repl.scm| interaction file. 
+From the bottom window, Nia issues the  \verb|M-x shell| command
+to create a Read Eval Print Loop (she maintains the
+\keys{Alt} key down and presses \verb|x|; then she types
+the \verb|shell| command on the minibuffer). 
 
-On the \verb|repl.scm| buffer, 
-Nia can load the \verb|celsius.scm| program
-and  call any application that she has defined
-herself, or which comes with Lisp.
-The \verb|Esc ;| command reads an operation
-from the  minibuffer and executes it.
-The first operation is loading
-the \verb|celsius.scm| file,
-as you can see in figure~\ref{fig:repl}.
-Be sure that you
-are on the \verb|repl.scm| 
-interaction window when you perform
-the loading, otherwise you will introduce
-the \verb|#<function>| extraneous 
-text into the source file.
+From the shell buffer, Nia can launch the Scheme compiler,
+and load the \verb|celsius.scm| program. Then she can
+call any application that she has define herself, or which
+comes out of the box with Lisp. The Read Eval Print Loop,
+or repl for short, does what its name indicates: reads a
+command, evaluates it, prints the result and loops back
+to the next command. The first operation is loading the
+\verb|celsius.scm| file, as you can see in
+figure~\ref{fig:repl}. Be sure that you are on the repl
+interaction window when you perform the loading, otherwise
+all you will get are error messages from the shell.
 
-\begin{figure}[!b]
+\begin{figure}[!h]
 \begin{fmpage}{0.8\linewidth}
 \begin{verbatim}
 ; File: celsius.scm
 
 (define (c2f x)
-(- (/ (* (+ x 40) 9) 5.0) 40)
-);;end define
+   (- (/ (* (+ x 40) 9) 5.0) 40))
 
 (define (f2c x)
-(- (/ (* (+ x 40) 5.0) 9) 40)
-);;end define
+    (- (/ (* (+ x 40) 5.0) 9) 40))
+
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
 \begin{verbatim}
+› scheme
+Chez Scheme Version x.y.z
 
-#<function>
-
-(c2f 100)
+> (load "celsius.scm")
+> (c2f 100)
 212.0
-
 \end{verbatim}
 \end{fmpage}
-
 \begin{fmpage}{0.8\linewidth}
-\verb|> (load "celsius.scm")|
+\verb|M-x shell|
 \end{fmpage}
 \caption{Source file and Interation Buffer}
 \label{fig:repl}
 \end{figure}
 
-Let us recall what happened until now.
-Nia pressed \verb|C-x 2| to split 
-the buffer window, as shown in figure~\ref{fig:repl}.
-Thus she has two buffers in front of her,
-each with its own window. One of the buffers has
-a Lisp source file, while the other contains a Lisp 
-interaction. In order to  switch
-from one buffer to the other,
-Nia press the \verb|C-x o| command.
+Let us recall what happened until now. Nia pressed
+\verb|C-x 2| to split  the buffer window and execute the
+\verb|M-x shell| command, as shown in figure~\ref{fig:repl}.
+In my version of Emacs, the \verb|M-x shell| command alone
+splits the window and launch a shell terminal. I don't
+need the \verb|C-x 2| step.
 
-The command \verb|C-x C-s| saves the Lisp source 
-file. 
+Eventually, Nia has two buffers in front of her, each in
+its own window. One of the buffers has a Lisp source file,
+while the other contains a Lisp repl interaction. In order
+to  switch from one buffer to the other, Nia press the
+\verb|C-x o| command. The command \verb|C-x C-s| saves the
+Lisp source file.  The command \verb|(load "celsius.scm")|
+from the repl loads the  source file.
 
-The \verb|Esc ;| command followed
-by \verb|(load "celsius.scm")| on the minibuffer
-loads the  source file.
+After loading the source file, Nia types \verb|(c2f 100)|
+on the interaction buffer. Then she presses the
+\keys{Enter} key to perform the calculation of the Fahrenheit
+reading and print the value found.
 
-One can also load the source file
-by typing \verb|(load "celsius.scm")|
-on the interaction buffer, 
-then press the \verb|Esc ]| command.
-After loading the source file either
-with \verb|Esc ;| or with the \verb|Esc ]| method,
-Nia types \verb|(c2f 100)| on the interaction
-buffer. Then she presses \verb|Esc ]| to
-insert the calculation of the Fahrenheit reading
-into the interaction buffer.
+Nia often works with a single window.  In this case, after
+typing and saving the source file with \verb|C-x C-s|, she
+does not split the window before opening the interaction
+buffer with the \verb|M-x shell| command. In this case,
+only one buffer is visible. Nia switches  between the
+interaction buffer and the source file by pressing the
+\verb|C-x b| command and choosing the destination buffer
+with the arrow \keys{~$\uparrow$~} \keys{~$\downarrow$~}
+keys.
 
-Nia often works with a single window. 
-In this case, after typing and saving
-the source file with \verb|C-x C-s|,
-she does not split the window
-before opening the interaction buffer with the
-\verb|C-x C-f| command. In this case,
-only one buffer is visible. Nia switches 
-between the interaction buffer and
-the source file by pressing the  \verb|C-x n|
-command. 
-
-Text editing is one of these things that
-are easier to do than to explain. Therefore,
-the reader is advised to learn femtoemacs
-by experimenting with the commands.
+Text editing is one of these things that are easier to do
+than to explain. Therefore, the reader is advised to learn
+Emacs by experimenting with the commands.
 
 \section{let-binding}\index{let-binding}
 The let-form introduces\index{Local variables} 
@@ -3574,39 +3567,6 @@ first pair, one for the list of pairs and the
 other for the first pair.
 
 
-\begin{figure}[!b]
-\begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-(define (winter m)
-(quotient (- 14 m) 12))
-
-(define (roman-order m)
-(+ m (* (winter m) 12) -2))
-
-(define (zr y m day)
-(let* ( (roman-month (roman-order m))
-      (roman-year (- y (winter m)))
-      (century (quotient roman-year 100))
-      (decade (remainder roman-year 100)) )
- (mod (+ day
-         (quotient (- (* 13 roman-month) 1) 5)
-         decade
-         (quotient decade 4)
-         (quotient century 4)
-         (* century -2)) 7)) )
-\end{verbatim}
-\end{fmpage}
-
-\begin{fmpage}{0.9\linewidth}
-\verb|> (load "zeller.scm")|\\
-\verb|#<function>|\\
-\verb|> (zr 2016 8 31)|\\
-3
-\end{fmpage}
-\caption{Source file and Interation Buffer}
-\label{fig:date-calculation}
-\end{figure}
-
 You certainly know that the word `December' means
 the tenth month; it comes from the Latin word for
 ten, as attested in words such as:
@@ -3623,7 +3583,7 @@ as {\em eight}, like in
 {\em octave}, {\em octal}, and {\em octagon}.
 One could continue with this analysis,
 placing September in the seventh,
-and November in the nineth position
+and November in the ninth position
 in the sequence of months.
 But everybody and
 his brother know that December is the
@@ -3641,9 +3601,39 @@ this mythical calendar, she must
 subtract 2 from the order
 in the Gregorian calendar.
 In doing so, September becomes the
-seventh month; October, the eigth;
-November, the nineth and
+seventh month; October, the eighth;
+November, the ninth and
 December, therefore, the tenth month.
+
+\begin{figure}[!h]
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(define (winter m) (quotient (- 14 m) 12))
+
+(define (roman-order m) (+ m (* (winter m) 12) -2))
+
+(define (zr y m day)
+(let* [ (roman-month (roman-order m))
+        (roman-year (- y (winter m)))
+        (century (quotient roman-year 100))
+	(decade (remainder roman-year 100)) ]
+ (mod (+ day
+         (quotient (- (* 13 roman-month) 1) 5)
+         decade
+         (quotient decade 4)
+         (quotient century 4)
+         (* century -2)) 7)) )
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\verb|> (load "zeller.scm")|\\
+\verb|> (zr 2016 8 31)|\\
+3
+\end{fmpage}
+\caption{Source file and Interaction Buffer}
+\label{fig:date-calculation}
+\end{figure}
 
 Farming and plunder were the main
 occupations of the Romans, and since winter
@@ -3664,8 +3654,7 @@ month numbering to the
 old sequence has arisen.
 \begin{quote}
 \begin{verbatim}
-(define (roman-order m)
-(+ m (* (winter m) 12) -2))
+(define (roman-order m) (+ m (* (winter m) 12) -2))
 \end{verbatim}
 \end{quote}
 The above formula will work if \verb|(winter m)|
@@ -3674,8 +3663,7 @@ returns 1 for months 1 and 2, and
 below satisfies these requisites.
 \begin{quote}
 \begin{verbatim}
-(define (winter m)
-(quotient (- 14 m) 12))
+(define (winter m) (quotient (- 14 m) 12))
 \end{verbatim}
 \end{quote}
 For months from 3 to 12,
@@ -3753,17 +3741,30 @@ the month \verb|m| is 1 or 2, one must subtract
 1 from the Gregorian year in order to obtain
 the Roman year.
 
-\begin{figure}[!b]
+You probably know, in all computer
+languages, {\em Boolean} is a data type
+that can have just two values: \verb|#t|
+for ``true'' and \verb|#f| for ``false''.
+The procedure \verb|(< m 3)| returns
+\verb|#t| if \verb|m| is less than 3,
+and \verb|#f| otherwise. On the other
+hand, \verb|(if (< m 3) (+ m 10) (- m 2))|
+calculates the expression \verb|(+ m 10)|
+if and only if \verb|(< m 3)| produces
+the value \verb|#t|. Otherwise, the
+\verb|if| form calculates the \verb|(- m 2)|
+expression.
+
+\begin{figure}[!h]
 \begin{fmpage}{0.9\linewidth}
 \begin{verbatim}
 (define (zr y m day)
-(let* ( (roman-month (if (< m 3) (+ m 10) (- m 2)))
-      (roman-year (if (< m 3) (- y 1) y))
-      (century (quotient roman-year 100))
-      (decade (remainder roman-year 100)) )
- (mod (+ day
+(let* [ (roman-month (if (< m 3) (+ m 10) (- m 2)))
+        (roman-year (if (< m 3) (- y 1) y))
+        (century (quotient roman-year 100))
+	(decade (remainder roman-year 100)) ]
+ (mod (+ day decade
          (quotient (- (* 13 roman-month) 1) 5)
-         decade
          (quotient decade 4)
          (quotient century 4)
          (* century -2)) 7)) )
@@ -3781,20 +3782,6 @@ the Roman year.
 \caption{Making decisions}
 \label{fig:zeller}
 \end{figure}
-
-You probably know, in all computer
-languages, {\em Boolean} is a data type
-that can have just two values: \verb|#t|
-for ``true'' and \verb|#f| for ``false''.
-The procedure \verb|(< m 3)| returns
-\verb|#t| if \verb|m| is less than 3,
-and \verb|#f| otherwise. On the other
-hand, \verb|(if (< m 3) (+ m 10) (- m 2))|
-calculates the expression \verb|(+ m 10)|
-if and only if \verb|(< m 3)| produces
-the value \verb|#t|. Otherwise, the
-\verb|if| form calculates the \verb|(- m 2)|
-expression.
 
 Now, let us analyze the terms of the Zeller's
 congruence. A
@@ -3926,17 +3913,16 @@ returns the second element, which is 3.
 (define g (cons 4 5))
 
 (define (add x y)
-(let ( (numerator (+ (* (car x) (cdr y))
-                   (* (car y) (cdr x)) ))
-     (denominator  (* (cdr x) (cdr y)) ))
-(cons numerator
-     denominator))) 
+   (let [ (numerator (+ (* (car x) (cdr y))
+                        (* (car y) (cdr x)) ))
+          (denominator  (* (cdr x) (cdr y)))]
+      (cons numerator
+            denominator))) 
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.9\linewidth}
 \verb|> (load "cartesian.scm")|\\
-\verb|#<function>|\\
 \verb|> (add f g)|\\
 \verb|(22 . 5)|
 \verb|(add '(3 . 7) '(2 . 5))|\\
@@ -3964,7 +3950,7 @@ and the denominator of the addition:
 \begin{quote}
 \begin{verbatim}
 (+ (* (car x) (cdr y))    ;; numerator
-(* (car y) (cdr x)))   
+   (* (car y) (cdr x)))   
 
 (* (cdr x) (cdr y))       ;; denominator
 \end{verbatim}
@@ -4217,9 +4203,9 @@ Using clauses, that table becomes
 \begin{quote}\small
 \begin{verbatim}
 (define (vowel x)
-(cond ( (or (char=? x #\a)(char=? x #\e)(char=? x #\i) 
-          (char=? x #\o)(char=? x #\u)) #t)
-    (else #f)))
+   (cond [ (or (char=? x #\a)(char=? x #\e)(char=? x #\i) 
+           (char=? x #\o)(char=? x #\u)) #t]
+	 [else #f]))
 \end{verbatim}
 \end{quote}
 Expressions like $(\verb|or | p_1\;p_2\ldots p_n)$ has the same 
@@ -4234,7 +4220,7 @@ if that clause applies. Consider the first clause. The expression:
 \begin{quote}
 \begin{verbatim}
 (or (char=? #\a)(char=? #\e)(char=? #\i)
-(char=? #\o)(char=? #\u))
+    (char=? #\o)(char=? #\u))
 \end{verbatim}
 \end{quote}
 asks the question: {\em Is \verb|x= #\a|,
@@ -4247,40 +4233,40 @@ value is given by the second clause expression.
 Now, let us consider the Fibonacci function,
 that has such an important role in the
 book ``The Da Vinci Code''.
-Here is its table for the first 6 entries:\\
+Here is its table for the first 9 entries:\\
 \begin{quote}\label{page:Fibonacci}
-\begin{tabular}{p{2cm}p{3cm} | p{2cm}p{3cm}}
-0 & 1 & 3 & 3 \\
-1 & 1 & 4 & 5  \\
-2 & 2 & 5 & 8
+\begin{tabular}{p{1cm}p{3cm} | p{1cm}p{3cm} | p{1cm}p{3cm}}
+0 & 1 & 3 & 5 & 6 & 21\\
+1 & 2 & 4 & 8 & 7 & 34 \\
+2 & 3 & 5 & 13 & 8 & 55\\
 \end{tabular}
 \end{quote}
-Notice that a given functional value is equal
-to the sum of the two precedent values,
-i.e.,  $f_{n+1}= (+\;f_n\;f_{n-1})$. Assume that $n=5$. 
-Then,  $f_6= (+\;f_5\;f_4)$.
+Notice that a given functional value is equal to
+$f_{n}= f_{n-3}+2\times f_{n-2}$. Assume that $n=6$.
+Then,  $f_6= f_3+2\times f_4$.
 
-Of course, the expression
-$f_{n+1}= (+\;f_n\;f_{n-1})$
-is true only for $n>0$,
-since there are not two precedent
-values for $n+1=0$, or $n+1=1$. 
-The below programa shows how  you can state that a rule
-is valid only under certain conditions.\\
+Of course, the expression $f_{n}= f_{n-3}+2\times f_{n-2}$
+is true only for $n>2$, since there are not three precedent
+values for $n=0$, $n=1$ and $n=2$.  The below program shows
+how  you can state that a rule is valid only under certain
+conditions.\\
 
 \begin{fmpage}{0.9\linewidth}
 \begin{verbatim}
-(define (fib n fn fn-1)
-(cond ((< n 2) fn)
-    (else  (fib (- n 1) (+ fn fn-1) fn)) ))
+(define (fib n)
+   (cond [ (< n 2) (+ n 1)]
+         [ (= n 2) 3]
+         [else  (+ (fib (- n 3))
+                   (* (fib (- n 2)) 2))]))
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.9\linewidth}
-\verb|> (load "fibonacci.scm")|\\
-\verb|#<function>|\\
-\verb|> (fib 5 1 1)|\\
-\verb|8|
+\begin{verbatim}
+> (load "fibonacci.scm")
+> (fib 50)
+32951280099
+\end{verbatim}
 \end{fmpage}
 
 
@@ -4426,8 +4412,8 @@ wether \verb|d| is a digit.
 \begin{quote}
 \begin{verbatim}
 (define (digit? d)
-(and (char>=? d #\0)
-   (char<=? d #\9)))
+   (and (char>=? d #\0)
+        (char<=? d #\9)))
 \end{verbatim}
 \end{quote}
 The predicate \verb|deep-winter?| checks if
@@ -4435,7 +4421,7 @@ The predicate \verb|deep-winter?| checks if
 \begin{quote}
 \begin{verbatim}
 (define (deep-winter? m)
-(or (= m 1) (= m 2)))
+    (or (= m 1) (= m 2)))
 \end{verbatim}
 \end{quote}
 
@@ -4451,22 +4437,21 @@ that produces the corresponding name.
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
 (define (week-day n)
-(cond ( (= n 0) 'Sunday)
-     ( (= n 1) 'Monday)
-     ( (= n 2) 'Tuesday)
-     ( (= n 3) 'Wednesday)
-     ( (= n 4) 'Thursday)
-     ( (= n 5) 'Friday)
-     ( else 'Saturday)))
+   (cond [ (= n 0) 'Sunday]
+         [ (= n 1) 'Monday]
+         [ (= n 2) 'Tuesday]
+         [ (= n 3) 'Wednesday]
+         [ (= n 4) 'Thursday]
+         [ (= n 5) 'Friday]
+         [ else 'Saturday]))
 
 (define (zeller y m day)
-(let* ( (roman-month (if (< m 3) (+ m 10) (- m 2)))
-      (roman-year (if (< m 3) (- y 1) y))
-      (century (quotient roman-year 100))
-      (decade (remainder roman-year 100)) )
- (week-day (mod (+ day
+    (let* [ (roman-month (if (< m 3) (+ m 10) (- m 2)))
+            (roman-year (if (< m 3) (- y 1) y))
+            (century (quotient roman-year 100))
+            (decade (remainder roman-year 100))]
+       (week-day (mod (+ day decade
                    (quotient (- (* 13 roman-month) 1) 5)
-                   decade
                    (quotient decade 4)
                    (quotient century 4)
              (* century -2)) 7)) )
@@ -4476,7 +4461,6 @@ that produces the corresponding name.
 
 \begin{fmpage}{\linewidth}
 \verb|> (load "zeller.scm")|\\
-\verb|#<function>|\\
 \verb|> (zeller 2018 8 31)|\\
 \verb|Friday|
 \end{fmpage}
@@ -4609,20 +4593,21 @@ as a functional abstraction.
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
-\verb|(load "lists.scm")|\keys{Esc}\keys{~]~}\\
-\verb|(or (and A (not B)) (and (not A) B))||\\
-\verb||\\
-\verb|(car xor-structure)| \keys{Esc}\keys{~]~} \\
-\verb|or|\\
-\verb|(cdr xor-structure)|\keys{Esc}\keys{~]~}\\
-\verb|((and A (not B))|\\
-\verb| (and (not A) B))|\\
-\verb|(car (cdr xor-structure))|\keys{Esc}\keys{~]~}\\
-\verb|(and A (not B))|\\
-\verb|(car (cdr (car (cdr xor-structure)) ))|\keys{Esc}\keys{~]~}\\
-\verb|A|\\
-\verb|(car (cdr (cdr (car (cdr xor-structure)) )))|\keys{Esc}\keys{~]~}\\
-\verb|(not B)|
+\begin{verbatim}
+> (load "lists.scm")
+> xor-structure
+(or (and A (not B)) (and (not A) B))
+> (car xor-structure)
+or
+> (cdr xor-structure)
+((and A (not B)) (and (not A) B))
+> (car (cdr xor-structure))
+(and A (not B))
+> (car (cdr (car (cdr xor-structure)) ))
+A
+> (car (cdr (cdr (car (cdr xor-structure)) )))
+(not B)
+\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
@@ -4692,29 +4677,29 @@ go through the pairs of a list. \\
 \begin{fmpage}{0.8\linewidth}
 \begin{verbatim}
 (define spqr
-'(S P Q R))
+   '(S P Q R))
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
-\verb|(load "spqr.scm")|\keys{Esc}\keys{~]~}\\
-\verb|(S P Q R)|\\
-\verb||\\
-\verb|(cdr spqr)|\\
-\verb|(P Q R)|\\
-\verb||\\
-\verb|(cdr (cdr spqr))|\\
-\verb|(Q R)|\\
-\verb||\\
-\verb|(cdr (cdr (cdr spqr)))|\\
-\verb|(R)|
+\begin{verbatim}
+> (load "spqr.scm")
+> spqr
+(S P Q R)
+> (cdr spqr)
+(P Q R)
+> (cdr (cdr spqr))
+(Q R)
+> (cdr (cdr (cdr spqr)))
+(R)
+\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
 \verb||
 \end{fmpage}
 
-
+\vspace{0.5cm}
 If all one needs is to represent
 sequences, then contiguous memory
 elements could be more
@@ -4776,175 +4761,6 @@ she must perform \verb|(car (cdr (car (cdr (cdr xs)) )))|
 to reach the goal.
 
 
-\section{Processing text from the editor}
-Let us learn how to retrieve a selection such as
-\verb|"(2016 8 31)"| from femtoemacs,
-transform it into the \verb|'(2016 8 31)|
-list, and calculate the corresponding
-day of the week.
-
-To select the string, press \verb|C-Spc|
-at the first character, and
-move the cursor onto the last character.
-
-The problem is that the clipboard
-contains a string like \verb|"(2016 8 31)"|, and
-the \verb|zeller| function defined in needs a list.
-Therefore, Nia needs a procedure to
-read a list from a string of characters.
-
-\begin{quote}
-\begin{verbatim}
-(load (home "aliases.scm"))
-
-(define (read-string str)
-(let ( (port (open-input-string str)))
-  (begin0 (read port)
-    (close-input-port port)) ))
-\end{verbatim}
-\end{quote}
-
-All languages open ports for reading things
-from files. Lisp is no exception, but for
-the fact that one can open objects like
-strings, and read complex objects such
-as a whole list. These powerful features
-can be seen in the above definition.
-The \verb|begin0| form evaluates a sequence
-of expressions, and returns the first
-one as the result of the whole sequence.
-The \verb|begin0| was necessary in the 
-definition of \verb|read-string| because
-Nia needs the result of \verb|(read port)|,
-and cannot close the port before finishing
-the reading. The solution for this problem
-is to execute \verb|(read port)|, 
-the \verb|(close-input-port port)|, and
-finally return the produce of \verb|(read port)|.
-
-The \verb|week-day| function transform
-a number \verb|n| between 0 and 6 into
-strings corresponding to the seven
-days of the week:
-\begin{quote}
-\begin{verbatim}
-(define (week-day n)
-(symbol->string
-(cond ( (= n 0) "Sunday")
-      ( (= n 1) "Monday")
-      ( (= n 2) "Tuesday")
-      ( (= n 3) "Wednesday")
-      ( (= n 4) "Thursday")
-      ( (= n 5) "Friday")
-      ( (= n 6) "Saturday")
-      (else "This should not happen")) ))
-\end{verbatim}
-\end{quote}
-
-\paragraph{Calculating the day of the week.}
-Zeller congruence, as given in
-figure~\ref{fig:day-of-the-week}
-and repeated below 
-for ready reference,
-can be used to calculate the
-day of the week.
-\begin{verbatim}
-(define (zeller y m day)
-(let* ( (roman-month (if (< m 3) (+ m 10) (- m 2)))
-      (roman-year (if (< m 3) (- y 1) y))
-      (century (quotient roman-year 100))
-      (decade (remainder roman-year 100)) )
- (week-day (mod (+ (quotient (- (* 13 roman-month) 1) 5)
-                   decade
-                   (quotient decade 4)
-                   (quotient century 4)
-                   (* century -2)
-                   day) 7)) ))
-\end{verbatim}
-
-The last step is to program a command
-that calculates the day of the week
-into the editor. Here Nia uses the
-cond-form again, to select one of 
-many commands that the user may press.
-
-The keys \verb|C-c a|, \verb|C-c b|,
-until \verb|C-c z| are reserved for
-customization, which means that you
-can hook any Lisp program onto them.
-For instance, if Nia wants to wrap
-the clipboard contents with the
-html-tags \verb|<p>| and \verb|</p>|,
-besides calculating the day of 
-the week, she may define the
-following keyboard:
-\begin{quote}
-\begin{verbatim}
-(define (keyboard key) 
-(cond
-( (equal? key "C-c z")
-  (let ( (date (read-string (cutregion)) ))
-    (insert (apply zeller date)) ))
-  ( (equal? key "C-c p") 
-    (insert "<p> </p>")
-    (backward-char 5))
-  ( (equal? key "C-c c")
-    (end-of-line)
-    (insert "<p>-")
-    (insert (clipboard))
-    (insert "-</p>"))
-  (else (insert key)) ))
-\end{verbatim}
-\end{quote}
-The \verb|(apply zeller date)| operation
-applies \verb|zeller| 
-to the three elements of the  \verb|date| list,
-which contains the year, month and day of interest.
-
-\paragraph{;;Syntax highlight.}
-
-\begin{verbatim}
-;; define syntax highlighting for scheme files
-(newlanguage ".scm" ";" "#|" "|#")
-(keyword "define")
-(keyword "cond")
-(keyword "else")
-
-;; define syntax hughlighting for C code
-(newlanguage ".c" "//" "/*" "*/")
-(keyword "auto")
-(keyword "break")
-(keyword "case")
-(keyword "char")
-(keyword "continue")
-(keyword "default")
-(keyword "do")
-(keyword "double")
-(keyword "else")
-(keyword "enum")
-(keyword "extern")
-(keyword "float")
-(keyword "for")
-(keyword "goto")
-(keyword "if")
-(keyword "int")
-(keyword "long")
-(keyword "register")
-(keyword "return")
-(keyword "short")
-(keyword "signed")
-(keyword "sizeof")
-(keyword "static")
-(keyword "struct")
-(keyword "switch")
-(keyword "typedef")
-(keyword "union")
-(keyword "unsigned")
-(keyword "void")
-(keyword "volatile")
-(keyword "while")
-\end{verbatim}
-
 \section{The list constructor}\index{List!cons}
 Since the \verb|car| and \verb|cdr| operations
 select the two parts of a pair, they are called
@@ -4955,7 +4771,7 @@ whose first element is \verb|x|, and the
 remaining elements are grouped in \verb|xs|.
 
 \begin{quote}
-\verb|(cons 'and '(A B))|\keys{Esc}\keys{~]~}\\
+\verb|> (cons 'and '(A B))|\keys{Enter}\\
 (and A B)
 \end{quote}
 
@@ -4990,26 +4806,25 @@ then the expression following the at-sign
 is evaluated to create a list. This list is
 spliced into place in the template. 
 Templates are specially useful for creating
-macros, as you will learn below.
+macros, as you will learn below.\index{List!templates}
 
 Macros are programs that brings a more convenient
 notation to a standard Lisp form. The syntax of Lisp,
 that unifies data and programs, makes it possible to
 create powerful macros that implement Domain Specific
 Languages (DSLs), speed up coding or create new software
-paradigms. In fact, the macro system is one of the
-two features that places Lisp asunder from other
-languages, the other being its Mathematical Foundations.
-For learning macros in depth, the reader is referred to
-Dough Hoyte's book on the subject\cite{Hoyte}.
-The example below can be placed into the
-\verb|init.lsp| file or into the \verb|aliases.scm|
-file. Remember that these two configuration
-files must be copyed to your home directory.
-
+paradigms.\index{Macros!define-syntax}
+\index{Macros!syntax-case}\index{datum->syntax}
+\index{syntax->datum}
 \begin{verbatim}
-(define-macro (while-do  c r . bdy)
-`(do () ((not ,c) ,r) ,@bdy))
+(define-syntax (while-do stx)
+  (syntax-case stx ()
+    [ (kwd condition the-return . bdy)
+       (datum->syntax #'kwd
+         (let [ (c (syntax->datum #'condition))
+                (r (syntax->datum #'the-return))
+                (body (syntax->datum #'bdy))]
+           `(do () ((not ,c) ,r) ,@body))) ]))
 \end{verbatim}
 
 In the above macro definition,
@@ -5020,17 +4835,19 @@ The syntax of Lisp requires that
 a blank space is inserted before
 and after the dot.
 
-Nia creates a \verb|repl.scm| buffer
-and tests the \verb|while-do| macro,
+Nia created an \verb|repl| buffer
+to test the \verb|while-do| macro,
 as you can see in the following example:\\
 
 \begin{fmpage}{0.8\linewidth}
-\verb|(let ( (s '())|\\
-\verb|       (i 0))|\\
-\verb|   (while-do (< i 5) n|\\
-\verb|       (set! s (cons i s))|\\
-\verb|       (set! i (+ i 1)) ))| \keys{Esc}\keys{~]~}\\
-\verb|(4 3 2 1 0)|\\
+\begin{verbatim}
+> (load "macros.scm")
+> (let [ (s '()) (i 0)]
+    (while-do (< i 5) s
+      (set! s (cons i s))
+      (set! i (+ i 1)) ))
+(4 3 2 1 0)
+\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
@@ -5064,12 +4881,28 @@ The \verb|while-do| macro is not very useful,
 since Scheme programmers adopt the functional
 style, which abhor the use of set bang.
 A much more interesting macro is the
-Curry operator, that comes pre-defined thus:
+Curry operator:
 \begin{quote}\label{page:lambda2}\index{lambda}
 \begin{verbatim}
-(define-macro (curry fn x)
-(let ( (g (gensym)))
-`(lambda(,g) (,fn ,g ,x)) ))
+;; (load "macros.scm")
+
+(define-syntax (while-do stx)
+  (syntax-case stx ()
+    [  (kwd condition the-return . bdy)
+       (datum->syntax #'kwd
+          (let [ (c (syntax->datum #'condition))
+                 (r (syntax->datum #'the-return))
+                 (body (syntax->datum #'bdy))]
+             `(do () ((not ,c) ,r) ,@body))) ]))
+
+(define-syntax (curry stx)
+   (syntax-case stx ()
+      [ (kwd fun arg)
+        (datum->syntax #'kwd
+           (let [ (fn (syntax->datum #'fun))
+                  (x  (syntax->datum #'arg))
+                  (g  (gensym "var"))]
+              `(lambda(,g) (,fn ,g ,x)) ))] ))
 \end{verbatim}
 \end{quote}
 In order to understand this macro, you
@@ -5109,8 +4942,9 @@ macro is a handier method to define a lambda
 abstraction:
 \begin{quote}
 \begin{verbatim}
-(filter (curry > 4) '(3 2 4 1 6 9 8))
-(6 9 8)
+> (load "macros.scm")
+> (filter (curry > 4) '(3 2 4 1 6 8 9))
+(6 8 9)
 \end{verbatim}
 \end{quote}
 
@@ -5132,23 +4966,24 @@ program is given below.
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
 (define (quick-sort s)
-(cond ((null? s) s)
-     ((null? (cdr s)) s)
-     (else 
+  (cond [(null? s) s]
+     [(null? (cdr s)) s]
+     [else 
       (append 
-         (quick-sort (filter (curry string>? (car s)) 
-                             (cdr s)))
+         (quick-sort (filter (curry string<? (car s)) 
+			     (cdr s)))
          (list (car s))
-         (quick-sort (filter (curry string<=? (car s))
-                             (cdr s))) ) )))
+         (quick-sort (filter (curry string>=? (car s))
+			     (cdr s))) )]))
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{\linewidth}
-\verb|> (load "quick.scm")|\\
-\verb|#<function>|\\
-\verb|> (quick-sort '("Caecilia" "Anna" "Priscilla"))|\\
-\verb|(Anna Caecilia Priscilla)|
+\begin{verbatim}
+> (load "quick.scm")
+> (quick-sort '("Caecilia" "Anna" "Priscilla"))
+("Anna" "Caecilia" "Priscilla")
+\end{verbatim}
 \end{fmpage}
 \caption{The filter function}
 \label{fig:filter}
@@ -5173,7 +5008,7 @@ function was called by the following expression:
 \begin{quote}
 \verb|> (quick-sort '("g" "a" "c"  "h" "n" "b"))|
 \end{quote}
-The \verb|(filter (curry string>? (car s)) (cdr s))|
+The \verb|(filter (curry string<? (car s)) (cdr s))|
 expression will filter all strings that comes before
 \verb|"g"| and return the \verb|("a" "c" "b")|.
 A recursive call to \verb|quick-sort| will
@@ -5199,109 +5034,104 @@ expression produces the final result, that is
 \chapter{Recursion}\label{chapter:Recursion}
 \index{Recursion}
 The mathematician Peano invented a very interesting axiomatic theory for
-natural numbers. I cannot remember the details, but the idea was
-something live the following:
+natural numbers:
 \begin{enumerate}\index{Recursion!Peano's axioms}
 \item Zero is a natural number.
-\item Every natural number has a successor: The successor of 0 is 1, the
-successor of 1 is 2, the successor of 2 is 3, and so on.
-\item If a property is true for zero and, after assuming that it is true for n,
-you prove that it is true for n+1, then it is true for any natural number.
+\item Every natural number has a successor: The successor
+      of 0 is 1, the successor of 1 is 2, the successor
+      of 2 is 3, and so on.
+\item If a property is true for zero and, after assuming
+	that it is true for n, you prove that it is true
+	for n+1, then it is true for any number.
 \end{enumerate}
-Did you get the idea? For this very idea can be applied to many other
-situations. When they asked Myamoto Musashi, the famous Japanese
-Zen assassin, how he managed to kill a twelve year old boy protected by his
-mother's 37 samurais\footnote{The boy's father had been killed by Musashi. His uncle met the the same fate. His
-mother \index{Recursion!According to Musashi} hired her late husband's students to protect the child against Musashi.}, he answered:
-\begin{quote} \em
-I defeated one of them, then I defeated
-the remaining 36. To defeat 36, I defeated one of them, then I defeated
-the remaining 35. To defeat 35, I defeated one of them, then I defeated the
-remaining 34\ldots \\
-\ldots~~~~~~~\ldots~~~~~~~\ldots\\
-To defeat 2, I defeated one of them, then I defeated the other.
+Peano's insight can be applied to many other situations.
+When they asked Myamoto Musashi, the famous Japanese Zen
+assassin, how he managed to kill a twelve year old boy
+protected by his mother's 37 samurais\footnote{The boy's
+father had been killed by Musashi. His uncle met the the
+same fate. His mother hired her late husband's students
+to protect the child against Musashi.}, he answered:
+\begin{quote}\em
+I defeated one of them, then I defeated the remaining 36.
+To defeat 36, I defeated one of them, then I defeated
+the remaining 35. To defeat 35, I defeated one of them,
+then\ldots To defeat 2, I defeated one of them, then
+I defeated the other.
 \end{quote}
-A close look will show that 
-the function \index{Recursion!Append!Definition}
-Append of Listing~\ref{rec/app} acts like
-Musashi. The first
-clause of \verb|(App xs s)| states that
-appending a \verb|(null? xs)| list to
-\verb|s| produces \verb|s|. The second 
-clause of \verb|(App xs s)|  states: To
-append a \verb|xs| list to an \verb|s| list,
-rewrite the calling 
-\verb|(App xs s)| expression
-as \verb|(cons (car x) (App (cdr xs) s))|.
+A close look will show that the predicate \verb|ap/3|
+\index{Recursion!append!definition} of
+Listing~\ref{rec/ap} acts like Musashi. The first
+clause of \verb|ap([],L,L)| states that appending
+an \verb|[]| empty list to \verb|L| produces \verb|L|.
+The second  clause of \verb|ap/3|  states:
+\begin{quote}
+\begin{verbatim}
+ap([H|T],L,[H|U]) :- ap(T,L,U).
+   %% The result of appending [H|T] to L is [H|U],
+   %% if the result of appending T to L is U.
+\end{verbatim}
+\end{quote}
+
+In listing~\ref{rec/ap}, the second clause of the \verb|ap/3|
+predicate changes the goal repeatedly from
+\verb/ap([H|T],L,[H|U])/ to \verb/:- ap(T,L,U)/, until a new
+subgoal unifies with the first clause and produces a solution.
+By the way, the \verb|:-| symbol can be read as {\em if},
+thus the clause \verb/ap([H|T],L,[H|U]) :- ap(T, L, U)/ means:
+\begin{quote}
+\verb/app([H|T],L,[H|U])/ if \verb/ap(T,L,U)/
+\end{quote}
+
 Let us pick a more concrete instance of the problem.
-
-Nia evaluated \verb|(App '(1 2 3) '(4 5))|.
-This calling pattern was matched to
-\verb|(App xs s)|
-with \verb|xs= '(1 2 3)| and \verb|s= '(4 5)|.
-Since \verb|(null? xs)| is false, the second
-clause rewrite the calling pattern as:
+Nia evaluated \verb|?- ap([2,3], [4,5],R).| Here are the
+inference steps to solve this query:
+\begin{enumerate}
+\item The query \verb/?- ap([2,3],[4,5],L)/ matches
+to the \verb/ap([H|T],L,[H|U])/ head of the second clause,
+with \verb|H=2|, \verb|T=[3]| and \verb|T=[4,5]|.
+The second clause changes the goal to:
 \begin{quote}
-\verb|(cons (car xs) (App (cdr xs) s))|
+	subgoal 1 -- \verb/:-ap([3],[4,5],U)/
 \end{quote}
-which the inference engine reduces to 
-\begin{equation}
-\verb|(cons 1 (App '(2 3) '(4 5)))|
-\label{app:1}
-\end{equation}
-The \verb|(App '(2 3) '(4 5))| subpattern
-matches once again with \verb|(App xs s)|,
-this time making \verb|xs= '(2 3)|
-and \verb|s= '(4 5)|. Since \verb|(null? xs)|
-is false, the second clause holds, and the
-\verb|(App '(2 3) '(4 5))| is rewritten as
+after eventually finding that the subgoal 1 produces
+\verb|U=[3,4,5]|, the inference engine will mount
+\verb/H=2/ and \verb/U=[3,4,5]/ into the \verb/[H|U]/
+pattern to obtain the final result: \verb/[2,3,4,5]/.
+\item Subgoal 1 -- which is \verb/:-ap([3],[4,5],U)/
+      -- fails to unify with the first clause, but
+      matches the second clause with \verb|H=3|,
+      \verb|T=[]| and \verb|L=[4,5]|. The second clause
+      changes the goal again, this time to
 \begin{quote}
-\verb|(cons 2 (App '(3) '(4 5)))|.
+      subgoal 2-- \verb|:-ap([],[4,5],U)|.
 \end{quote}
-Therefore, equation~\ref{app:1} becomes:
-\begin{equation}
-\verb|(cons 1 (cons 2 (App '(3) '(4 5))))|
-\label{app:2}
-\end{equation}
+Subgoal 2 unifies with the first clause,
+and produces \verb/U=[4,5]/. Then, the inference
+engine mount \verb|H=3| and \verb|U=[4,5]| into
+the \verb/[H|U]/ pattern of the second clause,
+and thus solves subgoal 1 --\verb/ap([3],[4,5],[3,4,5])/.
+\item Now that the solution of subgoal 1 is known,
+the answer to the original query can be found simply
+by mounting \verb/H=2/ and \verb/U=[3,4,5]/ into
+the pattern \verb/[H|U]/, which produces \verb/[2,3,4,5]/
+\end{enumerate}
 
-The calling pattern \verb|(App '(3) '(4 5))|
-matches to \verb|(App xs s)| with
-\verb|xs= '(3)| and \verb|s= '(4 5)|.
-For the last time, the second clause is
-chosen, and expression~\ref{app:2} becomes:
-\begin{equation}
-\verb|(cons 1 (cons 2 (cons 3 (App '() '(4 5)))))|
-\label{app:3}
-\end{equation}
-The pattern \verb|(App '() '(4 5))| matches
-to \verb|(App xs s)| with \verb|xs= '()|
-and \verb|s= '(4 5)|. This 
-time, \verb|(null? xs)| is true,
-and the calling pattern reduces to \verb|s|,
-which is equal to \verb|'(4 5)|, and
-expression~\ref{app:3} can be rewritten as:
-\begin{quote}
-\verb|(cons 1 (cons 2 (cons 3  '(4 5))))= '(1 2 3 4 5)|
-\end{quote}
-
-
-\begin{figure}[!b]
+\begin{figure}[!h]
 \begin{fmpage}{0.8\linewidth}
 \begin{verbatim}
-(define (App xs s)
-(cond ( (null? xs) s)
-    (else (cons (car xs) (App (cdr xs) s)) )))
+ap([], L, L).
+ap([H|T], L, [H|U]) :- ap(T, L, U).
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
 \begin{verbatim}
-> (App '(1 2 3) '(4 5))
-(1 2 3 4 5)
+> ?- ap([1,2,3],[4,5],Resp).
+Resp = [1,2,3,4,5]
 \end{verbatim}
 \end{fmpage}
 \caption{Append}
-\label{rec/app}
+\label{rec/ap}
 \end{figure}
 
 
@@ -5309,24 +5139,22 @@ expression~\ref{app:3} can be rewritten as:
 Typically a recursive definition has two kinds of clauses:
 \begin{enumerate}
 \item Trivial cases, which can be \index{Recursion!Trivial case} 
-resolved using primitive operations.
+resolved using primitive operations and unification, which is
+a kind of pattern match.
 \item General cases, which can be \index{Recursion!General case} 
-broken down into simpler cases.
+broken down into simpler subgoals.
 \end{enumerate}
-Let us classify the two clauses of \verb|(App xs s)|:\\
+Let us classify the two clauses of \verb|ap/3|:\\
 
 \verb||\\
 \begin{tabular}{p{5cm}p{7cm}}
-\verb|( (null? xs) s)| & The first clause is certainly trivial\\
+\verb|ap([],L,L) | & The first clause is certainly trivial\\
 \\
-\verb|(else |
-
-\verb|  (cons (car xs)|
-
-\verb|    (App (cdr xs) s)))|
-& The second equation can be
+\verb/ap([H|T],L,[H|U])/ \verb/:- /
+\verb/    ap(T, L, U)/
+& The second clause can be
 broken down into simpler
-operations: Appending two
+subgoals and operations: Appending two
 lists with one element
 removed from the first,
 and then inserting the element
@@ -5391,36 +5219,36 @@ for a list of numbers.
 \begin{figure}[!h]
 \begin{fmpage}{0.9\linewidth}
 \begin{verbatim}
-;; File: quicksort.scm
+;; (load "quicksort.scm")
 
 
 ;; Output: elements of xs that are smaller than p
 
 (define (smaller xs p)
-(cond ( (null? xs) xs)
-    ( (< (car xs) p)
-      (cons (car xs)
-            (smaller (cdr xs) p)))
-    (else (smaller (cdr xs) p)) ))
+  (cond [ (null? xs) xs]
+        [ (< (car xs) p]
+          (cons (car xs)
+                (smaller (cdr xs) p)))
+        [else (smaller (cdr xs) p)]))
 
 
 ;; Output: elements of xs greater or equal to p
 
 (define (greater xs p)
-(cond ( (null? xs) xs)
-    ( (>= (car xs) p)
-      (cons (car xs)
-            (greater (cdr xs) p)))
-    (else (greater (cdr xs) p)) ) 
+   (cond [ (null? xs) xs]
+         [ (>= (car xs) p)
+           (cons (car xs)
+                 (greater (cdr xs) p))]
+         [else (greater (cdr xs) p)] )) 
 
 (define (quick s)
-(cond ( (null? s) s)
-    ( (null? (cdr s)) s)
-    (else (append 
-            (quick (smaller (cdr s) (car s)))
+  (cond [ (null? s) s]
+        [ (null? (cdr s)) s]
+        [else (append 
+                  (quick (smaller (cdr s) (car s)))
                   (list (car s))
                   (quick (greater (cdr s)
-                                  (car s))) )) ))
+                                  (car s))) )] ))
 
 \end{verbatim}
 \end{fmpage}
@@ -5437,22 +5265,36 @@ for a list of numbers.
 
 \section{Named-let}
 
-Even before learning recursivity,
-Nia studied the Fibonacci
-function on page~\pageref{page:Fibonacci}.
-The Fibonacci function has the
+An efficient way to implement repetition is through auxiliary
+parameters, that avoids recursive calls nested in other
+functions.\\
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+(define (fn+1 n fn fn-1)
+  (if (< n 2) fn
+      (fn+1 (- n 1) (+ fn fn-1) fn)) )
+\end{verbatim}
+\end{fmpage}
+
+\begin{fmpage}{0.9\linewidth}
+\begin{verbatim}
+> (fn+1 5 2 1)
+13
+\end{verbatim}
+\end{fmpage}
+
+\verb||\\
+The above definition has the
 undesirable characteristic of
-requiring two auxiliary arguments.
-Nia cannot forget to initialize
-these dummy arguments, otherwise
-she will get an error message,
-instead of a result. 
+requiring two auxiliary arguments,
+and users cannot forget to initialize
+these dummy arguments. 
 
 The named-let\index{Named-let}\index{Loop!named-let}
 permit the creation of functions
 with initialized arguments, avoiding
-the definition of anomalous functions
-that require manual initialization.
+auxiliary parameters that require manual initialization.
 
 \begin{figure}[!h]
 \begin{fmpage}{0.9\linewidth}
@@ -5468,7 +5310,6 @@ that require manual initialization.
 \begin{fmpage}{0.9\linewidth}
 \begin{verbatim}
 > (load "Fibonacci.scm")
-#<function>
 > (fibo 5)
 8
 \end{verbatim}
@@ -5477,94 +5318,78 @@ that require manual initialization.
 \label{oneargfib}
 \end{figure}
 
-The named-let binding is used mainly
-to loop. In this sense, it is not
-different from looping facilities
-that one can find in languages like C
-or Python. However, the named-let
-binding has an important advantage
-over other loop facilities: One can
+The named-let is used mainly
+to loop. Therefore, it often replaces looping
+facilities that one can find in languages
+like C. However, the named-let binding has a
+clear advantage over the competition: One can
 give a meaningful 
 name\index{Named-let!meaningful name for loop}
 to scheme loops.
 For instance, since the loop of
-figure~\ref{oneargfib} is used 
-to calculate the \verb|fn+1| iteration,
-Nia put the \verb|fn+1| tag on it.
-
-There is another way to get rid of
-auxiliary 
+figure~\ref{oneargfib} calculates the \verb|fn+1|
+iteration, Nia put the \verb|fn+1| tag on it.
+Racket has another way to get rid of auxiliary 
 parameters:\index{Local variables!auxiliary parameters}
-One can initialize the parameters
-of a definition with
-default values,\index{Local variables!default values}
-as shown
-in figure~\ref{accumulators}.
+arguments with default values, as shown below. Unfortunately,
+default values are not portable.
 
-
-\begin{figure}[!h]
+\verb||\\
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
-(define (avg s (sum 0) (n 0))
-(cond ( (and (null? s) (= n 0)) 0)
-    ( (null? s) (/ sum n) )
-    (else (avg (cdr s) (+ (car s) sum) (+ n 1.0)) )))
+(define (avg s sum  n)
+  (cond [ (and (null? s) (= n 0)) 0]
+    [ (null? s) (/ sum n) ]
+    [else (avg (cdr s) (+ (car s) sum) (+ n 1.0))] ))
 \end{verbatim}
-\end{fmpage}
-
+\end{fmpage} \index{Local variables!default values}\\
+\noindent
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
-> (load "defaults.scm")
-#<function>
-> (avg '(3 4 5 6))
+> (avg '(3 4 5 6) 0 0)
 4.5
 \end{verbatim}
 \end{fmpage}
-\caption{Accumulator parameters}
-\label{accumulators}
-\end{figure}
 
-\section{Reading data from files}
+\section{Reading data from files}\index{File}
 
-Figure \ref{rdFile} reads the contents
-of a file line by line and insert
-the corresponding
-strings into the buffer. However, before
-sending a string to the buffer,
-\verb|(port->lines p)| prefixes it
-with a commented line number.
+Figure \ref{rdFile} reads and prints a file line by line.
+However, before printing a string, \verb|(port->lines p)|
+prefixes it with a commented line number.
 
 \begin{figure}[!h]
-%%\renewcommand\figurename{Fig.}
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
-;; File: insFile.scm
-;; The procedure (rdLines <filename>) reads
-;; a Lisp file, and inserts its contents
-;; into the current buffer.
+;; Racket: uncomment the three lines below
+;#lang racket
+;(provide rdLines)
+;(define get-line read-line)
 
 (define (port->lines p)
-(let next-line ( (i 1) (x (read-line p)) )
-(cond ( (eof-object? x) #t)
-      (else 
-        (insert "#") (insert "| ")
-        (insert (number->string i))
-        (cond ( (< i 10)  (insert "    |# "))
-              ( (< i 100) (insert "   |# "))
-              (else       (insert "  |# ")))
-        (insert x) (insert "\n")
-        (next-line (+ i 1) (read-line p))) )))
+   (let next-line ( (i 1) (x (get-line p)) )
+     (cond [ (eof-object? x) #t]
+        [else (display "#| ")
+              (display (number->string i))
+              (cond [ (< i 10)  (display "  |# ")]
+                    [else  (display " |# ")])
+              (display x) (newline)
+              (next-line (+ i 1) (get-line p))] ))) 
 
 (define (rdLines filename)
-(call-with-input-file filename port->lines))
+   (call-with-input-file filename port->lines))
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
-> (load "insFile.scm")
-#<function>
-> (rdLines "test.scm")
+> (load "prtFile.scm")
+> (rdLines "average.scm")
+#| 1  |# (define (avg xs)
+#| 2  |#   (let nxt [(s xs) (acc 0) (n 0)]
+#| 3  |#     (cond [ (and (null? s) (= n 0)) 0]
+#| 4  |#       [ (null? s) (/ acc n) ]
+#| 5  |#       [else (nxt (cdr s) (+ (car s) acc)
+#| 6  |#                  (+ n 1.0))] )))
 \end{verbatim}
 \end{fmpage}
 \caption{Lines from file}
@@ -5583,18 +5408,15 @@ of figure~\ref{rdFile}, Lisp
 opens a file, and pass the file descriptor
 to the \verb|port->lines| procedure.
 
-The definition of \verb|(port->lines p)|
-assigns a line that it reads 
-from port \verb|p|
-to the variable \verb|x|. Then \verb|x|
-is inserted in the buffer, and \verb|loop|
-proceeds to read the next line.
-The iteration stops when 
-end of file is reached.
+The definition of \verb|(port->lines p)| assigns
+a line that it reads  from port \verb|p| to the
+variable \verb|x|. Then \verb|x| is printed, and
+\verb|loop| proceeds to read the next line. The
+iteration stops when  end of file is reached.
 
 \section{Writing data to files}
-Let us assume tha Nia needs 
-a femtolisp program that translates
+Let us assume that Nia needs 
+a Scheme program that translates
 markdown to html. She wants to
 use the program to publish poems
 in the internet. Here an example
@@ -5627,14 +5449,14 @@ Are Holy-Land!
 The program of listing~\ref{wrtFile}
 reads a markdown file line by line.
 If the line starts with the \verb|##| prefix,
-it will be wrapped in the \verb<h1>...</h1>|
+it will be wrapped in the \verb|<h1>...</h1>|
 html tag. If its first char is the \verb|#\#|
 prefix, but the second char is different
 from \verb|#\#|, it will be wrapped in
 the \verb|<h2>...</h2>| html tag.
 
 The simplified version of the html
-generator of listing~{wrtFile} treats
+generator of listing~\ref{wrtFile} treats
 only titles, line breaks and paragraphs.
 However, the interested reader will
 be able to add other html elements.
@@ -5660,48 +5482,52 @@ must be mastered to perfection.
 \begin{figure}[!h]
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
+;;Racket: uncomment the three lines below
+;#lang racket
+;(provide copyFile)
+;(define get-line read-line)
+
 (define (tag i <h> x </h> )
-(let ( (Len (string-length x)))
-(string-append <h>
-  (substring x i (- Len 1)) </h> "\n")))
+   (let [ (Len (string-length x))]
+      (string-append <h>
+          (substring x i (- Len 1)) </h> "\n")))
 
 (define (subtitle? x)
-(and (> (string-length x) 4)
-    (char=? (string-ref x 0) #\#)
-    (char=? (string-ref x 1) #\#)))
+  (and (> (string-length x) 4)
+       (char=? (string-ref x 0) #\#)
+       (char=? (string-ref x 1) #\#)))
 
 (define (title? x)
-(and (> (string-length x) 3)
-   (char=? (string-ref x 0) #\#)))
+   (and (> (string-length x) 3)
+        (char=? (string-ref x 0) #\#)))
 
 (define (convert in out)
-(let loop ( (x (read-line in)) )
- (cond ( (eof-object? x) #t)
-       ( (subtitle? x)
-         (display (tag 2 "<h2>" x "</h2>") out)
-         (loop (read-line in)))
-       ( (title? x)
-         (display (tag 1 "<h1>" x "</h1>") out)
-         (loop (read-line in)))
-       ( (> (string-length x) 1)
-         (display x out)
-         (display "<br/>\n" out)
-         (loop (read-line in)))
-       (else (display "<p/>\n" out)
-             (loop (read-line in)))  )))
+  (let loop ( (x (get-line in)) )
+     (cond [ (eof-object? x) #t]
+        [ (subtitle? x)
+          (display (tag 2 "<h2>" x "</h2>") out)
+          (loop (get-line in))]
+        [ (title? x)
+          (display (tag 1 "<h1>" x "</h1>") out)
+	  (loop (get-line in))]
+        [ (> (string-length x) 1)
+          (display x out)
+          (display "<br/>\n" out)
+          (loop (get-line in))]
+        [ else (display "<p/>\n" out)
+	    (loop (get-line in))] )))
 
 (define (copyFile inFile outFile)
-(call-with-output-file outFile
- (lambda(out) (call-with-input-file inFile
-                 (lambda(in) (convert in out))) )))
+   (call-with-output-file outFile
+      (lambda(out) (call-with-input-file inFile
+         (lambda(in) (convert in out))) )))
 \end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{\linewidth}
 \begin{verbatim}
-> (load "toHtml.scm")
-#<function>
-> (copyFile "toHelen.txt" "helen.html")
+> (load "tohtml.scm")
+> (copyFile "readme.md" "readme.html")
 #t
 \end{verbatim}
 \end{fmpage}
