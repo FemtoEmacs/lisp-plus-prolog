@@ -8,20 +8,20 @@ de Lisboa. The modifications done by the maintainers
 of the lisp+prolog repository were necessary for
 giving logic support to Scheme:
 
-(1) `sxprolog/src/CxProlog.c` -- The definition of `int repl(int i, char *str)` was added to
+1. `sxprolog/src/CxProlog.c` -- The definition of `int repl(int i, char *str)` was added to
     the file `sxprolog/src/CxProlog.c`
-(2) `sxprolog/src/CmdLine.c` -- The `int split (const char *txt, char delim, char ***tokens)`
+2. `sxprolog/src/CmdLine.c` -- The `int split (const char *txt, char delim, char ***tokens)`
     tokenizer was added to `sxprolog/src/CmdLine.c` for spliting messages from Scheme.
-(3) `sxprolog/src/CmdLine.c` -- The definition of `void newargs(int n, CharPt *v)` was added
+3. `sxprolog/src/CmdLine.c` -- The definition of `void newargs(int n, CharPt *v)` was added
     to the file `sxprolog/src/CmdLine.c` for updating the command line, which Scheme uses to
     send messages to Prolog. A prototype of the `void newargs(int n, CharPt *v)` procedure
     was added to the file `sxprolog/src/CxProlog.c`
-(4) `sxprolog/InterLine.c` -- The cursor defined in `static Str InterLineGetLinePrompt(void)`
+4. `sxprolog/InterLine.c` -- The cursor defined in `static Str InterLineGetLinePrompt(void)`
     was changed from `|: ` to `?- `
-(2) The name of the distribution was changed to sxprolog to avoid confusion with the unmodified
+5.  The name of the distribution was changed to sxprolog to avoid confusion with the unmodified
     original package.
-(3) An interface between Chez Scheme and Prolog was added to the distribution package.
-(4) Programs in Java were removed from this distribution, because many firms and Internet
+6.  An interface between Chez Scheme and Prolog was added to the distribution package.
+7.  Programs in Java were removed from this distribution, because many firms and Internet
     services do not accept archives with Java content. People who need to work with Java
     must use the original package with the addition of the modified files, together with
     the interfaces `sxprolog/prolog.scm` and `sxprolog/prolog.rkt` that provides
