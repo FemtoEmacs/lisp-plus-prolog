@@ -23,8 +23,8 @@ circuits.logic.US}
 
 \newsavebox{\fmbox}
 \newenvironment{fmpage}[1]
-           {\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
-           {\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+{\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
+{\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
 
 \addto\captionsenglish{\renewcommand{\figurename}{Listing}}
 
@@ -57,39 +57,39 @@ the  \keys{Alt} prefix and  $\kappa$ can be any key.
 \paragraph{Basic commands.} \verb|C-|$\kappa$ -- Press and release \keys{Ctrl}
 and \keys{$\kappa$} simultaneously\index{Emacs!kill line}
 \begin{quote}
- \verb|C-s| then type some text, and press \verb|C-s| again 
-  -- search a text.\\
- \verb|C-r| then type some text, and press \verb|C-r| again 
-  -- reverse search.\\
- \verb|C-k| -- kill a line.\\
- \verb|C-h| -- backspace.\\
- \verb|C-d| -- delete char forward.\\ 
- \verb|C-Spc| then move the cursor -- select a region.\\
- \verb|M-w| -- save selected region into the kill ring. \\
- \verb|C-w| -- kill region.\\
- \verb|C-y| -- insert killed or saved region.\\
- \verb|C-g| -- cancel minibuffer reading.\\
- \verb|C-a| -- go to beginning of line.\\
- \verb|C-e| -- go to end of line.\\
- \verb|C-b| -- move backward one character.\\
- \verb|C-f| -- move forward one character.\\
- \verb|C-n| -- move cursor to the next line.\\
- \verb|C-p| -- move cursor to the previous line.\\
- \verb|C-l| -- refresh screen.\\
- \verb|C-u| -- undo. \\
- \verb|C-v| -- forward page.\\
- \keys{INS} -- toggle overwrite mode.\\
- \keys{$\leftarrow$} \keys{$\rightarrow$} \keys{$\uparrow$} \keys{$\downarrow$} -- arrows move cursor.\\
+	\verb|C-s| then type some text, and press \verb|C-s| again 
+	-- search a text.\\
+	\verb|C-r| then type some text, and press \verb|C-r| again 
+	-- reverse search.\\
+	\verb|C-k| -- kill a line.\\
+	\verb|C-h| -- backspace.\\
+	\verb|C-d| -- delete char forward.\\ 
+	\verb|C-Spc| then move the cursor -- select a region.\\
+	\verb|M-w| -- save selected region into the kill ring. \\
+	\verb|C-w| -- kill region.\\
+	\verb|C-y| -- insert killed or saved region.\\
+	\verb|C-g| -- cancel minibuffer reading.\\
+	\verb|C-a| -- go to beginning of line.\\
+	\verb|C-e| -- go to end of line.\\
+	\verb|C-b| -- move backward one character.\\
+	\verb|C-f| -- move forward one character.\\
+	\verb|C-n| -- move cursor to the next line.\\
+	\verb|C-p| -- move cursor to the previous line.\\
+	\verb|C-l| -- refresh screen.\\
+	\verb|C-u| -- undo. \\
+	\verb|C-v| -- forward page.\\
+	\keys{INS} -- toggle overwrite mode.\\
+	\keys{$\leftarrow$} \keys{$\rightarrow$} \keys{$\uparrow$} \keys{$\downarrow$} -- arrows move cursor.\\
 \end{quote}
 \paragraph{Control-x commands.} \verb|C-x C-|$\kappa$ -- Keep \keys{Ctrl}
 down and press \keys{x} and  \keys{$\kappa$}
 \begin{quote}
-  \verb|C-x C-f| -- open a file into a new buffer.\\
-  \verb|C-x C-w| -- write file with new name.\\
-\verb|C-x C-s| -- save file.\\
-\verb|C-x C-c| -- exit Emacs.\\
-\verb|C-x i| -- insert file at the cursor.\\
-\verb|C-h b| -- lists all key strokes.\\
+	\verb|C-x C-f| -- open a file into a new buffer.\\
+	\verb|C-x C-w| -- write file with new name.\\
+	\verb|C-x C-s| -- save file.\\
+	\verb|C-x C-c| -- exit Emacs.\\
+	\verb|C-x i| -- insert file at the cursor.\\
+	\verb|C-h b| -- lists all key strokes.\\
 \end{quote}
 
 
@@ -98,37 +98,37 @@ down and press \keys{x} and  \keys{$\kappa$}
 than one window on the screen. Below, you will
 find commands that deal with this situation.
 \begin{itemize}\index{Emacs!split window}
-\index{Emacs!other window}\index{Emacs!switch buffer}
-\index{Emacs!close window}
-\item \verb|C-x |$\kappa$ -- Press and release \keys{Ctrl}
-and \keys{x} together, then press \keys{$\kappa$} 
-\begin{quote}
-\verb|C-x b| -- next buffer.\\
-\verb|C-x C-b| -- list buffers.\\
-\verb|C-x k| -- kill current buffer.\\
-\verb|C-x =| -- code for char under the cursor.\\
-\verb|C-x 2| -- split window into cursor window and other window.\\
-\verb|C-x o| -- jump to the other window.\\
-\verb|C-x 1| -- close the other window.\\
-\verb|C-x 0| -- close the cursor window.
-\end{quote}
-\item \verb|Esc| $\kappa$ -- Press and release the \keys{Esc} key,
-then press the \keys{$\kappa$} key.
-\begin{quote}
-\verb|Esc >| -- go to the end of buffer.\\
-\verb|Esc <| -- go to the beginning of buffer.\\ 
-\verb|Esc f| -- word forward.\\
-\verb|Esc b| -- word backward.\\
-\end{quote}
-\item \verb|M|-$\kappa$ -- Keep the \keys{Alt} key
-down and press the \keys{$\kappa$} key.
-\begin{quote}
-\verb|M-b| -- move backward one word.\\
-\verb|M-f| -- move forward one word.\\
-\verb|M-g| -- go to the line given in the minibuffer.\\
-\verb|M-n| -- activate the next buffer.\\
-\verb|M-r| -- query replace.
-\end{quote}
+		\index{Emacs!other window}\index{Emacs!switch buffer}
+		\index{Emacs!close window}
+	\item \verb|C-x |$\kappa$ -- Press and release \keys{Ctrl}
+		and \keys{x} together, then press \keys{$\kappa$} 
+		\begin{quote}
+			\verb|C-x b| -- next buffer.\\
+			\verb|C-x C-b| -- list buffers.\\
+			\verb|C-x k| -- kill current buffer.\\
+			\verb|C-x =| -- code for char under the cursor.\\
+			\verb|C-x 2| -- split window into cursor window and other window.\\
+			\verb|C-x o| -- jump to the other window.\\
+			\verb|C-x 1| -- close the other window.\\
+			\verb|C-x 0| -- close the cursor window.
+		\end{quote}
+	\item \verb|Esc| $\kappa$ -- Press and release the \keys{Esc} key,
+		then press the \keys{$\kappa$} key.
+		\begin{quote}
+			\verb|Esc >| -- go to the end of buffer.\\
+			\verb|Esc <| -- go to the beginning of buffer.\\ 
+			\verb|Esc f| -- word forward.\\
+			\verb|Esc b| -- word backward.\\
+		\end{quote}
+	\item \verb|M|-$\kappa$ -- Keep the \keys{Alt} key
+		down and press the \keys{$\kappa$} key.
+		\begin{quote}
+			\verb|M-b| -- move backward one word.\\
+			\verb|M-f| -- move forward one word.\\
+			\verb|M-g| -- go to the line given in the minibuffer.\\
+			\verb|M-n| -- activate the next buffer.\\
+			\verb|M-r| -- query replace.
+		\end{quote}
 \end{itemize}
 
 \paragraph{Query replace.} If you press \keys{Esc}\keys{\%},
@@ -182,10 +182,10 @@ key to stop the interactive search. Nia can press
 
 To transport a region from one place to another,
 Nia presses \verb|C-Spc| to start
- the selection process and move the cursor to select
- a region.  Then she presses \verb|C-w| to kill her
- selection. Finally, she moves the cursor to the
- insertion place, and presses the \verb|C-y| shortcut.
+the selection process and move the cursor to select
+a region.  Then she presses \verb|C-w| to kill her
+selection. Finally, she moves the cursor to the
+insertion place, and presses the \verb|C-y| shortcut.
 To copy a region, Nia presses \verb|C-Spc| and moves
 the cursor to select the region. Then she presses
 \verb|M-w| to save the selection into the kill ring. Finally,
@@ -207,7 +207,7 @@ medical schools in California. You type the Lisp
 addition command, then press \verb|C-x C-e| with
 the cursor in front of it:
 \begin{quote}
-\verb|> (+ 190 180 170 160 120 100 100 90)|\keys{C-x C-e}
+	\verb|> (+ 190 180 170 160 120 100 100 90)|\keys{C-x C-e}
 \end{quote}
 In the above expression, the first thing that follows
 the open parenthesis is the \verb|+| sum
@@ -217,37 +217,37 @@ the arguments to be added together.
 Emacs shows the result of the addition as soon as
 Nia presses the \keys{C-x C-e} command:
 \begin{quote}
-\verb|1110|
+	\verb|1110|
 \end{quote}
 The rule that worked for  the $\verb|(+ | x_1\;x_2\ldots\verb|)|$
 sum operation also works for the  other arithmetic function too.
 \begin{itemize}
-  \item{Multiplication} is performed
-by the \verb|*| operation.
-\begin{quote}
-\verb|> (* 1 2 3 4 5)|\keys{C-x C-e}\\
-120
-\end{quote}
-\item{Division} is obtained through the \verb|/| operation.
-\begin{quote}
-\verb|> (* 1 2 4)|\keys{C-x C-e}\\
-0.125
-\end{quote}
-The above operation performed the chain
-division \verb|1/2/3|.
-\item{Subtraction} has the syntax shown below.
-\begin{quote}
-\verb|> (- 1 2 4)|\keys{C-x C-e}\\
--5
-\end{quote}
-\item Mixed operations. One can nest subexpressions
-  within an outer expression. For instance,
-  to get the average student number graduating
-  from medical school in California, one can
-  calculate the expression:
-\begin{quote}
-\verb|> (/ (+ 190 180 170 160 120 100 100 90) 8)|\keys{C-x C-e}
-\end{quote}
+	\item{Multiplication} is performed
+		by the \verb|*| operation.
+		\begin{quote}
+			\verb|> (* 1 2 3 4 5)|\keys{C-x C-e}\\
+			120
+		\end{quote}
+	\item{Division} is obtained through the \verb|/| operation.
+		\begin{quote}
+			\verb|> (* 1 2 4)|\keys{C-x C-e}\\
+			0.125
+		\end{quote}
+		The above operation performed the chain
+		division \verb|1/2/3|.
+	\item{Subtraction} has the syntax shown below.
+		\begin{quote}
+			\verb|> (- 1 2 4)|\keys{C-x C-e}\\
+			-5
+		\end{quote}
+	\item Mixed operations. One can nest subexpressions
+		within an outer expression. For instance,
+		to get the average student number graduating
+		from medical school in California, one can
+		calculate the expression:
+		\begin{quote}
+			\verb|> (/ (+ 190 180 170 160 120 100 100 90) 8)|\keys{C-x C-e}
+		\end{quote}
 
 \end{itemize}
 
@@ -257,14 +257,14 @@ C or in Lisp. You can get a complete list of all
 Emacs commands by pressing the \verb|C-x ?| shortcut.
 
 There are commands that are not associated to
- shortcut keys. For instance, the \verb|scheme-mode|
+shortcut keys. For instance, the \verb|scheme-mode|
 function tells Emacs that you are editing Lisp code. 
 In order to issue such a command, keep the \keys{Alt}
 key down and press the \keys{~x~} key. The \verb|M-x|
 prompt will be placed on the minibuffer. Type 
 \verb|scheme-mode| in front of the prompt:
 \begin{quote}
-\verb|M-x scheme-mode|
+	\verb|M-x scheme-mode|
 \end{quote}
 When typing a command at the \verb|M-x| prompt, you
 often don't remember the complete name of the operation.
@@ -327,13 +327,13 @@ up               previous-line
 In order to program in Prolog, you will need
 to install three programs:\index{wamcompiler}
 \begin{enumerate}
-\item Emacs -- a text editor\index{wamcompiler!Emacs}
-\item The Racket Language (friendlier), or Chez Scheme
-(faster) \index{cxprolog!scheme}
-\item A Prolog compiler that works in tandem with Lisp,
-  such as \verb|cxprolog| that links Lisp with a robust
-  implementation of Prolog, or a Lisp based Prolog, such
-  as  the \verb|wamcompiler.lisp| virtual machine.
+	\item Emacs -- a text editor\index{wamcompiler!Emacs}
+	\item The Racket Language (friendlier), or Chez Scheme
+		(faster) \index{cxprolog!scheme}
+	\item A Prolog compiler that works in tandem with Lisp,
+		such as \verb|cxprolog| that links Lisp with a robust
+		implementation of Prolog, or a Lisp based Prolog, such
+		as  the \verb|wamcompiler.lisp| virtual machine.
 \end{enumerate}
 
 However, you must learn many things before actually being
@@ -385,9 +385,9 @@ addition.
 
 \index{Arithmetic!Elemetary School}  
 \begin{wrapfigure}[10]{i}{5cm}
-\renewcommand\figurename{Fig.}
-\includegraphics[scale=0.5]{figs-prefix/firemen.png}
-\caption{Running total}
+	\renewcommand\figurename{Fig.}
+	\includegraphics[scale=0.5]{figs-prefix/firemen.png}
+	\caption{Running total}
 \end{wrapfigure}
 What I mean to say is that, if you
 need to perform the addition
@@ -396,23 +396,23 @@ you will probably stack the numbers the
 same way you did before taking pre-algebra
 classes in highschool:
 \begin{quote}
-\begin{tabular}{p{0.5cm}p{1cm}}
-+ &\verb|  8|\\
-&\verb| 26|\\
-&\verb| 85|\\
-&\verb|  3|\\
-\hline
-&\verb|122|
-\end{tabular}
+	\begin{tabular}{p{0.5cm}p{1cm}}
+		+ &\verb|  8|\\
+		&\verb| 26|\\
+		&\verb| 85|\\
+		&\verb|  3|\\
+		\hline
+		&\verb|122|
+	\end{tabular}
 \end{quote}
 Subtraction is not treated differently:
 \begin{quote}
-\begin{tabular}{p{0.5cm}p{1.5cm}}
-\Large\bf -&   358\\
-&   216\\
-\hline
-& 142
-\end{tabular}
+	\begin{tabular}{p{0.5cm}p{1.5cm}}
+		\Large\bf -&   358\\
+		&   216\\
+		\hline
+		& 142
+	\end{tabular}
 \end{quote}
 
 This chapter contains an introduction to
@@ -423,13 +423,13 @@ and its arguments are put between parentheses.
 In doing so, one does not need to draw a line
 under the bottom number, as you can see below:
 \begin{quote}
-\begin{tabular}{p{0.5cm}p{1cm}}
-(+ &\verb|  8|\\
-&\verb| 26|\\
-&\verb| 85|\\
-&\verb|  3|)\\
-&\verb|122|
-\end{tabular}
+	\begin{tabular}{p{0.5cm}p{1cm}}
+		(+ &\verb|  8|\\
+		&\verb| 26|\\
+		&\verb| 85|\\
+		&\verb|  3|)\\
+		&\verb|122|
+	\end{tabular}
 \end{quote}
 The Cambridge prefix notation can be applied
 to any operation, not only to the four arithmetic
@@ -523,7 +523,7 @@ will type the \verb|shell| command, which we
 will study in one of the future chapters.
 Here is how to start the shell:
 \begin{quote}
-\verb|M-x shell| \keys{Enter}
+	\verb|M-x shell| \keys{Enter}
 \end{quote}
 The above command will create a kind of chat
 box between the bookkeeper and the computer.
@@ -554,23 +554,23 @@ compiler before doing so. Below, the accountant is
 running Chez Scheme.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.8\textwidth}
-\begin{verbatim}
-› scheme
-Chez Scheme Version 9.5.3
-Copyright 1984-2019 Cisco Systems, Inc.
-\end{verbatim}
-\verb|> (+  (* 3 25320)|\\
-\verb|      (* 6 56750)|\\
-\verb|      (* 2 136000)|\\
-\verb|    136000 )|\keys{Enter}\\ 
-824460
-\end{fmpage}
-\begin{fmpage}{0.8\textwidth}
-\verb| |
-\end{fmpage}
-\caption{Chat with Lisp}
-\label{texan:photos}
+	\begin{fmpage}{0.8\textwidth}
+		\begin{verbatim}
+		› scheme
+		Chez Scheme Version 9.5.3
+		Copyright 1984-2019 Cisco Systems, Inc.
+		\end{verbatim}
+		\verb|> (+  (* 3 25320)|\\
+		\verb|      (* 6 56750)|\\
+		\verb|      (* 2 136000)|\\
+		\verb|    136000 )|\keys{Enter}\\ 
+		824460
+	\end{fmpage}
+	\begin{fmpage}{0.8\textwidth}
+		\verb| |
+	\end{fmpage}
+	\caption{Chat with Lisp}
+	\label{texan:photos}
 \end{figure}
 
 The Texan's accountant decided to check whether
@@ -579,21 +579,21 @@ she calls \verb|racket| or \verb|chez scheme| and
 starts a Prolog Read Eval Print Loop, or repl for
 short.
 \begin{quote}
-\begin{verbatim}
-› scheme
-Chez Scheme Version 9.5.3
-> (load "prolog.scm")
-> (logic "cxprolog")
-CxProlog version 0.98.2 [development]
+	\begin{verbatim}
+	› scheme
+	Chez Scheme Version 9.5.3
+	> (load "prolog.scm")
+	> (logic "cxprolog")
+	CxProlog version 0.98.2 [development]
 
-[main] ?- X is 3*25320 + 6*56750+ 2* 136000 + 136000.
-X = 824460
+	[main] ?- X is 3*25320 + 6*56750+ 2* 136000 + 136000.
+	X = 824460
 
-[main] ?- halt.
-% CxProlog halted.
-0
-> (exit)
-\end{verbatim}
+	[main] ?- halt.
+	% CxProlog halted.
+	0
+	> (exit)
+	\end{verbatim}
 \end{quote}
 
 The Lisp prompt is usually the \verb|>| symbol,
@@ -606,8 +606,8 @@ Suppose that you wanted to buy a \$ 100,000 red Ferrari,
 and the forecourt salesperson in his eagerness to
 close a deal gives you the following two payment options:  
 \begin{itemize}
-\item Pay \$ 100,000 now {\bf or}
-\item pay the full \$ 100,000 after a three year grace period.
+	\item Pay \$ 100,000 now {\bf or}
+	\item pay the full \$ 100,000 after a three year grace period.
 \end{itemize}
 
 I am sure that you would choose to pay the \$ 100,000 after
@@ -639,8 +639,8 @@ of how interest works, before making a decision.
 Here is a more realistic real estate sales offer:
 
 \begin{itemize}
-\item \$ 100,000 now {\bf or}
-\item \$ 115,000 at the end of three years.
+	\item \$ 100,000 now {\bf or}
+	\item \$ 115,000 at the end of three years.
 \end{itemize}
 
 What to do when facing an increase in price
@@ -682,8 +682,8 @@ The relationship between the present value
 and the future value is given by the
 following expression:
 \begin{equation}
-FV= PV\times (1+i)^n
-\label{eq:future-value}
+	FV= PV\times (1+i)^n
+	\label{eq:future-value}
 \end{equation}
 where $FV$ is the future value, $PV$ is the present
 value, $i$ is the interest rate divided by 100,
@@ -734,33 +734,33 @@ in the first year of compound interest at an 8\% rate
 over \$ 10,000.00. Enter formula~\ref{eq:future-value} in
 the Lisp Read Eval Print Loop:
 \begin{quote}
-\begin{verbatim}
-> (* (expt (+ 1.0 0.08) 2) 10000)
-11664.000000000002
-\end{verbatim}
+	\begin{verbatim}
+	> (* (expt (+ 1.0 0.08) 2) 10000)
+	11664.000000000002
+	\end{verbatim}
 \end{quote}
 Observe that it was necessary to divide the
 interest rate by 100, which produces 0.08.
 
 \begin{figure}[!h]\index{define}
-\begin{fmpage}{0.8\textwidth}
-\begin{verbatim}
-;; File: fvalue.scm
+	\begin{fmpage}{0.8\textwidth}
+		\begin{verbatim}
+		;; File: fvalue.scm
 
-(define  (future-value pv i n)
+		(define  (future-value pv i n)
    (* (expt (+ (/ i 100.0) 1) n) 
        pv)
-);;end define
-\end{verbatim}
-\end{fmpage}
+       );;end define
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.8\textwidth}
-\verb|> (load "fvalue.scm")|\keys{Enter}\\
-\verb|> (future-value 10000 8 2)|\keys{Enter}\\
-11644.00
-\end{fmpage}
-\caption{Future Value Program}
-\label{Texan:parking}
+	\begin{fmpage}{0.8\textwidth}
+		\verb|> (load "fvalue.scm")|\keys{Enter}\\
+		\verb|> (future-value 10000 8 2)|\keys{Enter}\\
+		11644.00
+	\end{fmpage}
+	\caption{Future Value Program}
+	\label{Texan:parking}
 \end{figure}
 
 
@@ -780,18 +780,18 @@ and press the \verb|x| key. The prompt \verb|M-x| will appear
 in the minibuffer; type \verb|shell| at this prompt, as shown below.\\
 
 \begin{fmpage}{0.8\textwidth}
-\begin{verbatim}
-;; File: fvalue.scm
+	\begin{verbatim}
+	;; File: fvalue.scm
 
-(define  (future-value pv i n)
+	(define  (future-value pv i n)
    (* (expt (+ (/ i 100.0) 1) n) 
        pv)
-);;end define
-\end{verbatim}
+       );;end define
+	\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\textwidth}
-\verb|M-x shell|\keys{Enter}\\
+	\verb|M-x shell|\keys{Enter}\\
 \end{fmpage}
 
 \verb||\\
@@ -831,7 +831,7 @@ period_of_time(8).
 period_of_time(10).
 
 futval(PV, I, N, FV) :- period_of_time(N),
-                 FV is PV*(1+I/100)**N.
+		 FV is PV*(1+I/100)**N.
 \end{verbatim}
 
 \index{Prolog!comments}
@@ -974,36 +974,36 @@ amortization is given by~\ref{eq:amortization}.
 This formula is implemented in
 listing~\ref{Pan:mortgage}.
 \begin{equation}
-\frac{r\times p\times(1+r)^n}{(1+r)^n - 1}
-\label{eq:amortization}
+	\frac{r\times p\times(1+r)^n}{(1+r)^n - 1}
+	\label{eq:amortization}
 \end{equation}
 
 \begin{figure}[!h]\index{define}
-\begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-;; File: (load "pmt.scm")
+	\begin{fmpage}{0.9\textwidth}
+		\begin{verbatim}
+		;; File: (load "pmt.scm")
 
-(define (pmt p  i n )
+		(define (pmt p  i n )
       (define (pmt-aux r rn)
-          (/ (* r p rn)
-             (- rn 1)))
+	  (/ (* r p rn)
+	     (- rn 1)))
   (pmt-aux (/ i 100.0) (expt (+ 1.0 (/ i 100)) n))
-);;end of define
-\end{verbatim}
-\end{fmpage}
+  );;end of define
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-› scheme
-Chez Scheme Version 9.5.3
+	\begin{fmpage}{0.9\textwidth}
+		\begin{verbatim}
+		› scheme
+		Chez Scheme Version 9.5.3
 
-> (load "scm-src/pmt.scm")
-> (pmt (* 10500000.00 0.7) (/ 10.0 12) (* 20 12))
-70929.09
-\end{verbatim}
-\end{fmpage}
-\caption{Mortgage for a God}
-\label{Pan:mortgage}
+		> (load "scm-src/pmt.scm")
+		> (pmt (* 10500000.00 0.7) (/ 10.0 12) (* 20 12))
+		70929.09
+		\end{verbatim}
+	\end{fmpage}
+	\caption{Mortgage for a God}
+	\label{Pan:mortgage}
 \end{figure}
 
 The \verb|pmt| function, shown on listing~\ref{Pan:mortgage},
@@ -1020,15 +1020,15 @@ the user from such a task.
 Now, let us repeat the magic in Prolog. Here is the program:\\
 
 \begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-%% File: (logic "-f pmt.pl")
+	\begin{verbatim}
+	%% File: (logic "-f pmt.pl")
 
-property(fulham, 6500000).
-property(chelsea, 10500000).
-property(mayfair, 9000000).
-property(kensington, 4000000).
+	property(fulham, 6500000).
+	property(chelsea, 10500000).
+	property(mayfair, 9000000).
+	property(kensington, 4000000).
 
-pmt(Local, Price, Down, I, NY, Payment) :-
+	pmt(Local, Price, Down, I, NY, Payment) :-
      property(Local, Price),
      P is 0.7 * Price,
      Down is 0.3 * Price,
@@ -1036,7 +1036,7 @@ pmt(Local, Price, Down, I, NY, Payment) :-
      N is NY * 12,
      RN is (1 + R)** N,
      Payment is R * P * RN / (RN - 1).
-\end{verbatim}
+	\end{verbatim}
 \end{fmpage}
 
 \verb||\\
@@ -1158,9 +1158,9 @@ that are well known to any person who tried his/her
 hand at programming, or even by a student who is
 taking Pre-Algebra:
 \begin{itemize}
-\item $X>Y$ is true if $X$ is greater than $Y$, false otherwise.
-\item $X<Y$ is true if $X$ is less than $Y$, false otherwise.
-8\item $X=Y$ is true if $X$ is equal to $Y$, false otherwise.
+	\item $X>Y$ is true if $X$ is greater than $Y$, false otherwise.
+	\item $X<Y$ is true if $X$ is less than $Y$, false otherwise.
+	8\item $X=Y$ is true if $X$ is equal to $Y$, false otherwise.
 \end{itemize}
 A predicate with one argument tells of an attribute or feature
 of its argument. One can tell that this predicate acts like
@@ -1170,12 +1170,12 @@ there are predicates equivalent to this one.
 
 In the story of the Texan, you have seen an example of a one slot predicate:
 \begin{quote}
-\begin{verbatim}
-period_of_time(2).
-period_of_time(4).
-period_of_time(8).
-period_of_time(10).
-\end{verbatim}
+	\begin{verbatim}
+	period_of_time(2).
+	period_of_time(4).
+	period_of_time(8).
+	period_of_time(10).
+	\end{verbatim}
 \end{quote}
 A predicate with more than one argument shows that there
 exists a relationship between its arguments. In the case of
@@ -1222,14 +1222,14 @@ tags the list so the computer will
 take it at face-value, and thus will
 not try to be evaluated.
 \begin{quote}
-\begin{verbatim}
-> (define aList '(S P Q R))
-(S P Q R)
-> (cons 'Rome aList)
-(Rome S P Q R)
-> aList
-(S P Q R)
-\end{verbatim}
+	\begin{verbatim}
+	> (define aList '(S P Q R))
+	(S P Q R)
+	> (cons 'Rome aList)
+	(Rome S P Q R)
+	> aList
+	(S P Q R)
+	\end{verbatim}
 \end{quote}
 Through the repeated application of the
 \verb|cons| function, one can
@@ -1237,14 +1237,14 @@ build lists of any length
 by adding new elements to
 a core.
 \begin{quote}
-\begin{verbatim}
-> (define xs '(S P Q R))
-(S P Q R)
-> (cons 5 (cons 4 (cons 3 (cons 2 (cons 1 xs)) ) ))
-(5 4 3 2 1 S P Q R)
-> xs
-(S P Q R)
-\end{verbatim}
+	\begin{verbatim}
+	> (define xs '(S P Q R))
+	(S P Q R)
+	> (cons 5 (cons 4 (cons 3 (cons 2 (cons 1 xs)) ) ))
+	(5 4 3 2 1 S P Q R)
+	> xs
+	(S P Q R)
+	\end{verbatim}
 \end{quote}
 In the above example, you have noted
 that repeated application of nested functions
@@ -1267,10 +1267,10 @@ Another way to create easily recognizable patterns  is to
 reorganize the expression in order to interrupt the sequence
 of right parentheses:
 \begin{quote}
-\begin{verbatim}
-> (+ 51 (* (+ 2 (- 3 (+ 1 2 3))) 9))
-42
-\end{verbatim}
+	\begin{verbatim}
+	> (+ 51 (* (+ 2 (- 3 (+ 1 2 3))) 9))
+	42
+	\end{verbatim}
 \end{quote}
 
 The head of a list is its first element. For instance, the head of
@@ -1345,31 +1345,31 @@ how the cond-form works.
 
 \index{Predicates!null}
 \begin{figure}[!h]
-\begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-(define (avg xs)
+	\begin{fmpage}{0.9\textwidth}
+		\begin{verbatim}
+		(define (avg xs)
   (let nxt [(s xs) (acc 0) (n 0)] 
     (cond [ (and (null? s) (= n 0)) 0]
-        [ (null? s) (/ acc n) ]
-        [else (nxt (cdr s) 
-              (+ (car s) acc) 
-              (+ n 1.0)) ] )))
-\end{verbatim}
-\end{fmpage}
+	[ (null? s) (/ acc n) ]
+	[else (nxt (cdr s) 
+	      (+ (car s) acc) 
+	      (+ n 1.0)) ] )))
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-› scheme
-Chez Scheme Version 9.5.3
-Copyright 1984-2019 Cisco Systems, Inc.
+	\begin{fmpage}{0.9\textwidth}
+		\begin{verbatim}
+		› scheme
+		Chez Scheme Version 9.5.3
+		Copyright 1984-2019 Cisco Systems, Inc.
 
-> (load "average.scm")
-> (avg '(3 4 5 6))
-4.5
-\end{verbatim}
-\end{fmpage}
-\caption{Going through a list}
-\label{going-through-a-list}
+		> (load "average.scm")
+		> (avg '(3 4 5 6))
+		4.5
+		\end{verbatim}
+	\end{fmpage}
+	\caption{Going through a list}
+	\label{going-through-a-list}
 \end{figure}
 
 \index{Conditional execution!cond}
@@ -1382,24 +1382,24 @@ In listing~\ref{going-through-a-list}, the
 clauses are:
 \begin{enumerate}
 	\item \verb| [ (and (null? s) (= n 0)) 0]| --
-The condition will be true when \verb|s| is the empty
-\verb|()| list and \verb|n=0|. This happens when the
-user types \verb|(avg '())|. In such a case, the
-cond-form returns 0.
-\item \verb|[ (null? s) (/ acc n) ]| -- This clause
-will be activated when the \verb|s| list is
-\verb|'()| empty, but \verb|n| is greater than 0.
-If \verb|n| were 0, the first clause would prevent
-the evaluator from reaching the second clause. The
-value of the second clause is \verb|(/ acc n)|,
-which is the average of the list.
-\item \verb|[else (nxt (cdr s) (+ (car s) acc) (+ n 1.0))]| --
-If the user executes the \verb|(avg '(4 5 6))| expression,
-\verb|nxt| will visit this clause with \verb|s= (4 5 6)|,
-\verb|s= (5 6)| and \verb|s= (6)|. Every time the \verb|nxt|
-falls into the third clause, \verb|(cdr s)| is executed, and
-\verb|s| looses an element, until it becomes empty and is
-captured by the second clause, which produces the answer.
+		The condition will be true when \verb|s| is the empty
+		\verb|()| list and \verb|n=0|. This happens when the
+		user types \verb|(avg '())|. In such a case, the
+		cond-form returns 0.
+	\item \verb|[ (null? s) (/ acc n) ]| -- This clause
+		will be activated when the \verb|s| list is
+		\verb|'()| empty, but \verb|n| is greater than 0.
+		If \verb|n| were 0, the first clause would prevent
+		the evaluator from reaching the second clause. The
+		value of the second clause is \verb|(/ acc n)|,
+		which is the average of the list.
+	\item \verb|[else (nxt (cdr s) (+ (car s) acc) (+ n 1.0))]| --
+		If the user executes the \verb|(avg '(4 5 6))| expression,
+		\verb|nxt| will visit this clause with \verb|s= (4 5 6)|,
+		\verb|s= (5 6)| and \verb|s= (6)|. Every time the \verb|nxt|
+		falls into the third clause, \verb|(cdr s)| is executed, and
+		\verb|s| looses an element, until it becomes empty and is
+		captured by the second clause, which produces the answer.
 \end{enumerate}
 
 \section{Prolog Lists}\index{Lists!Prolog}
@@ -1409,18 +1409,18 @@ order matters.} In Prolog, a list is put between brackets,
 and is supposed to have a head and a tail.\\
 
 \begin{tabular}{p{5cm}p{3cm}p{3cm}}
-List &  Head & Tail\\
-\verb|[3,4,5,6,7]| & \verb|3| & \verb|[4,5,6,7]|\\ 
-\verb|[wo, ni, ta]| & \verb|wo| & \verb|[ni, ta]|\\
-\verb|[4]| & \verb|4| & \verb|[]|\\
-\verb|[3.4, 5.6, 2.3]| & \verb|3.4| &  \verb|[5.6, 2.3]|\\ 
+	List &  Head & Tail\\
+	\verb|[3,4,5,6,7]| & \verb|3| & \verb|[4,5,6,7]|\\ 
+	\verb|[wo, ni, ta]| & \verb|wo| & \verb|[ni, ta]|\\
+	\verb|[4]| & \verb|4| & \verb|[]|\\
+	\verb|[3.4, 5.6, 2.3]| & \verb|3.4| &  \verb|[5.6, 2.3]|\\ 
 \end{tabular}
 
 \verb||\\
 You can match a pattern of variables with a list. For instance,
 if you match
 \begin{quote}
-\verb/[X|Xs]/
+	\verb/[X|Xs]/
 \end{quote}
 with the list \verb|[42,666,13]|, you will get \verb|X=42| and
 \verb|Xs=[666,13]|, i.e., \verb|X| matches the head of the list,
@@ -1431,11 +1431,11 @@ and \verb/[P|Q]/ are equivalent patterns.\\
 \index{Prolog!list pattern}\index{Prolog!list head/tail}
 \verb||\\
 \begin{tabular}{p{3cm}p{3cm}p{3cm}p{3cm}}
-Pattern & List &  X & Xs\\
-\verb/[X|Xs]/ & \verb|[42,666,13]| & \verb|42| & \verb|[666,13]|\\ 
-\verb/[X|Xs]/ & \verb|[666,13]| & \verb|666| & \verb|[13]|\\
-\verb/[X|Xs]/ &  \verb|[13]| & \verb|13| & \verb|[]|\\
-\verb/[X|Xs]/ &  \verb|[]| & no match &  no match\\ 
+	Pattern & List &  X & Xs\\
+	\verb/[X|Xs]/ & \verb|[42,666,13]| & \verb|42| & \verb|[666,13]|\\ 
+	\verb/[X|Xs]/ & \verb|[666,13]| & \verb|666| & \verb|[13]|\\
+	\verb/[X|Xs]/ &  \verb|[13]| & \verb|13| & \verb|[]|\\
+	\verb/[X|Xs]/ &  \verb|[]| & no match &  no match\\ 
 \end{tabular}
 
 \verb||\\
@@ -1490,18 +1490,18 @@ Average = 4.5
 
 \index{cut!average of a list}
 \begin{figure}[!h]
-\begin{fmpage}{0.9\textwidth}
-\begin{verbatim}
-%% ?- consult('average.pl').
+	\begin{fmpage}{0.9\textwidth}
+		\begin{verbatim}
+		%% ?- consult('average.pl').
 
-avg([], Acc, 0, 0) :- !.
-avg([], Acc, N, A) :- N > 0, !, A is Acc/N.
-avg([X|Xs], Acc, N, A) :- S is Acc + X,
-          N1 is N + 1, avg(Xs, S, N1, A).
-\end{verbatim}
-\end{fmpage}
-\caption{Going through a list in Prolog}
-\label{prolog:average}
+		avg([], Acc, 0, 0) :- !.
+		avg([], Acc, N, A) :- N > 0, !, A is Acc/N.
+		avg([X|Xs], Acc, N, A) :- S is Acc + X,
+	  N1 is N + 1, avg(Xs, S, N1, A).
+		\end{verbatim}
+	\end{fmpage}
+	\caption{Going through a list in Prolog}
+	\label{prolog:average}
 \end{figure}
 
 \section{How to solve it in Prolog}
@@ -1579,37 +1579,37 @@ no
 concatenation) between three lists, which holds if the
 last one is the result of appending the first two.
 \begin{quote}\index{Prolog!append}
-\begin{verbatim}
-%% (load "-f utilities.pl").
+	\begin{verbatim}
+	%% (load "-f utilities.pl").
 
-applst([], L, L).
-applst([H|T], L, [H|U]) :- applst(T, L, U).
-\end{verbatim}
+	applst([], L, L).
+	applst([H|T], L, [H|U]) :- applst(T, L, U).
+	\end{verbatim}
 \end{quote}
 
 This problem is an all time favorite. If you run the
 goal \verb|?- applst(X,Y,[2,3,4,5])|, Prolog will find and
 print all ways of cutting the list \verb|[2,3,4,5]|:
 \begin{quote}
-\begin{verbatim}
-› scheme
-> (load "prolog.scm")
-> (logic "-f prolog-src/utilities.pl")
-CxProlog version 0.98.2 [development]
+	\begin{verbatim}
+	› scheme
+	> (load "prolog.scm")
+	> (logic "-f prolog-src/utilities.pl")
+	CxProlog version 0.98.2 [development]
 
-[main] ?- applst(X, F, [2,3,4,5]).
-X = []
-F = [2,3,4,5] ? ;
-X = [2]
-F = [3,4,5] ? ;
-X = [2,3]
-F = [4,5] ? .
-...
-?- halt.
-% CxProlog halted.
-0
-> (exit)
-\end{verbatim}
+	[main] ?- applst(X, F, [2,3,4,5]).
+	X = []
+	F = [2,3,4,5] ? ;
+	X = [2]
+	F = [3,4,5] ? ;
+	X = [2,3]
+	F = [4,5] ? .
+	...
+	?- halt.
+	% CxProlog halted.
+	0
+	> (exit)
+	\end{verbatim}
 \end{quote}
 
 One can say that both Prolog and lisp use clauses to
@@ -1648,25 +1648,25 @@ Ten years ago, I published a book called {\em Visual Prolog for
 Tyros}, where I tackled this and a few other problems proposed
 by Coelho. Here is my solution for the Nim problem:
 \begin{quote}
-\begin{verbatim}
-%% (logic "-f prolog-src/nim.pl")
+	\begin{verbatim}
+	%% (logic "-f prolog-src/nim.pl")
 
-% ap/3 -- the third argument is the concatenation
-%         of the first and the second
-ap([], L, L).
-ap([H|T], L, [H|U]) :- ap(T, L, U).
+	% ap/3 -- the third argument is the concatenation
+	%         of the first and the second
+	ap([], L, L).
+	ap([H|T], L, [H|U]) :- ap(T, L, U).
 
-% tk/3 -- takes a certain number of tokens from a heap
-tk([X],V,V).
-tk([X,X1|Y],V,[[X1|Y]|V]).
-tk([X|T],V,Y) :- tk(T,V,Y).
+	% tk/3 -- takes a certain number of tokens from a heap
+	tk([X],V,V).
+	tk([X,X1|Y],V,[[X1|Y]|V]).
+	tk([X|T],V,Y) :- tk(T,V,Y).
 
-mv(X,Y) :- ap(U,[X1|V],X),
+	mv(X,Y) :- ap(U,[X1|V],X),
        tk(X1,V,R),ap(U,R,Y).
 
-us(X,Y) :- mv(X,Y), \+ them(Y,Z).
-them(X,Y) :- mv(X,Y), \+ us(Y,Z).
-\end{verbatim}
+       us(X,Y) :- mv(X,Y), \+ them(Y,Z).
+       them(X,Y) :- mv(X,Y), \+ us(Y,Z).
+	\end{verbatim}
 \end{quote}
 Coelho wrote: {\em A position of the game of Nim can be
 visualized as a set of heaps of matches.} Let us represent
@@ -1676,11 +1676,11 @@ each heap as a list of integers:
 \end{quote}
 Therefore, the set of heaps will be a list of lists; e.g.
 \begin{quote}
-\begin{verbatim}
-[  [1,1,1,1,1],
+	\begin{verbatim}
+	[  [1,1,1,1,1],
    [1,1],
    [1,1,1,1]]
-\end{verbatim}
+	\end{verbatim}
 \end{quote}
 
 Two players, {\em us} and {\em them}, alternate making
@@ -1690,11 +1690,11 @@ of taking at least one match from exactly one heap. In the
 example, if you take three matches from the third heap,
 you make a valid move for us, and the board becomes:
 \begin{quote}
-\begin{verbatim}
-[  [1,1,1,1,1],
+	\begin{verbatim}
+	[  [1,1,1,1,1],
    [1,1],
    [1]]
-\end{verbatim}
+	\end{verbatim}
 \end{quote}
 where you have removed three matches from the third heap.
 To implement this project, we will use a programming
@@ -1708,32 +1708,32 @@ two lists. Since you are going to use this program both
 to split and to concatenate lists, you need to test
 both possibilities. 
 \begin{quote}
-\begin{verbatim}
-› scheme
-Chez Scheme Version 9.5.3
-Copyright 1984-2019 Cisco Systems, Inc.
+	\begin{verbatim}
+	› scheme
+	Chez Scheme Version 9.5.3
+	Copyright 1984-2019 Cisco Systems, Inc.
 
-> (load "prolog.scm")
-> (logic "-f prolog-src/nim.pl")
-CxProlog version 0.98.2 [development]
+	> (load "prolog.scm")
+	> (logic "-f prolog-src/nim.pl")
+	CxProlog version 0.98.2 [development]
 
-[main] ?- ap([1,1,1], [2,2,2,2], L).
-L = [1,1,1,2,2,2,2]
+	[main] ?- ap([1,1,1], [2,2,2,2], L).
+	L = [1,1,1,2,2,2,2]
 
-[main] ?- ap(X,Y, [1,1,2,2]).
-X = []
-Y = [1,1,2,2] ? ;
-X = [1]
-Y = [1,2,2] ? ;
-X = [1,1]
-Y = [2,2] ? .
-X = [1,1,2]
-Y = [2] ? ;
-X = [1,1,2,2]
-Y = [] ? .
-...
-?-
-\end{verbatim}
+	[main] ?- ap(X,Y, [1,1,2,2]).
+	X = []
+	Y = [1,1,2,2] ? ;
+	X = [1]
+	Y = [1,2,2] ? ;
+	X = [1,1]
+	Y = [2,2] ? .
+	X = [1,1,2]
+	Y = [2] ? ;
+	X = [1,1,2,2]
+	Y = [] ? .
+	...
+	?-
+	\end{verbatim}
 \end{quote}
 The first query gives the result of concatenating two
 lists. The lines that follow shows the many possibilities
@@ -1747,16 +1747,16 @@ from the heap, \verb|tk/3| insert the modified heap into
 a set of heaps. If you test the program, it will produce
 the following solutions:
 \begin{quote}
-\begin{verbatim}
-?- tk([1,1,1,1], [[1,1]], Resp).
-Resp = [[1,1,1],[1,1]] ? ;
-Resp = [[1,1],[1,1]] ? ;
-Resp = [[1],[1,1]] ? .
-...
-?- halt.
-% CxProlog halted.
-0
-\end{verbatim}
+	\begin{verbatim}
+	?- tk([1,1,1,1], [[1,1]], Resp).
+	Resp = [[1,1,1],[1,1]] ? ;
+	Resp = [[1,1],[1,1]] ? ;
+	Resp = [[1],[1,1]] ? .
+	...
+	?- halt.
+	% CxProlog halted.
+	0
+	\end{verbatim}
 \end{quote}
 N.B. The first clause of \verb|tk/3| makes sure that the
 predicate will not insert an empty heap into the set of heaps.
@@ -1791,31 +1791,31 @@ Move = [] ? .
 \chapter{Ninety-Nine Prolog Programs}
 Werner Hett says in his article Ninety-Nine Prolog Programs:
 \begin{quotation}
-The purpose of this problem collection is to give you the
-opportunity to practice your skills in logic programming.
-Your goal should be to find the most elegant solution of
-the given problems. Efficiency is important, but logical
-clarity is even more crucial. Some of the (easy) problems
-can be trivially solved using built-in predicates. However,
-in these cases, you learn more if you try to find your own
-solution.
+	The purpose of this problem collection is to give you the
+	opportunity to practice your skills in logic programming.
+	Your goal should be to find the most elegant solution of
+	the given problems. Efficiency is important, but logical
+	clarity is even more crucial. Some of the (easy) problems
+	can be trivially solved using built-in predicates. However,
+	in these cases, you learn more if you try to find your own
+	solution.
 
-Every predicate that you write should begin with a comment
-that describes the predicate in a declarative statement.
-Do not describe procedurally, what the predicate does, but
-write down a logical statement which includes the arguments
-of the predicate. You should also indicate the intended data
-types of the arguments and the allowed flow patterns.
+	Every predicate that you write should begin with a comment
+	that describes the predicate in a declarative statement.
+	Do not describe procedurally, what the predicate does, but
+	write down a logical statement which includes the arguments
+	of the predicate. You should also indicate the intended data
+	types of the arguments and the allowed flow patterns.
 
-The problems have different levels of difficulty. Those marked
-with a single asterisk (*) are easy. If you have successfully
-solved the preceeding problems you should be able to solve
-them within a few (say 15) minutes. Problems marked with two
-asterisks (**) are of intermediate difficulty. If you are a
-skilled Prolog programmer it shouldn't take you more than
-30-90 minutes to solve them. Problems marked with three
-asterisks (***) are more difficult. You may need more
-time (i.e. a few hours or more) to find a good solution. 
+	The problems have different levels of difficulty. Those marked
+	with a single asterisk (*) are easy. If you have successfully
+	solved the preceeding problems you should be able to solve
+	them within a few (say 15) minutes. Problems marked with two
+	asterisks (**) are of intermediate difficulty. If you are a
+	skilled Prolog programmer it shouldn't take you more than
+	30-90 minutes to solve them. Problems marked with three
+	asterisks (***) are more difficult. You may need more
+	time (i.e. a few hours or more) to find a good solution. 
 \end{quotation}\index{Prolog!Hett}
 
 I did not followed Hett's advice to the letter. In order
@@ -1849,64 +1849,64 @@ element_at(X,[X|_],1) :- !.
 element_at(X,[_|L],K) :- K > 1,
    K1 is K - 1, element_at(X,L,K1).
 
-% P04 (*): Find the number of elements of a list.
-%% ?- length([1,2,3,4,5], L).
-%% L = 5
+   % P04 (*): Find the number of elements of a list.
+   %% ?- length([1,2,3,4,5], L).
+   %% L = 5
 
-length([],0) :- !.
-length([_|L],N) :- length(L,N1),
-                  N is N1 + 1.
+   length([],0) :- !.
+   length([_|L],N) :- length(L,N1),
+		  N is N1 + 1.
 
-% P05 (*): Reverse a list.
-%% ?- reverse([1,2,3,4],L).
-%% L = [4,3,2,1]
+		  % P05 (*): Reverse a list.
+		  %% ?- reverse([1,2,3,4],L).
+		  %% L = [4,3,2,1]
 
-reverse(L1,L2) :- my_rev(L1,L2,[]).
+		  reverse(L1,L2) :- my_rev(L1,L2,[]).
 
-my_rev([],L2,L2) :- !.
-my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
+		  my_rev([],L2,L2) :- !.
+		  my_rev([X|Xs],L2,Acc) :- my_rev(Xs,L2,[X|Acc]).
 
-% P06 (*): Find out whether a list is a palindrome
-%% ?- is_palindrome([s,u,b,i,d,u,r,a,a,r,u,d,i,b,u,s]).
+		  % P06 (*): Find out whether a list is a palindrome
+		  %% ?- is_palindrome([s,u,b,i,d,u,r,a,a,r,u,d,i,b,u,s]).
 
-%% Ignore spaces in Latin palindromes: Romans didn't use them:
-%  subi dura a rudibus -- endure rudeness from peasants
-%  roma tibi subito motibus ibit amor -- 
-%    in Rome quickly with its bustle you will find love
-  
-is_palindrome(L) :- reverse(L,L).
+		  %% Ignore spaces in Latin palindromes: Romans didn't use them:
+		  %  subi dura a rudibus -- endure rudeness from peasants
+		  %  roma tibi subito motibus ibit amor -- 
+		  %    in Rome quickly with its bustle you will find love
+
+		  is_palindrome(L) :- reverse(L,L).
 
 
-% P07 (**): Flatten a nested list structure.
-%% ?- flatten([3,4,[a,[b]], 5], L).
-%% L = [3,4,a,b,5]
+		  % P07 (**): Flatten a nested list structure.
+		  %% ?- flatten([3,4,[a,[b]], 5], L).
+		  %% L = [3,4,a,b,5]
 
-append([],L,L) :- !.
-append([H|T], L, [H|U]) :- append(T,L,U).
+		  append([],L,L) :- !.
+		  append([H|T], L, [H|U]) :- append(T,L,U).
 
-flatten([],[]) :- !.
-flatten([X|Xs],Zs) :- !, flatten(X,Y),
+		  flatten([],[]) :- !.
+		  flatten([X|Xs],Zs) :- !, flatten(X,Y),
    flatten(Xs,Ys), append(Y,Ys,Zs).
-flatten(X, [X]).
+   flatten(X, [X]).
 
-% P08 (**): Eliminate consecutive duplicates of list elements.
-%% ?- compress([2,3,3,3,4,4,5], L).
-%% L = [2,3,4,5]
-compress([],[]) :- !.
-compress([X],[X]) :- !.
-compress([X,Y|Xs],Zs) :-  X==Y, !, compress([X|Xs],Zs).
-compress([X,Y|Ys],[X|Zs]) :-  compress([Y|Ys],Zs).
+   % P08 (**): Eliminate consecutive duplicates of list elements.
+   %% ?- compress([2,3,3,3,4,4,5], L).
+   %% L = [2,3,4,5]
+   compress([],[]) :- !.
+   compress([X],[X]) :- !.
+   compress([X,Y|Xs],Zs) :-  X==Y, !, compress([X|Xs],Zs).
+   compress([X,Y|Ys],[X|Zs]) :-  compress([Y|Ys],Zs).
 
-% P09 (**):  Pack consecutive duplicates of list elements.
-%% ?- pack([2,3,3,3,4,4,5], L).
-%% L = [[2],[3,3,3],[4,4],[5]]
+   % P09 (**):  Pack consecutive duplicates of list elements.
+   %% ?- pack([2,3,3,3,4,4,5], L).
+   %% L = [[2],[3,3,3],[4,4],[5]]
 
-pack([],[]) :- !.
-pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
+   pack([],[]) :- !.
+   pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
 
-transfer(X,[],[],[X]) :- !.
-transfer(Y,[X|Xs],Ys,[X|Zs]) :- X == Y, !, transfer(X,Xs,Ys,Zs).
-transfer(X,[Y|Ys],[Y|Ys],[X]).
+   transfer(X,[],[],[X]) :- !.
+   transfer(Y,[X|Xs],Ys,[X|Zs]) :- X == Y, !, transfer(X,Xs,Ys,Zs).
+   transfer(X,[Y|Ys],[Y|Ys],[X]).
 \end{verbatim}
 
 \begin{verbatim}
@@ -1915,41 +1915,41 @@ transfer(X,[Y|Ys],[Y|Ys],[X]).
 %% Ans = [[3,a],[5,b],[1,c],[1,d]]
 
 encode(L1,L2) :- pack(L1,L),
-            transform(L,L2).
+	    transform(L,L2).
 
-transform([],[]) :- !.
-transform([[X|Xs]|Ys],[[N,X]|Zs]) :- length([X|Xs],N),
-                             transform(Ys,Zs).
+	    transform([],[]) :- !.
+	    transform([[X|Xs]|Ys],[[N,X]|Zs]) :- length([X|Xs],N),
+			     transform(Ys,Zs).
 
-% P11 (*):  Modified run-length encoding
-%% ?- encode_modified([1,1,2,2,2,2,2,3,3,4], G).
-%% G = [[2,1],[5,2],[2,3],4]
+			     % P11 (*):  Modified run-length encoding
+			     %% ?- encode_modified([1,1,2,2,2,2,2,3,3,4], G).
+			     %% G = [[2,1],[5,2],[2,3],4]
 
-encode_modified(L1,L2) :- encode(L1,L),
-                      strip(L,L2).
+			     encode_modified(L1,L2) :- encode(L1,L),
+		      strip(L,L2).
 
-strip([],[]) :- !.
-strip([[Num,X]|Ys],[X|Zs]) :- Num == 1, !,
-                       strip(Ys,Zs).
-strip([[N,X]|Ys],[[N,X]|Zs]) :- N > 1,
-                           strip(Ys,Zs).
+		      strip([],[]) :- !.
+		      strip([[Num,X]|Ys],[X|Zs]) :- Num == 1, !,
+		       strip(Ys,Zs).
+		       strip([[N,X]|Ys],[[N,X]|Zs]) :- N > 1,
+			   strip(Ys,Zs).
 
 
-% P12 (**): Decode a run-length compressed list.
-%% ?- encode([a,a,a,b,b,b,b,b,c,d], Ans), decode(Ans, G).
-%% Ans = [[3,a],[5,b],[1,c],[1,d]]
-%%G = [a,a,a,b,b,b,b,b,c,d]
+			   % P12 (**): Decode a run-length compressed list.
+			   %% ?- encode([a,a,a,b,b,b,b,b,c,d], Ans), decode(Ans, G).
+			   %% Ans = [[3,a],[5,b],[1,c],[1,d]]
+			   %%G = [a,a,a,b,b,b,b,b,c,d]
 
-notlist(X) :- atom(X), !.
-notlist(X) :- number(X).
+			   notlist(X) :- atom(X), !.
+			   notlist(X) :- number(X).
 
-decode([],[]) :- !.
-decode([[Num,X]|Ys],[X|Zs]) :- Num == 1, !, decode(Ys,Zs).
-decode([[N,X]|Ys],[X|Zs]) :- N > 1, !,
-           N1 is N - 1,
-           decode([[N1,X]|Ys],Zs).
-decode([X|Ys],[X|Zs]) :- notlist(X),
-                         decode(Ys,Zs).
+			   decode([],[]) :- !.
+			   decode([[Num,X]|Ys],[X|Zs]) :- Num == 1, !, decode(Ys,Zs).
+			   decode([[N,X]|Ys],[X|Zs]) :- N > 1, !,
+	   N1 is N - 1,
+	   decode([[N1,X]|Ys],Zs).
+	   decode([X|Ys],[X|Zs]) :- notlist(X),
+			 decode(Ys,Zs).
 \end{verbatim}
 \index{Prolog!compression}
 \pagebreak
@@ -1960,50 +1960,50 @@ decode([X|Ys],[X|Zs]) :- notlist(X),
 
 encode_direct([],[]) :- !.
 encode_direct([X|Xs],[Z|Zs]) :- count(X,Xs,Ys,1,Z),
-                     encode_direct(Ys,Zs).
+		     encode_direct(Ys,Zs).
 
-count(X,[],[],1,X) :- !.
-count(X,[],[],N,[N,X]) :- N > 1, !.
-count(X,[Y|Ys],[Y|Ys],1,X) :- X \= Y.
-count(Y,[X|Xs],Ys,K,T) :- X == Y, !,
+		     count(X,[],[],1,X) :- !.
+		     count(X,[],[],N,[N,X]) :- N > 1, !.
+		     count(X,[Y|Ys],[Y|Ys],1,X) :- X \= Y.
+		     count(Y,[X|Xs],Ys,K,T) :- X == Y, !,
    K1 is K + 1, count(X,Xs,Ys,K1,T).
-count(X,[Y|Ys],[Y|Ys],N,[N,X]) :- N > 1.
+   count(X,[Y|Ys],[Y|Ys],N,[N,X]) :- N > 1.
 
-% P14 (*): Duplicate the elements of a list
-%% ?- dupli([1,2,2,3,3,3,5], L).
-%% L = [1,1,2,2,2,2,3,3,3,3,3,3,5,5]
+   % P14 (*): Duplicate the elements of a list
+   %% ?- dupli([1,2,2,3,3,3,5], L).
+   %% L = [1,1,2,2,2,2,3,3,3,3,3,3,5,5]
 
-dupli([],[]) :- !.
-dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
+   dupli([],[]) :- !.
+   dupli([X|Xs],[X,X|Ys]) :- dupli(Xs,Ys).
 
-% P15 (**): Duplicate the elements of a list agiven number of times
-%% ?- dupli([1,2,2,3,3,3,5], 4,  L).
-%% L = [1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,5,5,5,5]
+   % P15 (**): Duplicate the elements of a list agiven number of times
+   %% ?- dupli([1,2,2,3,3,3,5], 4,  L).
+   %% L = [1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,5,5,5,5]
 
-dupli(L1,N,L2) :- dupli(L1,N,L2,N).
-dupli([],_,[],_) :- !.
-dupli([_|Xs],N,Ys, K) :- K == 0, !, dupli(Xs,N,Ys,N).
-dupli([X|Xs],N,[X|Ys],K) :- K > 0, K1 is K - 1,
-                dupli([X|Xs],N,Ys,K1).
+   dupli(L1,N,L2) :- dupli(L1,N,L2,N).
+   dupli([],_,[],_) :- !.
+   dupli([_|Xs],N,Ys, K) :- K == 0, !, dupli(Xs,N,Ys,N).
+   dupli([X|Xs],N,[X|Ys],K) :- K > 0, K1 is K - 1,
+		dupli([X|Xs],N,Ys,K1).
 
-% P16 (**):  Drop every N'th element from a list
-%% ?- drop([1,2,3,4,5,6], 3, R).
-%% R = [1,2,4,5]
+		% P16 (**):  Drop every N'th element from a list
+		%% ?- drop([1,2,3,4,5,6], 3, R).
+		%% R = [1,2,4,5]
 
-drop(L1,N,L2) :- drop(L1,N,L2,N).
-drop([],_,[],_) :- !.
-drop([X|Xs],N,[X|Ys],K) :- K > 1, !,
+		drop(L1,N,L2) :- drop(L1,N,L2,N).
+		drop([],_,[],_) :- !.
+		drop([X|Xs],N,[X|Ys],K) :- K > 1, !,
        K1 is K - 1, drop(Xs,N,Ys,K1).
-drop([_|Xs],N,Ys, K) :-  drop(Xs,N,Ys,N).
+       drop([_|Xs],N,Ys, K) :-  drop(Xs,N,Ys,N).
 
-% P17 (*): Split a list into two parts
-%% ?- split([2,5,3,8,1], 3, X, Y).
-%% X = [2,5,3]
-%% Y = [8,1]
+       % P17 (*): Split a list into two parts
+       %% ?- split([2,5,3,8,1], 3, X, Y).
+       %% X = [2,5,3]
+       %% Y = [8,1]
 
-split([X|Xs],N,[X|Ys],Zs) :- N > 0, !, N1 is N - 1,
-                 split(Xs,N1,Ys,Zs).
-split(L,0,[],L).
+       split([X|Xs],N,[X|Ys],Zs) :- N > 0, !, N1 is N - 1,
+		 split(Xs,N1,Ys,Zs).
+		 split(L,0,[],L).
 \end{verbatim}
 \index{Prolog!slice}
 \begin{verbatim}
@@ -2014,59 +2014,59 @@ split(L,0,[],L).
 slice([X|_],1,1,[X]) :- !.
 slice([X|Xs],1,K,[X|Ys]) :- K > 1, !, 
    K1 is K - 1, slice(Xs,1,K1,Ys).
-slice([_|Xs],I,K,Ys) :- I > 1, 
+   slice([_|Xs],I,K,Ys) :- I > 1, 
    I1 is I - 1, K1 is K - 1, slice(Xs,I1,K1,Ys).
 
-% P19 (**): Rotate a list N places to the left 
-%% ?- rotate([1,2,3,4,5,6,7], 2, R).
-%% R = [3,4,5,6,7,1,2]
+   % P19 (**): Rotate a list N places to the left 
+   %% ?- rotate([1,2,3,4,5,6,7], 2, R).
+   %% R = [3,4,5,6,7,1,2]
 
-rotate(L1,N,L2) :- N >= 0, !, 
+   rotate(L1,N,L2) :- N >= 0, !, 
    length(L1,NL1), N1 is N mod NL1, rotate_left(L1,N1,L2).
-rotate(L1,N,L2) :- 
+   rotate(L1,N,L2) :- 
    length(L1,NL1), N1 is NL1 + (N mod NL1), rotate_left(L1,N1,L2).
 
-rotate_left(L1,N,L2) :- N > 0, !,
+   rotate_left(L1,N,L2) :- N > 0, !,
     split(L1,N,S1,S2), append(S2,S1,L2).
-rotate_left(L,0,L).
+    rotate_left(L,0,L).
 
-% P20 (*): Remove the K'th element from a list.
-%% ?- remove_at(X, [1,2,3,4,5,6], 3, L).
-%% X = 3
-%% L = [1,2,4,5,6]
+    % P20 (*): Remove the K'th element from a list.
+    %% ?- remove_at(X, [1,2,3,4,5,6], 3, L).
+    %% X = 3
+    %% L = [1,2,4,5,6]
 
-remove_at(X,[Y|Xs],K,[Y|Ys]) :- K > 1, !, 
+    remove_at(X,[Y|Xs],K,[Y|Ys]) :- K > 1, !, 
    K1 is K - 1, remove_at(X,Xs,K1,Ys).
-remove_at(X,[X|Xs],1,Xs).
+   remove_at(X,[X|Xs],1,Xs).
 
 
-% P21 (*): Insert an element at a given position into a list
-%% ?- insert_at(a,[1,2,3,4,5], 3, L).
-%% L = [1,2,a,3,4,5]
+   % P21 (*): Insert an element at a given position into a list
+   %% ?- insert_at(a,[1,2,3,4,5], 3, L).
+   %% L = [1,2,a,3,4,5]
 
-insert_at(X,L,K,R) :- remove_at(X,R,K,L).
+   insert_at(X,L,K,R) :- remove_at(X,R,K,L).
 
 
-% P22 (*):  Create a list containing all integers within a given range.
-%% ?- range(4,9,L).
-%% L = [4,5,6,7,8,9]
+   % P22 (*):  Create a list containing all integers within a given range.
+   %% ?- range(4,9,L).
+   %% L = [4,5,6,7,8,9]
 
-range(I,K,[I]) :- I >= K, !.
-range(I,K,[I|L]) :- I < K, 
+   range(I,K,[I]) :- I >= K, !.
+   range(I,K,[I|L]) :- I < K, 
     I1 is I + 1, range(I1,K,L).
 
 
-% P23 (**): Extract a given number of randomly
-% selected elements from a list.
-%% (load "rnd.lisp") the Lisp function
-%% that generates random numbers.
-%% Study file "rnd.lisp" to learn how to
-%% implement new primitives.
-%% ?- rnd_select([1,2,3,4,5,6], 3, L).
-%% L = [6,2,4]
+    % P23 (**): Extract a given number of randomly
+    % selected elements from a list.
+    %% (load "rnd.lisp") the Lisp function
+    %% that generates random numbers.
+    %% Study file "rnd.lisp" to learn how to
+    %% implement new primitives.
+    %% ?- rnd_select([1,2,3,4,5,6], 3, L).
+    %% L = [6,2,4]
 
-rnd_select(_,K,[]) :- K < 1, !.
-rnd_select(Xs,N,[X|Zs]) :- N > 0,
+    rnd_select(_,K,[]) :- K < 1, !.
+    rnd_select(Xs,N,[X|Zs]) :- N > 0,
     length(Xs,L),
     random(R, L), I is R + 1,
     remove_at(X,Xs,I,Ys),
@@ -2074,18 +2074,18 @@ rnd_select(Xs,N,[X|Zs]) :- N > 0,
     rnd_select(Ys,N1,Zs).
 
 
-% P24 (*): Lotto: Draw N different random numbers from  1..M
-%% ?- lotto(6,49,L).
-%% L = [44,36,39,5,28,34]
+    % P24 (*): Lotto: Draw N different random numbers from  1..M
+    %% ?- lotto(6,49,L).
+    %% L = [44,36,39,5,28,34]
 
-lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
+    lotto(N,M,L) :- range(1,M,R), rnd_select(R,N,L).
 
 
-% P25 (*):  Generate a random permutation of the elements of a list
-%% ?- rnd_permu([1,2,3,4,5], L).
-%% L = [2,4,3,1,5]
+    % P25 (*):  Generate a random permutation of the elements of a list
+    %% ?- rnd_permu([1,2,3,4,5], L).
+    %% L = [2,4,3,1,5]
 
-rnd_permu(L1,L2) :- length(L1,N), rnd_select(L1,N,L2).
+    rnd_permu(L1,L2) :- length(L1,N), rnd_select(L1,N,L2).
 
 \end{verbatim}
 \index{Prolog!lotto}
@@ -2204,7 +2204,7 @@ has different aspects, depending on the
 configuration of the terminal.
 In Nia's machine, it looks something like this:
 \begin{quote}
-\verb|~$ _|
+	\verb|~$ _|
 \end{quote}
 Files are stored in folders. Typically, the
 prompt shows the folder where the user is
@@ -2248,8 +2248,8 @@ by a slash bar. If one needs to know
 the current folder, there is the \verb|pwd|
 command. 
 \begin{quote}
-\verb|~$ pwd         # shows the current folder. |\keys{Enter}\\
-\verb|/Users/nia|\\
+	\verb|~$ pwd         # shows the current folder. |\keys{Enter}\\
+	\verb|/Users/nia|\\
 \end{quote}
 When Nia issues a command, she may
 add comments to it, so her boyfriend that
@@ -2330,21 +2330,21 @@ Below you will find
 an extended example of a chat between Nia and
 the OS X operating system.
 \begin{quote}
-\verb|~$ mkdir wrk   # creates a work space folder      | \keys{Enter}\\
-\verb|~$ cd wrk      # transfers action to the wrk file | \keys{Enter}\\
-\verb|~/wrk$ echo "* Work space" > readme.txt | \keys{Enter}\\
-\verb|~/wrk$ echo "This folder is used" >> readme.txt |\keys{Enter}\\
-\verb|~/wrk$ echo "to practice the bash" >> readme.txt | \keys{Enter}\\
-\verb|~/wrk$ echo "commands and queries." >> readme.txt | \keys{Enter}\\
-\verb|~/wrk$ ls      # list files in current folder. | \keys{Enter}\\
-\verb|readme.txt |\\
-\verb|~/wrk$ cat readme.txt  # shows the file contents.| \keys{Enter}
-\begin{verbatim}
-* Work space
-This folder is used
-to practice the bash
-commands and queries.
-\end{verbatim}
+	\verb|~$ mkdir wrk   # creates a work space folder      | \keys{Enter}\\
+	\verb|~$ cd wrk      # transfers action to the wrk file | \keys{Enter}\\
+	\verb|~/wrk$ echo "* Work space" > readme.txt | \keys{Enter}\\
+	\verb|~/wrk$ echo "This folder is used" >> readme.txt |\keys{Enter}\\
+	\verb|~/wrk$ echo "to practice the bash" >> readme.txt | \keys{Enter}\\
+	\verb|~/wrk$ echo "commands and queries." >> readme.txt | \keys{Enter}\\
+	\verb|~/wrk$ ls      # list files in current folder. | \keys{Enter}\\
+	\verb|readme.txt |\\
+	\verb|~/wrk$ cat readme.txt  # shows the file contents.| \keys{Enter}
+	\begin{verbatim}
+	* Work space
+	This folder is used
+	to practice the bash
+	commands and queries.
+	\end{verbatim}
 \end{quote}
 
 \paragraph{ls \#}\index{Shell!ls} 
@@ -2367,7 +2367,7 @@ interrogation mark matches a single char.
 information about the \verb|.txt| files,
 like date of creation, size, etc.
 \begin{quote}
-\verb|~/wrk$ ls -la |  \keys{Enter}
+	\verb|~/wrk$ ls -la |  \keys{Enter}
 \end{quote}
 \begin{verbatim}
 total 8
@@ -2394,9 +2394,9 @@ in the file system.
 Directly after the file classification comes the permissions,
 represented by the following letters:
 \begin{itemize}
-\item r -- read permission.
-\item w -- write permission.
-\item x -- execute permission.
+	\item r -- read permission.
+	\item w -- write permission.
+	\item x -- execute permission.
 \end{itemize}
 
 \paragraph{cp readme.txt lire.fr \#}\index{Shell!cp} 
@@ -2404,18 +2404,18 @@ makes a copy
 of a file. You can copy a whole directory
 with the \verb|-rf| options, as shown below.
 \begin{quote}
-\begin{verbatim}
-~/wrk$ ls
-readme.txt
-~/wrk$ cp readme.txt lire.fr
-~/wrk$ ls
-lire.fr  readme.txt
-~/wrk$ cd ..
-~$ cp -rf wrk wsp
-~$ cd wsp/
-~/wsp$ ls
-lire.fr  readme.txt
-\end{verbatim}
+	\begin{verbatim}
+	~/wrk$ ls
+	readme.txt
+	~/wrk$ cp readme.txt lire.fr
+	~/wrk$ ls
+	lire.fr  readme.txt
+	~/wrk$ cd ..
+	~$ cp -rf wrk wsp
+	~$ cd wsp/
+	~/wsp$ ls
+	lire.fr  readme.txt
+	\end{verbatim}
 \end{quote}
 
 \paragraph{rm lire.txt \#}\index{Shell!rm} 
@@ -2423,19 +2423,19 @@ removes a file.
 The \verb|-rf| option 
 removes a whole folder.
 \begin{quote}
-\begin{verbatim}
-~/wsp$ ls
-lire.fr readme.txt
-~/wsp$ rm lire.fr
-~/wsp$ ls
-readme.txt
-~/wsp$ cd ..
-~$ ls wrk
-lire.fr readme.txt
-~$ rm -rf wrk
-~$ ls wrk
-ls: wrk: No such file or directory
-\end{verbatim}
+	\begin{verbatim}
+	~/wsp$ ls
+	lire.fr readme.txt
+	~/wsp$ rm lire.fr
+	~/wsp$ ls
+	readme.txt
+	~/wsp$ cd ..
+	~$ ls wrk
+	lire.fr readme.txt
+	~$ rm -rf wrk
+	~$ ls wrk
+	ls: wrk: No such file or directory
+	\end{verbatim}
 \end{quote}
 
 \paragraph{mv wsp wrp \#}\index{Shell!mv} changes
@@ -2443,26 +2443,26 @@ the name of a file or folder, or
 even permits the moving of a file or
 folder to another location.
 \begin{quote}
-\begin{verbatim}
-~$ mv wsp wrk
-~$ cd wrk
-~/wrk$ ls
-readme.txt
-~/wrk$ mv readme.txt read.me
-~/wrk$ ls
-read.me
-~/wrk$ cp read.me wrk-readme.txt
-~/wrk$ ls
-read.me wrk-readme.txt
-~/wrk$ mv wrk-readme.txt ~/Documents/
-~/wrk$ ls
-read.me
-~/wrk$ cat ~/Documents/wrk-readme.txt
-Work space
-This folder is used
-to practice the bash
-commands and queries.
-\end{verbatim}
+	\begin{verbatim}
+	~$ mv wsp wrk
+	~$ cd wrk
+	~/wrk$ ls
+	readme.txt
+	~/wrk$ mv readme.txt read.me
+	~/wrk$ ls
+	read.me
+	~/wrk$ cp read.me wrk-readme.txt
+	~/wrk$ ls
+	read.me wrk-readme.txt
+	~/wrk$ mv wrk-readme.txt ~/Documents/
+	~/wrk$ ls
+	read.me
+	~/wrk$ cat ~/Documents/wrk-readme.txt
+	Work space
+	This folder is used
+	to practice the bash
+	commands and queries.
+	\end{verbatim}
 \end{quote}
 
 \paragraph{Copy to pen drive.}\index{Pen drive}
@@ -2517,7 +2517,7 @@ a repository called github. Let us see how
 to download the source code for this document
 from github:
 \begin{quote}
-\verb|https://github.com/FemtoEmacs/lisp-plus-prolog/|
+	\verb|https://github.com/FemtoEmacs/lisp-plus-prolog/|
 \end{quote}
 
 \section{sudo}
@@ -2565,14 +2565,14 @@ version of this front-end.\\
 
 Unpack and make the distribution archive as shown below:
 \begin{quote}
-\begin{verbatim}
-~$ tar xfvz ncurses-6.0.tar.gz
-~$ cd ncurses-6.0/
-~/ncurses-6.0$ ./configure --prefix=/usr/local \
-                           --enable-widec
-~/ncurses-6.0$ make
-~/ncurses-6.0$ sudo make install
-\end{verbatim}
+	\begin{verbatim}
+	~$ tar xfvz ncurses-6.0.tar.gz
+	~$ cd ncurses-6.0/
+	~/ncurses-6.0$ ./configure --prefix=/usr/local \
+			   --enable-widec
+			   ~/ncurses-6.0$ make
+			   ~/ncurses-6.0$ sudo make install
+	\end{verbatim}
 \end{quote}
 The \verb|ncurses-6.0| directory contains
 many files in the C  computer language.
@@ -3085,36 +3085,36 @@ Traditionally, the Javanese syllabary
 is taught through a poem of 4 verses
 narrating the myth of Aji Saka.\index{Javanese alphabet}
 \begin{quote}
-\includegraphics[scale=0.3]{figs/ha.png}
-\includegraphics[scale=0.3]{figs/na.png}
-\includegraphics[scale=0.3]{figs/ca.png}
-\includegraphics[scale=0.3]{figs/ra.png}
-\includegraphics[scale=0.3]{figs/ka.png} --
-There were two messengers
+	\includegraphics[scale=0.3]{figs/ha.png}
+	\includegraphics[scale=0.3]{figs/na.png}
+	\includegraphics[scale=0.3]{figs/ca.png}
+	\includegraphics[scale=0.3]{figs/ra.png}
+	\includegraphics[scale=0.3]{figs/ka.png} --
+	There were two messengers
 \end{quote}
 \begin{quote}
-\includegraphics[scale=0.3]{figs/da.png}
-\includegraphics[scale=0.3]{figs/ta.png}
-\includegraphics[scale=0.3]{figs/sa.png}
-\includegraphics[scale=0.3]{figs/wa.png}
-\includegraphics[scale=0.3]{figs/la.png} --
-with mutual hatred.
+	\includegraphics[scale=0.3]{figs/da.png}
+	\includegraphics[scale=0.3]{figs/ta.png}
+	\includegraphics[scale=0.3]{figs/sa.png}
+	\includegraphics[scale=0.3]{figs/wa.png}
+	\includegraphics[scale=0.3]{figs/la.png} --
+	with mutual hatred.
 \end{quote}
 \begin{quote}
-\includegraphics[scale=0.3]{figs/pa.png}
-\includegraphics[scale=0.3]{figs/dha.png}
-\includegraphics[scale=0.3]{figs/ja.png}
-\includegraphics[scale=0.3]{figs/ya.png}
-\includegraphics[scale=0.3]{figs/nya.png} --
-One was as mighty as the other.
+	\includegraphics[scale=0.3]{figs/pa.png}
+	\includegraphics[scale=0.3]{figs/dha.png}
+	\includegraphics[scale=0.3]{figs/ja.png}
+	\includegraphics[scale=0.3]{figs/ya.png}
+	\includegraphics[scale=0.3]{figs/nya.png} --
+	One was as mighty as the other.
 \end{quote}
 \begin{quote}
-\includegraphics[scale=0.3]{figs/ma.png}
-\includegraphics[scale=0.3]{figs/ga.png}
-\includegraphics[scale=0.3]{figs/ba.png}
-\includegraphics[scale=0.3]{figs/tha.png}
-\includegraphics[scale=0.3]{figs/nga.png} --
-Here are the corpses.
+	\includegraphics[scale=0.3]{figs/ma.png}
+	\includegraphics[scale=0.3]{figs/ga.png}
+	\includegraphics[scale=0.3]{figs/ba.png}
+	\includegraphics[scale=0.3]{figs/tha.png}
+	\includegraphics[scale=0.3]{figs/nga.png} --
+	Here are the corpses.
 \end{quote}
 
 
@@ -3436,11 +3436,11 @@ She typed the  program below into the buffer.
 
 (define (c2f x)
    (- (/ (* (+ x 40) 9) 5.0) 40)
-);;end define
+   );;end define
 
-(define (f2c x)
+   (define (f2c x)
    (- (/ (* (+ x 40) 5.0) 9) 40)
-);;end define
+   );;end define
 \end{verbatim}
 Function c2f converts Celsius readings to Fahrenheit.
 The \verb|define| macro, which defines a function, 
@@ -3482,34 +3482,34 @@ interaction window when you perform the loading, otherwise
 all you will get are error messages from the shell.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-; File: celsius.scm
+	\begin{fmpage}{0.8\linewidth}
+		\begin{verbatim}
+		; File: celsius.scm
 
-(define (c2f x)
+		(define (c2f x)
    (- (/ (* (+ x 40) 9) 5.0) 40))
 
-(define (f2c x)
+   (define (f2c x)
     (- (/ (* (+ x 40) 5.0) 9) 40))
 
-\end{verbatim}
-\end{fmpage}
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-› scheme
-Chez Scheme Version x.y.z
+	\begin{fmpage}{0.8\linewidth}
+		\begin{verbatim}
+		› scheme
+		Chez Scheme Version x.y.z
 
-> (load "celsius.scm")
-> (c2f 100)
-212.0
-\end{verbatim}
-\end{fmpage}
-\begin{fmpage}{0.8\linewidth}
-\verb|M-x shell|
-\end{fmpage}
-\caption{Source file and Interation Buffer}
-\label{fig:repl}
+		> (load "celsius.scm")
+		> (c2f 100)
+		212.0
+		\end{verbatim}
+	\end{fmpage}
+	\begin{fmpage}{0.8\linewidth}
+		\verb|M-x shell|
+	\end{fmpage}
+	\caption{Source file and Interation Buffer}
+	\label{fig:repl}
 \end{figure}
 
 Let us recall what happened until now. Nia pressed
@@ -3571,10 +3571,10 @@ You certainly know that the word `December' means
 the tenth month; it comes from the Latin word for
 ten, as attested in words such as:
 \begin{itemize}
-\item {\em decimal} -- base ten.
-\item {\em decimeter} -- tenth part of a meter.
-\item {\em decimate} -- the killing of every tenth
-Roman soldier that performed badly in battle.
+	\item {\em decimal} -- base ten.
+	\item {\em decimeter} -- tenth part of a meter.
+	\item {\em decimate} -- the killing of every tenth
+		Roman soldier that performed badly in battle.
 \end{itemize}
 
 October is named after the Latin numeral for {\em eighth}.
@@ -3606,33 +3606,33 @@ November, the ninth and
 December, therefore, the tenth month.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-(define (winter m) (quotient (- 14 m) 12))
+	\begin{fmpage}{0.9\linewidth}
+		\begin{verbatim}
+		(define (winter m) (quotient (- 14 m) 12))
 
-(define (roman-order m) (+ m (* (winter m) 12) -2))
+		(define (roman-order m) (+ m (* (winter m) 12) -2))
 
-(define (zr y m day)
-(let* [ (roman-month (roman-order m))
-        (roman-year (- y (winter m)))
-        (century (quotient roman-year 100))
+		(define (zr y m day)
+		(let* [ (roman-month (roman-order m))
+	(roman-year (- y (winter m)))
+	(century (quotient roman-year 100))
 	(decade (remainder roman-year 100)) ]
  (mod (+ day
-         (quotient (- (* 13 roman-month) 1) 5)
-         decade
-         (quotient decade 4)
-         (quotient century 4)
-         (* century -2)) 7)) )
-\end{verbatim}
-\end{fmpage}
+	 (quotient (- (* 13 roman-month) 1) 5)
+	 decade
+	 (quotient decade 4)
+	 (quotient century 4)
+	 (* century -2)) 7)) )
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.9\linewidth}
-\verb|> (load "zeller.scm")|\\
-\verb|> (zr 2016 8 31)|\\
-3
-\end{fmpage}
-\caption{Source file and Interaction Buffer}
-\label{fig:date-calculation}
+	\begin{fmpage}{0.9\linewidth}
+		\verb|> (load "zeller.scm")|\\
+		\verb|> (zr 2016 8 31)|\\
+		3
+	\end{fmpage}
+	\caption{Source file and Interaction Buffer}
+	\label{fig:date-calculation}
 \end{figure}
 
 Farming and plunder were the main
@@ -3653,18 +3653,18 @@ that converts from the modern
 month numbering to the
 old sequence has arisen.
 \begin{quote}
-\begin{verbatim}
-(define (roman-order m) (+ m (* (winter m) 12) -2))
-\end{verbatim}
+	\begin{verbatim}
+	(define (roman-order m) (+ m (* (winter m) 12) -2))
+	\end{verbatim}
 \end{quote}
 The above formula will work if \verb|(winter m)|
 returns 1 for months 1 and 2, and
 0 for months from 3 to 12. The definition
 below satisfies these requisites.
 \begin{quote}
-\begin{verbatim}
-(define (winter m) (quotient (- 14 m) 12))
-\end{verbatim}
+	\begin{verbatim}
+	(define (winter m) (quotient (- 14 m) 12))
+	\end{verbatim}
 \end{quote}
 For months from 3 to 12,
 \verb|(- 14 m)| produces a number
@@ -3723,9 +3723,9 @@ could have used one of these decision
 making expressions to calculate the roman
 order:
 \begin{quote}
-\begin{verbatim}
-(if (< m 3) (+ m 10) (- m 2))
-\end{verbatim}
+	\begin{verbatim}
+	(if (< m 3) (+ m 10) (- m 2))
+	\end{verbatim}
 \end{quote}\index{Conditional execution!if-else}
 The if-else expression says: if the
 Julian numbering \verb|m| is greater
@@ -3756,31 +3756,31 @@ the value \verb|#t|. Otherwise, the
 expression.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-(define (zr y m day)
-(let* [ (roman-month (if (< m 3) (+ m 10) (- m 2)))
-        (roman-year (if (< m 3) (- y 1) y))
-        (century (quotient roman-year 100))
+	\begin{fmpage}{0.9\linewidth}
+		\begin{verbatim}
+		(define (zr y m day)
+		(let* [ (roman-month (if (< m 3) (+ m 10) (- m 2)))
+	(roman-year (if (< m 3) (- y 1) y))
+	(century (quotient roman-year 100))
 	(decade (remainder roman-year 100)) ]
  (mod (+ day decade
-         (quotient (- (* 13 roman-month) 1) 5)
-         (quotient decade 4)
-         (quotient century 4)
-         (* century -2)) 7)) )
-\end{verbatim}
-\end{fmpage}
+	 (quotient (- (* 13 roman-month) 1) 5)
+	 (quotient decade 4)
+	 (quotient century 4)
+	 (* century -2)) 7)) )
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-> (load "zeller.scm")
-#<function>
-> (zr 2016 8 31)
-3
-\end{verbatim}
-\end{fmpage}
-\caption{Making decisions}
-\label{fig:zeller}
+	\begin{fmpage}{0.9\linewidth}
+		\begin{verbatim}
+		> (load "zeller.scm")
+		#<function>
+		> (zr 2016 8 31)
+		3
+		\end{verbatim}
+	\end{fmpage}
+	\caption{Making decisions}
+	\label{fig:zeller}
 \end{figure}
 
 Now, let us analyze the terms of the Zeller's
@@ -3822,7 +3822,7 @@ month: 3, 2,
 3, 2, 3, 3, 2, 3, 2, 3, 3, 0.
 Nia noticed that definition
 \begin{quote}
-\verb|(define (acc i) (- (quotient (- (* 13 i) 1) 5) 2))|
+	\verb|(define (acc i) (- (quotient (- (* 13 i) 1) 5) 2))|
 \end{quote}
 returns the accumulated month contribution
 to the week day.
@@ -3850,9 +3850,9 @@ Mathematicians collect other things, besides
 coins, stamps, and slide rules. They collect numbers, for instance;
 therefore you are supposed to learn a lot about sets of numbers.
 \begin{description}
-\item[$\mathbb{N}$ is the set of natural integers.] Here is how mathematicians  write the
-elements of $\mathbb{N}$: $\{0,1,2,3,4\ldots\}$.
-\item[$\mathbb{Z}$ is the set of integers, i.e.,] $\mathbb{Z}=\{\ldots-3, -2, -1, 0, 1, 2, 3, 4\ldots\}$.
+	\item[$\mathbb{N}$ is the set of natural integers.] Here is how mathematicians  write the
+		elements of $\mathbb{N}$: $\{0,1,2,3,4\ldots\}$.
+	\item[$\mathbb{Z}$ is the set of integers, i.e.,] $\mathbb{Z}=\{\ldots-3, -2, -1, 0, 1, 2, 3, 4\ldots\}$.
 \end{description}
 
 %%\begin{wrapfigure}[10]{i}{4cm}
@@ -3875,16 +3875,16 @@ If he wants to say that something is not an element of a set, for instance, if h
 $$-3  \notin  \mathbb{N}$$
 Let us summarize the notation that Algebra teachers use, when they explain set theory to their students.
 \begin{description}
-\item[Vertical bar.] The weird notation $\{x^2 | x \in \mathbb{N}\}$
-represents the set of
-$x^2$, {\em such that} $x$ is a member of $\mathbb{N}$, or else,
-$\{0, 1, 4, 9, 16, 25\ldots\}$
-\item[Conjunction.] In Mathematics, you can use a symbol $\wedge$
-to say {\bf\small and}; therefore $x>2 \wedge x<5$ means 
-\verb|(and (> x 2) (< x 5))| in Lisp notation.
-\item[Disjunction.] The expression
-$(x<2) \vee (x>5)$
-means \verb|(or (< x 2) (> x 5))| in Lisp notation
+	\item[Vertical bar.] The weird notation $\{x^2 | x \in \mathbb{N}\}$
+		represents the set of
+		$x^2$, {\em such that} $x$ is a member of $\mathbb{N}$, or else,
+		$\{0, 1, 4, 9, 16, 25\ldots\}$
+	\item[Conjunction.] In Mathematics, you can use a symbol $\wedge$
+		to say {\bf\small and}; therefore $x>2 \wedge x<5$ means 
+		\verb|(and (> x 2) (< x 5))| in Lisp notation.
+	\item[Disjunction.] The expression
+		$(x<2) \vee (x>5)$
+		means \verb|(or (< x 2) (> x 5))| in Lisp notation
 \end{description}
 Using the above notation, you can define the set of rational numbers:
 $$\mathbb{Q}=\{\frac{p}{q} | p \in \mathbb{Z} \wedge q \in \mathbb{Z} 
@@ -3906,30 +3906,30 @@ On the other hand, the
 returns the second element, which is 3.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-(define f (cons 2 3))
+	\begin{fmpage}{0.9\linewidth}
+		\begin{verbatim}
+		(define f (cons 2 3))
 
-(define g (cons 4 5))
+		(define g (cons 4 5))
 
-(define (add x y)
+		(define (add x y)
    (let [ (numerator (+ (* (car x) (cdr y))
-                        (* (car y) (cdr x)) ))
-          (denominator  (* (cdr x) (cdr y)))]
+			(* (car y) (cdr x)) ))
+	  (denominator  (* (cdr x) (cdr y)))]
       (cons numerator
-            denominator))) 
-\end{verbatim}
-\end{fmpage}
+	    denominator))) 
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.9\linewidth}
-\verb|> (load "cartesian.scm")|\\
-\verb|> (add f g)|\\
-\verb|(22 . 5)|
-\verb|(add '(3 . 7) '(2 . 5))|\\
-\verb|(29 . 35)|
-\end{fmpage}
-\caption{Cartesian pairs}
-\label{fig:cartesian-pairs}
+	\begin{fmpage}{0.9\linewidth}
+		\verb|> (load "cartesian.scm")|\\
+		\verb|> (add f g)|\\
+		\verb|(22 . 5)|
+		\verb|(add '(3 . 7) '(2 . 5))|\\
+		\verb|(29 . 35)|
+	\end{fmpage}
+	\caption{Cartesian pairs}
+	\label{fig:cartesian-pairs}
 \end{figure}
 
 Let us assume that Nia wants to add two 
@@ -3937,9 +3937,9 @@ rational numbers. From elementary arithmetic,
 Nia knows that the addition of two rational numbers
 $P$ and $Q$ is given by the following expression:
 \begin{equation}
-\frac{X_a}{X_d}+\frac{Y_a}{Y_d}=
-\frac{X_a\times Y_d + Y_a\times X_d}{X_d\times Y_d}
-\label{eq:addratnums}
+	\frac{X_a}{X_d}+\frac{Y_a}{Y_d}=
+	\frac{X_a\times Y_d + Y_a\times X_d}{X_d\times Y_d}
+	\label{eq:addratnums}
 \end{equation}
 In the dotted pair notation, one has $X_a$= \verb|(car X)|,
 $X_d=\verb|(cdr X)|$, $Y_a$= \verb|(car Y)| and
@@ -3948,12 +3948,12 @@ in equation~\ref{eq:addratnums}, one arrives at the
 following expressions for the numerator 
 and the denominator of the addition:
 \begin{quote}
-\begin{verbatim}
-(+ (* (car x) (cdr y))    ;; numerator
+	\begin{verbatim}
+	(+ (* (car x) (cdr y))    ;; numerator
    (* (car y) (cdr x)))   
 
-(* (cdr x) (cdr y))       ;; denominator
-\end{verbatim}
+   (* (cdr x) (cdr y))       ;; denominator
+	\end{verbatim}
 \end{quote}
 Nia used the above expressions for 
 calculating the numerator
@@ -3980,11 +3980,11 @@ result of measuring the side of the square, and $q$ is the result of measuring t
 The Pythagorean theorem states that
 $\overline{AC}^2+\overline{CB}^2= \overline{AB}^2$, i.e.,
 \begin{equation}
-p^2+p^2= q^2\therefore 2p^2=q^2\label{Pytagoras1}
+	p^2+p^2= q^2\therefore 2p^2=q^2\label{Pytagoras1}
 \end{equation}
 
 \begin{wrapfigure}[10]{i}{4cm}
-\includegraphics{fig-sets/apolob.png}
+	\includegraphics{fig-sets/apolob.png}
 \end{wrapfigure}
 You can also choose the meter so that $p$ and  $q$ have no common factors. For instance,
 if both $p$ and $q$ were divisible by 2, you could double the length of the meter, getting
@@ -3995,15 +3995,15 @@ has that $q^2$ is even. But if $q^2$ is even, $q$ is even too. You can check tha
 the square of an odd number is always an odd number. Since $q$ is even, you can
 substitute $2\times n$ for it in equation~\ref{Pytagoras1}.
 \begin{equation}
-2\times p^2= q^2= (2\times n)^2= 4\times n^2 \therefore 2\times p^2= 4\times q^2
-\therefore p^2= 2\times n^2
-\label{peven}
+	2\times p^2= q^2= (2\times n)^2= 4\times n^2 \therefore 2\times p^2= 4\times q^2
+	\therefore p^2= 2\times n^2
+	\label{peven}
 \end{equation}
 
 \begin{wrapfigure}[11]{o}{5.5cm}
-\begin{center}
-\includegraphics[scale=0.5]{fig-sets/apoloa.png}
-\end{center}
+	\begin{center}
+		\includegraphics[scale=0.5]{fig-sets/apoloa.png}
+	\end{center}
 \end{wrapfigure}
 Equation~\ref{Pytagoras1} shows that $q$ is even;
 equation~\ref{peven} proves that $p$ is even too. But this is against our
@@ -4057,20 +4057,20 @@ In femtolisp, rational and irrational numbers
 are inexact data types. Here are a few functions
 that produce inexact results:
 \begin{quote}
-$\verb|(+ |x_1\;x_2\;\ldots x_n\verb|)|$ -- addition\\
-$\verb|(* |x_1\;x_2\;\ldots x_n\verb|)|$ -- multiplication\\
-$\verb|(- |x_1\;x_2\;\ldots x_n\verb|)|$ -- subtraction\\
-$\verb|(/ |x_1\;x_2\;\ldots x_n\verb|)|$ -- division\\
-$\verb|(pow |x\;y\verb|)|$ -- $x^y$\\
-$\verb|(sin | x \verb|)|$ -- $\sin(x)$\\
-$\verb|(asin | x \verb|)|$ -- $\arcsin(x)$\\
-$\verb|(cos | x \verb|)|$ -- $\cos(x)$\\
-$\verb|(acos | x \verb|)|$ -- $\arcsin(x)$\\ 
-$\verb|(tan | x \verb|)|$ -- $\tan(x)$\\
-$\verb|(atan | x \verb|)|$ -- $\arctan(x)$\\
-$\verb|(log | x \verb|)|$ -- natural logarithm\\
-$\verb|(log2 | x \verb|)|$ -- logarithm in base 2\\
-$\verb|(log10 | x \verb|)|$ -- logarithm in base 10
+	$\verb|(+ |x_1\;x_2\;\ldots x_n\verb|)|$ -- addition\\
+	$\verb|(* |x_1\;x_2\;\ldots x_n\verb|)|$ -- multiplication\\
+	$\verb|(- |x_1\;x_2\;\ldots x_n\verb|)|$ -- subtraction\\
+	$\verb|(/ |x_1\;x_2\;\ldots x_n\verb|)|$ -- division\\
+	$\verb|(pow |x\;y\verb|)|$ -- $x^y$\\
+	$\verb|(sin | x \verb|)|$ -- $\sin(x)$\\
+	$\verb|(asin | x \verb|)|$ -- $\arcsin(x)$\\
+	$\verb|(cos | x \verb|)|$ -- $\cos(x)$\\
+	$\verb|(acos | x \verb|)|$ -- $\arcsin(x)$\\ 
+	$\verb|(tan | x \verb|)|$ -- $\tan(x)$\\
+	$\verb|(atan | x \verb|)|$ -- $\arctan(x)$\\
+	$\verb|(log | x \verb|)|$ -- natural logarithm\\
+	$\verb|(log2 | x \verb|)|$ -- logarithm in base 2\\
+	$\verb|(log10 | x \verb|)|$ -- logarithm in base 10
 \end{quote}\index{Predicates!integer?}
 Integers are distinguished from inexact numbers
 by the \verb|(integer? x)| predicate. Two important
@@ -4088,64 +4088,64 @@ There are other types
 besides {\bf integer}, and {\bf number}. 
 Here is a  list of primitive types:
 \begin{description}
-\item[integer ---] Integer numbers between $-2147483648$ and $2147483647$. \index{Predicates!exact?}
-The \verb|(exact? x)| function returns \verb|#t| if \verb|x|
-is an integer, and \verb|#f| otherwise.
-\item[inexact ---] the inexact type represents both
-rational and irrational numbers, albeit approximately.
-The \verb|(inexact? x)| function returns \verb|#t| for
-inexact numbers.\index{Predicates!inexact?}
-\item[number ---] A number can be either exact or inexact.
-The \verb|(number? x)| function returns \verb|#t| for numbers,
-and \verb|#f| for any other type of object.\index{Predicates!number?}
-\item[String ---] A quoted\index{String} string \index{Type!String}
-of characters: \verb|"3.12"|, \verb|"Hippasus"|, \verb|"pen"|, etc.
-The \verb|(string? x)| function answers \verb|#t| 
-if \verb|x| is a string, 
-and \verb|#f| otherwise.\index{Predicates!string?}
-A few important functions that operate on strings are:
-\begin{itemize}
-\item \verb|(string-length s)| returns the number
-of chars of the \verb|s| string.
-\item\verb|(substring "Hello, World" 2 5)| operation
-returns the \verb| "llo"| substring.
-\verb|(substring "Hello, World" 0 4)| returns the
-\verb|"Hell"| substring. And so on.
-\end{itemize}
-\item[Char ---] Chars have the \verb|#\|
-  prefix: \index{Type!Char}
-\verb|#\A|,
-\verb|#\b|, \verb|#\3|, \verb|#\space|,
-\verb|#\newline|, etc.
-The \verb|(char? x)| function returns \verb|#t|
-when \verb|x| is a char.\index{Predicates!char?}
-Let \verb|s| be
-a string such as \verb|"Hello"|. Then,
-\verb|(string-ref "Hello" 0)|
-returns the first char of \verb|s|,
-\verb|(string-ref "Hello" 1)| returns
-the second char, and so on. One can compare
-chars with the following functions:
-\begin{quote}
-\verb|(char=? x #\g)| -- \verb|#t| if \verb|x= #\g|\\
-\verb|(char>? x #\g)| -- \verb|#t| if \verb|x| comes
-after the \verb|#\g| char.\\
-\verb|(char<? x #\g)| -- \verb|#t| if \verb|x| comes
-before the \verb|#\g| char.\\
-\verb|(char>=? x #\g)| -- \verb|#t| if \verb|x| is
-equal to \verb|#\g| or comes after it.\\
-\verb|(char<=? x #\g)| -- \verb|#t| if \verb|x| is
-equal to \verb|#\g| or comes before it.\\
-\end{quote}
-\item[Pair ---] One can use a pair data type
-both to represent Cartesian pairs and lists.
-The \verb|(pair? x)| returns \verb|#t| if
-\verb|x| is a pair,\index{Predicates!pair?}
-otherwise it returns \verb|#f|.
-The \verb|'()| empty list is a very important
-object that one can use as the second element
-of a pair. The \verb|(null? x)| returns \verb|#t|
-when \verb|x| is the \verb|'()| empty list.
+	\item[integer ---] Integer numbers between $-2147483648$ and $2147483647$. \index{Predicates!exact?}
+		The \verb|(exact? x)| function returns \verb|#t| if \verb|x|
+		is an integer, and \verb|#f| otherwise.
+	\item[inexact ---] the inexact type represents both
+		rational and irrational numbers, albeit approximately.
+		The \verb|(inexact? x)| function returns \verb|#t| for
+		inexact numbers.\index{Predicates!inexact?}
+	\item[number ---] A number can be either exact or inexact.
+		The \verb|(number? x)| function returns \verb|#t| for numbers,
+		and \verb|#f| for any other type of object.\index{Predicates!number?}
+	\item[String ---] A quoted\index{String} string \index{Type!String}
+		of characters: \verb|"3.12"|, \verb|"Hippasus"|, \verb|"pen"|, etc.
+		The \verb|(string? x)| function answers \verb|#t| 
+		if \verb|x| is a string, 
+		and \verb|#f| otherwise.\index{Predicates!string?}
+		A few important functions that operate on strings are:
+		\begin{itemize}
+			\item \verb|(string-length s)| returns the number
+				of chars of the \verb|s| string.
+			\item\verb|(substring "Hello, World" 2 5)| operation
+				returns the \verb| "llo"| substring.
+				\verb|(substring "Hello, World" 0 4)| returns the
+				\verb|"Hell"| substring. And so on.
+		\end{itemize}
+	\item[Char ---] Chars have the \verb|#\|
+		prefix: \index{Type!Char}
+		\verb|#\A|,
+		\verb|#\b|, \verb|#\3|, \verb|#\space|,
+		\verb|#\newline|, etc.
+		The \verb|(char? x)| function returns \verb|#t|
+		when \verb|x| is a char.\index{Predicates!char?}
+		Let \verb|s| be
+		a string such as \verb|"Hello"|. Then,
+		\verb|(string-ref "Hello" 0)|
+		returns the first char of \verb|s|,
+		\verb|(string-ref "Hello" 1)| returns
+		the second char, and so on. One can compare
+		chars with the following functions:
+		\begin{quote}
+			\verb|(char=? x #\g)| -- \verb|#t| if \verb|x= #\g|\\
+			\verb|(char>? x #\g)| -- \verb|#t| if \verb|x| comes
+			after the \verb|#\g| char.\\
+			\verb|(char<? x #\g)| -- \verb|#t| if \verb|x| comes
+			before the \verb|#\g| char.\\
+			\verb|(char>=? x #\g)| -- \verb|#t| if \verb|x| is
+			equal to \verb|#\g| or comes after it.\\
+			\verb|(char<=? x #\g)| -- \verb|#t| if \verb|x| is
+			equal to \verb|#\g| or comes before it.\\
+		\end{quote}
+	\item[Pair ---] One can use a pair data type
+		both to represent Cartesian pairs and lists.
+		The \verb|(pair? x)| returns \verb|#t| if
+		\verb|x| is a pair,\index{Predicates!pair?}
+		otherwise it returns \verb|#f|.
+		The \verb|'()| empty list is a very important
+		object that one can use as the second element
+		of a pair. The \verb|(null? x)| returns \verb|#t|
+		when \verb|x| is the \verb|'()| empty list.
 \end{description}
 
 
@@ -4169,14 +4169,14 @@ $\{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z\}$.\\
 \verb||\\
 {\footnotesize
 \begin{tabular}{|p{1.2cm} p{1.2cm} | p{1.2cm} p{1.2cm} |p{1.2cm} p{1.2cm} | p{1.2cm} p{1.2cm} |}
-Domain & Range & Domain & Range & Domain & Range & Domain & Range\\
-a & \verb|#t| & g &\verb|#f| & m &\verb|#f| & t & \verb|#f| \\
-b & \verb|#f| & h &\verb|#f| & n & \verb|#f| & u & \verb|#t| \\
-c & \verb|#f| &  i &\verb|#t| &o &\verb|#t| & v & \verb|#f|\\
-d &\verb|#f| &  j & \verb|#f| & p & \verb|#f| & w & \verb|#f| \\
-e &\verb|#t| & k & \verb|#f| & q & \verb|#f| & x & \verb|#f| \\
-f &\verb|#f| &  l &\verb|#f| & r & \verb|#f| & y & \verb|#f| \\
-&            &                 &  & s & \verb|#f| & z & \verb|#f|\\
+	Domain & Range & Domain & Range & Domain & Range & Domain & Range\\
+	a & \verb|#t| & g &\verb|#f| & m &\verb|#f| & t & \verb|#f| \\
+	b & \verb|#f| & h &\verb|#f| & n & \verb|#f| & u & \verb|#t| \\
+	c & \verb|#f| &  i &\verb|#t| &o &\verb|#t| & v & \verb|#f|\\
+	d &\verb|#f| &  j & \verb|#f| & p & \verb|#f| & w & \verb|#f| \\
+	e &\verb|#t| & k & \verb|#f| & q & \verb|#f| & x & \verb|#f| \\
+	f &\verb|#f| &  l &\verb|#f| & r & \verb|#f| & y & \verb|#f| \\
+	&            &                 &  & s & \verb|#f| & z & \verb|#f|\\
 \end{tabular}}
 
 \subsection{Clauses}
@@ -4201,12 +4201,12 @@ of tables may be hazardous to your health.
 In order to understand how to represent a function with clauses, let us revisit the vowel table.
 Using clauses, that table becomes
 \begin{quote}\small
-\begin{verbatim}
-(define (vowel x)
+	\begin{verbatim}
+	(define (vowel x)
    (cond [ (or (char=? x #\a)(char=? x #\e)(char=? x #\i) 
-           (char=? x #\o)(char=? x #\u)) #t]
+	   (char=? x #\o)(char=? x #\u)) #t]
 	 [else #f]))
-\end{verbatim}
+	\end{verbatim}
 \end{quote}
 Expressions like $(\verb|or | p_1\;p_2\ldots p_n)$ has the same 
 meaning as $p_1 \vee p_2\ldots \vee p_n$.
@@ -4218,10 +4218,10 @@ Below the name of the function, and its variable, one finds a set of clauses.
 Each clause has a condition followed by an expression, that gives the value,
 if that clause applies. Consider the first clause. The expression:
 \begin{quote}
-\begin{verbatim}
-(or (char=? #\a)(char=? #\e)(char=? #\i)
+	\begin{verbatim}
+	(or (char=? #\a)(char=? #\e)(char=? #\i)
     (char=? #\o)(char=? #\u))
-\end{verbatim}
+	\end{verbatim}
 \end{quote}
 asks the question: {\em Is \verb|x= #\a|,
 \verb|x= #\a|, \verb|x= #\a|, \verb|x= #\a| or
@@ -4235,11 +4235,11 @@ that has such an important role in the
 book ``The Da Vinci Code''.
 Here is its table for the first 9 entries:\\
 \begin{quote}\label{page:Fibonacci}
-\begin{tabular}{p{1cm}p{3cm} | p{1cm}p{3cm} | p{1cm}p{3cm}}
-0 & 1 & 3 & 5 & 6 & 21\\
-1 & 2 & 4 & 8 & 7 & 34 \\
-2 & 3 & 5 & 13 & 8 & 55\\
-\end{tabular}
+	\begin{tabular}{p{1cm}p{3cm} | p{1cm}p{3cm} | p{1cm}p{3cm}}
+		0 & 1 & 3 & 5 & 6 & 21\\
+		1 & 2 & 4 & 8 & 7 & 34 \\
+		2 & 3 & 5 & 13 & 8 & 55\\
+	\end{tabular}
 \end{quote}
 Notice that a given functional value is equal to
 $f_{n}= f_{n-3}+2\times f_{n-2}$. Assume that $n=6$.
@@ -4252,21 +4252,21 @@ how  you can state that a rule is valid only under certain
 conditions.\\
 
 \begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-(define (fib n)
+	\begin{verbatim}
+	(define (fib n)
    (cond [ (< n 2) (+ n 1)]
-         [ (= n 2) 3]
-         [else  (+ (fib (- n 3))
-                   (* (fib (- n 2)) 2))]))
-\end{verbatim}
+	 [ (= n 2) 3]
+	 [else  (+ (fib (- n 3))
+		   (* (fib (- n 2)) 2))]))
+	\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.9\linewidth}
-\begin{verbatim}
-> (load "fibonacci.scm")
-> (fib 50)
-32951280099
-\end{verbatim}
+	\begin{verbatim}
+	> (load "fibonacci.scm")
+	> (fib 50)
+	32951280099
+	\end{verbatim}
 \end{fmpage}
 
 
@@ -4294,16 +4294,16 @@ performing comparisons. For instance,
 otherwise. Here is a more or less complete
 list of comparison predicates:
 \begin{itemize}
-\item\verb|(> m n)| -- \verb|#t| for
-\verb|m| greater than \verb|n|.
-\item\verb|(< m n)| -- \verb|#t| for
-\verb|m| less than \verb|n|.
-\item\verb|(>= m n)| -- \verb|#t| for
-\verb|m| greater or equal to \verb|n|.
-\item\verb|(<= m n)| -- \verb|#t| for
-\verb|m| less or equal to \verb|n|.
-\item\verb|(= m n)| -- \verb|#t| if
-\verb|m| is a number equal to \verb|n|.
+	\item\verb|(> m n)| -- \verb|#t| for
+		\verb|m| greater than \verb|n|.
+	\item\verb|(< m n)| -- \verb|#t| for
+		\verb|m| less than \verb|n|.
+	\item\verb|(>= m n)| -- \verb|#t| for
+		\verb|m| greater or equal to \verb|n|.
+	\item\verb|(<= m n)| -- \verb|#t| for
+		\verb|m| less or equal to \verb|n|.
+	\item\verb|(= m n)| -- \verb|#t| if
+		\verb|m| is a number equal to \verb|n|.
 \end{itemize}
 The inputs \verb|m| and \verb|n| must
 be both numbers, if you want
@@ -4316,27 +4316,27 @@ marks. For instance, \verb|"Sunday"|
 is a string. Below, there is a short
 list of string predicates.
 \begin{itemize}
-\item\verb|(string=? s z)| -- \verb|#t|
-if \verb|s| and \verb|z| are equal.
-\item\verb|(string>? s z)| -- \verb|#t|
-if \verb|s|  comes
-after \verb|z| in the alphabetical order.
-\item\verb|(string<? s z)| -- \verb|#t|
-if \verb|s| comes before \verb|z|
-in the alphabetical order.
-\item\verb|(string<=? s z)| -- \verb|#t| if
-\verb|s| precedes or is equal to \verb|z|.
-\item\verb|(string>=? s z)| -- \verb|#t| if
-\verb|s| follows or is equal to \verb|z|.
+	\item\verb|(string=? s z)| -- \verb|#t|
+		if \verb|s| and \verb|z| are equal.
+	\item\verb|(string>? s z)| -- \verb|#t|
+		if \verb|s|  comes
+		after \verb|z| in the alphabetical order.
+	\item\verb|(string<? s z)| -- \verb|#t|
+		if \verb|s| comes before \verb|z|
+		in the alphabetical order.
+	\item\verb|(string<=? s z)| -- \verb|#t| if
+		\verb|s| precedes or is equal to \verb|z|.
+	\item\verb|(string>=? s z)| -- \verb|#t| if
+		\verb|s| follows or is equal to \verb|z|.
 \end{itemize}
 
 The prefix \verb|#\| identifies isolated
 characters. Let us assume the following
 definition:
 \begin{quote}
-\begin{verbatim}
-(define s "Nia Vardalos")
-\end{verbatim}
+	\begin{verbatim}
+	(define s "Nia Vardalos")
+	\end{verbatim}
 \end{quote}
 Then, the characters
 \verb|#\N| \verb|#\i| 
@@ -4359,20 +4359,20 @@ identifiers, such as \verb|#\space|,
 Character have their own set of
 predicates, as one should expect.
 \begin{itemize}
-\item\verb|(char=? #\A #\a)| -- is \verb|#f|
-since \verb|#\A| and \verb|#\a| are not equal.
-\item\verb|(char>? #\z #\a)| -- is \verb|#t|
-since \verb|#\z|  comes
-after \verb|#\a| in the alphabetical order.
-\item\verb|(char<? #\a #\z)| -- is \verb|#t|
-since \verb|#\a| comes before \verb|#\z|
-in the alphabetical order.
-\item\verb|(char<=? #\a #\c)| -- is \verb|#t| since
-the order of \verb|#\a| is less or equal to
-the order of \verb|#\c|.
-\item\verb|(char>=? #\a #\c)| -- \verb|#f| since
-the order of \verb|#\a| greater or equal to the
-order of \verb|#\c|.
+	\item\verb|(char=? #\A #\a)| -- is \verb|#f|
+		since \verb|#\A| and \verb|#\a| are not equal.
+	\item\verb|(char>? #\z #\a)| -- is \verb|#t|
+		since \verb|#\z|  comes
+		after \verb|#\a| in the alphabetical order.
+	\item\verb|(char<? #\a #\z)| -- is \verb|#t|
+		since \verb|#\a| comes before \verb|#\z|
+		in the alphabetical order.
+	\item\verb|(char<=? #\a #\c)| -- is \verb|#t| since
+		the order of \verb|#\a| is less or equal to
+		the order of \verb|#\c|.
+	\item\verb|(char>=? #\a #\c)| -- \verb|#f| since
+		the order of \verb|#\a| greater or equal to the
+		order of \verb|#\c|.
 \end{itemize}
 
 Besides predicates, Scheme uses special forms
@@ -4410,19 +4410,19 @@ many interesting predicates. For instance,
 the predicate \verb|(digit? d)| determines
 wether \verb|d| is a digit.
 \begin{quote}
-\begin{verbatim}
-(define (digit? d)
+	\begin{verbatim}
+	(define (digit? d)
    (and (char>=? d #\0)
-        (char<=? d #\9)))
-\end{verbatim}
+	(char<=? d #\9)))
+	\end{verbatim}
 \end{quote}
 The predicate \verb|deep-winter?| checks if
 \verb|m| is 1 or 2:
 \begin{quote}
-\begin{verbatim}
-(define (deep-winter? m)
+	\begin{verbatim}
+	(define (deep-winter? m)
     (or (= m 1) (= m 2)))
-\end{verbatim}
+	\end{verbatim}
 \end{quote}
 
 
@@ -4434,38 +4434,38 @@ that produces the corresponding name.
 
 
 \begin{figure}[!h]
-\begin{fmpage}{\linewidth}
-\begin{verbatim}
-(define (week-day n)
+	\begin{fmpage}{\linewidth}
+		\begin{verbatim}
+		(define (week-day n)
    (cond [ (= n 0) 'Sunday]
-         [ (= n 1) 'Monday]
-         [ (= n 2) 'Tuesday]
-         [ (= n 3) 'Wednesday]
-         [ (= n 4) 'Thursday]
-         [ (= n 5) 'Friday]
-         [ else 'Saturday]))
+	 [ (= n 1) 'Monday]
+	 [ (= n 2) 'Tuesday]
+	 [ (= n 3) 'Wednesday]
+	 [ (= n 4) 'Thursday]
+	 [ (= n 5) 'Friday]
+	 [ else 'Saturday]))
 
-(define (zeller y m day)
+	 (define (zeller y m day)
     (let* [ (roman-month (if (< m 3) (+ m 10) (- m 2)))
-            (roman-year (if (< m 3) (- y 1) y))
-            (century (quotient roman-year 100))
-            (decade (remainder roman-year 100))]
+	    (roman-year (if (< m 3) (- y 1) y))
+	    (century (quotient roman-year 100))
+	    (decade (remainder roman-year 100))]
        (week-day (mod (+ day decade
-                   (quotient (- (* 13 roman-month) 1) 5)
-                   (quotient decade 4)
-                   (quotient century 4)
-             (* century -2)) 7)) )
+		   (quotient (- (* 13 roman-month) 1) 5)
+		   (quotient decade 4)
+		   (quotient century 4)
+	     (* century -2)) 7)) )
 
-\end{verbatim}
-\end{fmpage}
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{\linewidth}
-\verb|> (load "zeller.scm")|\\
-\verb|> (zeller 2018 8 31)|\\
-\verb|Friday|
-\end{fmpage}
-\caption{Day of the week}
-\label{fig:day-of-the-week}
+	\begin{fmpage}{\linewidth}
+		\verb|> (load "zeller.scm")|\\
+		\verb|> (zeller 2018 8 31)|\\
+		\verb|Friday|
+	\end{fmpage}
+	\caption{Day of the week}
+	\label{fig:day-of-the-week}
 \end{figure}
 
 \index{Conditional execution!cond}
@@ -4505,11 +4505,11 @@ through nested lists.
  (or (and A (not B))
      (and (not A) B)) ))
 
-(define xor-structure
-'(or (and A  
-        (not B))
+     (define xor-structure
+     '(or (and A  
+	(not B))
    (and (not A) 
-        B)))
+	B)))
 \end{verbatim}
 
 Although Nia does not know what a combinatorial 
@@ -4539,11 +4539,11 @@ could define the \verb|xor| gate as shown below:
  (or (and A (not B))
      (and (not A) B)) )
 
-(define xor-structure
-'(or (and A 
-        (not B))
+     (define xor-structure
+     '(or (and A 
+	(not B))
    (and (not A) 
-        B)))
+	B)))
 \end{verbatim}
 
 From the examples, Nia discovered that there
@@ -4582,39 +4582,39 @@ as an integer constant, and \verb|xor|
 as a functional abstraction.
 
 \begin{figure}[!h]
-\begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-; File: lists.scm
+	\begin{fmpage}{0.8\linewidth}
+		\begin{verbatim}
+		; File: lists.scm
 
-(define xor-structure
-'(or (and A (not B))
+		(define xor-structure
+		'(or (and A (not B))
     (and (not A) B)))
-\end{verbatim}
-\end{fmpage}
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-> (load "lists.scm")
-> xor-structure
-(or (and A (not B)) (and (not A) B))
-> (car xor-structure)
-or
-> (cdr xor-structure)
-((and A (not B)) (and (not A) B))
-> (car (cdr xor-structure))
-(and A (not B))
-> (car (cdr (car (cdr xor-structure)) ))
-A
-> (car (cdr (cdr (car (cdr xor-structure)) )))
-(not B)
-\end{verbatim}
-\end{fmpage}
+	\begin{fmpage}{0.8\linewidth}
+		\begin{verbatim}
+		> (load "lists.scm")
+		> xor-structure
+		(or (and A (not B)) (and (not A) B))
+		> (car xor-structure)
+		or
+		> (cdr xor-structure)
+		((and A (not B)) (and (not A) B))
+		> (car (cdr xor-structure))
+		(and A (not B))
+		> (car (cdr (car (cdr xor-structure)) ))
+		A
+		> (car (cdr (cdr (car (cdr xor-structure)) )))
+		(not B)
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{0.8\linewidth}
-\verb||
-\end{fmpage}
-\caption{List selectors}
-\label{fig:selectors}
+	\begin{fmpage}{0.8\linewidth}
+		\verb||
+	\end{fmpage}
+	\caption{List selectors}
+	\label{fig:selectors}
 \end{figure}
 
 
@@ -4641,11 +4641,11 @@ Let us assume that
 This list corresponds to the following
 chain of pairs:
 \begin{quote}
-\begin{verbatim}
-[*|*]--->[*|*]--->[*|*]--->[*|*]--->()
-|        |        |        |        
-S        P        Q        R       
-\end{verbatim}
+	\begin{verbatim}
+	[*|*]--->[*|*]--->[*|*]--->[*|*]--->()
+	|        |        |        |        
+	S        P        Q        R       
+	\end{verbatim}
 \end{quote}
 The first pair has a pointer to \verb|S|,
 and another pointer to the second pair.
@@ -4657,11 +4657,11 @@ pair points to \verb|R| and to
 the \verb|()| empty list.
 
 \begin{quote}
-\begin{verbatim}
-[*|*]---> next pair
-|        
-S      
-\end{verbatim}
+	\begin{verbatim}
+	[*|*]---> next pair
+	|        
+	S      
+	\end{verbatim}
 \end{quote}
 The operation \verb|(car xs)| produces
 the first pointer of the \verb|xs| 
@@ -4675,28 +4675,28 @@ of \verb|cdr| applications permits the user to
 go through the pairs of a list. \\
 
 \begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-(define spqr
+	\begin{verbatim}
+	(define spqr
    '(S P Q R))
-\end{verbatim}
+	\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-> (load "spqr.scm")
-> spqr
-(S P Q R)
-> (cdr spqr)
-(P Q R)
-> (cdr (cdr spqr))
-(Q R)
-> (cdr (cdr (cdr spqr)))
-(R)
-\end{verbatim}
+	\begin{verbatim}
+	> (load "spqr.scm")
+	> spqr
+	(S P Q R)
+	> (cdr spqr)
+	(P Q R)
+	> (cdr (cdr spqr))
+	(Q R)
+	> (cdr (cdr (cdr spqr)))
+	(R)
+	\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
-\verb||
+	\verb||
 \end{fmpage}
 
 \vspace{0.5cm}
@@ -4718,38 +4718,38 @@ The \verb|cdr| operation is equivalent to a
 right $\rightarrow$  arrow, while the \verb|car|
 operation is acts like a down $\downarrow$ arrow.
 \begin{quote}
-\verb"     "$\rightarrow$\verb"       "$\rightarrow$\\
-\verb"[*|*]cdr-[*|*]cdr---[*|*]--()"\\
-\verb" |        |         car"$\downarrow$\\
-\verb" |        |          |  " $\rightarrow$\\
-\verb" |        |         [*|*]cdr-[*|*]---[*|*]---()"\\
-\verb" |        |          |       car"$\downarrow$\verb"     |"\\
-\verb" |        |          |        |       |"\\
-\verb" |        |          |        |       B"\\
-\verb" |        |          |        |  "\\
-\verb" |        |         and      [*|*]---[*|*]---()"\\
-\verb" |        |                   |       |"\\
-\verb" |        |                   |       |"\\
-\verb" |        |                  not      A"\\
-\verb" |        |"\\
-\verb" or      [*|*]---[*|*]---[*|*]---()"\\          
-\verb"          |       |       |"\\                     
-\verb"         and      A      [*|*]---[*|*]---()"\\  
-\verb"                          |       |"\\                     
-\verb"                         not      B"                    
+	\verb"     "$\rightarrow$\verb"       "$\rightarrow$\\
+	\verb"[*|*]cdr-[*|*]cdr---[*|*]--()"\\
+	\verb" |        |         car"$\downarrow$\\
+	\verb" |        |          |  " $\rightarrow$\\
+	\verb" |        |         [*|*]cdr-[*|*]---[*|*]---()"\\
+	\verb" |        |          |       car"$\downarrow$\verb"     |"\\
+	\verb" |        |          |        |       |"\\
+	\verb" |        |          |        |       B"\\
+	\verb" |        |          |        |  "\\
+	\verb" |        |         and      [*|*]---[*|*]---()"\\
+	\verb" |        |                   |       |"\\
+	\verb" |        |                   |       |"\\
+	\verb" |        |                  not      A"\\
+	\verb" |        |"\\
+	\verb" or      [*|*]---[*|*]---[*|*]---()"\\          
+	\verb"          |       |       |"\\                     
+	\verb"         and      A      [*|*]---[*|*]---()"\\  
+	\verb"                          |       |"\\                     
+	\verb"                         not      B"                    
 \end{quote}
 The above example shows the chains and subchains of
 pairs that one uses to represent the logic
 circuit below:
 \begin{quote}
-\begin{verbatim}
-(define xs
-'(or 
+	\begin{verbatim}
+	(define xs
+	'(or 
      (and  A  
-           (not B))
-                    (and (not A)
-                         B)))
-\end{verbatim}
+	   (not B))
+		    (and (not A)
+			 B)))
+	\end{verbatim}
 \end{quote}
 
 Let us assume that Nia wants to retrieve the
@@ -4771,8 +4771,8 @@ whose first element is \verb|x|, and the
 remaining elements are grouped in \verb|xs|.
 
 \begin{quote}
-\verb|> (cons 'and '(A B))|\keys{Enter}\\
-(and A B)
+	\verb|> (cons 'and '(A B))|\keys{Enter}\\
+	(and A B)
 \end{quote}
 
 One has learned previously that lists must be
@@ -4821,10 +4821,10 @@ paradigms.\index{Macros!define-syntax}
   (syntax-case stx ()
     [ (kwd condition the-return . bdy)
        (datum->syntax #'kwd
-         (let [ (c (syntax->datum #'condition))
-                (r (syntax->datum #'the-return))
-                (body (syntax->datum #'bdy))]
-           `(do () ((not ,c) ,r) ,@body))) ]))
+	 (let [ (c (syntax->datum #'condition))
+		(r (syntax->datum #'the-return))
+		(body (syntax->datum #'bdy))]
+	   `(do () ((not ,c) ,r) ,@body))) ]))
 \end{verbatim}
 
 In the above macro definition,
@@ -4840,18 +4840,18 @@ to test the \verb|while-do| macro,
 as you can see in the following example:\\
 
 \begin{fmpage}{0.8\linewidth}
-\begin{verbatim}
-> (load "macros.scm")
-> (let [ (s '()) (i 0)]
+	\begin{verbatim}
+	> (load "macros.scm")
+	> (let [ (s '()) (i 0)]
     (while-do (< i 5) s
       (set! s (cons i s))
       (set! i (+ i 1)) ))
-(4 3 2 1 0)
-\end{verbatim}
+      (4 3 2 1 0)
+	\end{verbatim}
 \end{fmpage}
 
 \begin{fmpage}{0.8\linewidth}
-\verb||
+	\verb||
 \end{fmpage}
 
 \vspace{0.5cm}
@@ -4883,27 +4883,27 @@ style, which abhor the use of set bang.
 A much more interesting macro is the
 Curry operator:
 \begin{quote}\label{page:lambda2}\index{lambda}
-\begin{verbatim}
-;; (load "macros.scm")
+	\begin{verbatim}
+	;; (load "macros.scm")
 
-(define-syntax (while-do stx)
+	(define-syntax (while-do stx)
   (syntax-case stx ()
     [  (kwd condition the-return . bdy)
        (datum->syntax #'kwd
-          (let [ (c (syntax->datum #'condition))
-                 (r (syntax->datum #'the-return))
-                 (body (syntax->datum #'bdy))]
-             `(do () ((not ,c) ,r) ,@body))) ]))
+	  (let [ (c (syntax->datum #'condition))
+		 (r (syntax->datum #'the-return))
+		 (body (syntax->datum #'bdy))]
+	     `(do () ((not ,c) ,r) ,@body))) ]))
 
-(define-syntax (curry stx)
+	     (define-syntax (curry stx)
    (syntax-case stx ()
       [ (kwd fun arg)
-        (datum->syntax #'kwd
-           (let [ (fn (syntax->datum #'fun))
-                  (x  (syntax->datum #'arg))
-                  (g  (gensym "var"))]
-              `(lambda(,g) (,fn ,g ,x)) ))] ))
-\end{verbatim}
+	(datum->syntax #'kwd
+	   (let [ (fn (syntax->datum #'fun))
+		  (x  (syntax->datum #'arg))
+		  (g  (gensym "var"))]
+	      `(lambda(,g) (,fn ,g ,x)) ))] ))
+	\end{verbatim}
 \end{quote}
 In order to understand this macro, you
 must learn the concept of lambda abstraction.
@@ -4916,20 +4916,20 @@ elements of a list, leaving only those
 that are greater than a given number.
 You can use the following expression:
 \begin{quote}
-\begin{verbatim}
-(filter (lambda(x) (> x 4)) '(3 2 4 1 6 9 8))
-(6 9 8)
-\end{verbatim}
+	\begin{verbatim}
+	(filter (lambda(x) (> x 4)) '(3 2 4 1 6 9 8))
+	(6 9 8)
+	\end{verbatim}
 \end{quote}
 Of course, you could have defined a 
 \verb|g4| function and use it as shown below.
 \begin{quote}
-\begin{verbatim}
-(define (g4 x) (> 4 x))
+	\begin{verbatim}
+	(define (g4 x) (> 4 x))
 
-(filter g4 '(3 2 4 1 6 9 8))
-(6 9 8)
-\end{verbatim}
+	(filter g4 '(3 2 4 1 6 9 8))
+	(6 9 8)
+	\end{verbatim}
 \end{quote}
 This solution has a flaw: It requires a
 definition for every number that you
@@ -4941,11 +4941,11 @@ number that you want to filter. The Curry
 macro is a handier method to define a lambda
 abstraction:
 \begin{quote}
-\begin{verbatim}
-> (load "macros.scm")
-> (filter (curry > 4) '(3 2 4 1 6 8 9))
-(6 8 9)
-\end{verbatim}
+	\begin{verbatim}
+	> (load "macros.scm")
+	> (filter (curry > 4) '(3 2 4 1 6 8 9))
+	(6 8 9)
+	\end{verbatim}
 \end{quote}
 
 Perhaps you are not convinced of the
@@ -4963,30 +4963,30 @@ program is given below.
 
 
 \begin{figure}[!h]
-\begin{fmpage}{\linewidth}
-\begin{verbatim}
-(define (quick-sort s)
+	\begin{fmpage}{\linewidth}
+		\begin{verbatim}
+		(define (quick-sort s)
   (cond [(null? s) s]
      [(null? (cdr s)) s]
      [else 
       (append 
-         (quick-sort (filter (curry string<? (car s)) 
-			     (cdr s)))
-         (list (car s))
-         (quick-sort (filter (curry string>=? (car s))
-			     (cdr s))) )]))
-\end{verbatim}
-\end{fmpage}
+	 (quick-sort (filter (curry string<? (car s)) 
+	 (cdr s)))
+	 (list (car s))
+	 (quick-sort (filter (curry string>=? (car s))
+	 (cdr s))) )]))
+		\end{verbatim}
+	\end{fmpage}
 
-\begin{fmpage}{\linewidth}
-\begin{verbatim}
-> (load "quick.scm")
-> (quick-sort '("Caecilia" "Anna" "Priscilla"))
-("Anna" "Caecilia" "Priscilla")
-\end{verbatim}
-\end{fmpage}
-\caption{The filter function}
-\label{fig:filter}
+	\begin{fmpage}{\linewidth}
+		\begin{verbatim}
+		> (load "quick.scm")
+		> (quick-sort '("Caecilia" "Anna" "Priscilla"))
+		("Anna" "Caecilia" "Priscilla")
+		\end{verbatim}
+	\end{fmpage}
+	\caption{The filter function}
+	\label{fig:filter}
 \end{figure}
 
 In listing~\ref{fig:filter}, the deffinition of
@@ -5006,7 +5006,7 @@ arguments, that are supposed to be lists.
 Let us assume that the the \verb|quick-sort|
 function was called by the following expression:
 \begin{quote}
-\verb|> (quick-sort '("g" "a" "c"  "h" "n" "b"))|
+	\verb|> (quick-sort '("g" "a" "c"  "h" "n" "b"))|
 \end{quote}
 The \verb|(filter (curry string<? (car s)) (cdr s))|
 expression will filter all strings that comes before
@@ -5030,6 +5030,81 @@ i.e., \verb|("h" "n")|.
 The value of the \verb|(append '("a" "b" "c") '("g") '("h" "n"))|
 expression produces the final result, that is
 \verb|("a" "b" "c" "g" "h" "n")|.
+
+\section{Fear of macros}
+Now, let us learn how macros work. I myself learned
+about macros from a tutorial by Greg Hendershott, and
+will try to pass the information ahead in this section.
+
+The first thing you need to learn is that there are
+two data types playing cards in a macro definition:
+syntax and symbolic expression, or sexpr for short.
+An sexpr can be a list, a cons pair, a number, a string,
+a symbol or a char. Since you learned Scheme, you know
+how to process sexpr with \verb|car|, \verb|cdr| and
+\verb|cons|. On the other hand, the machine knows what
+to do with syntax.  In order to teach a new trick to the
+machine, you need to take a pattern in syntax form, convert
+it into sexpr so you can apply transformations on it.
+Finally you transform the sexpr into instructions
+that the machine already learned, and put the transformed
+command back into syntax form. Let us dissect the curry
+macro, in order to learn its anatomy.
+
+The \verb|stx| parameter contains the command in the
+macro form, that the computer is not able to handle.
+The goal of defining a macro is exactly this, teaching
+the computer how to deal with the expression that is
+stored in the \verb|stx| variable.
+\begin{quote}
+\begin{verbatim}
+(define-syntax (curry stx)
+   (syntax-case stx ()
+      [ (kwd fun arg)
+        (datum->syntax #'kwd
+           (let [ (fn (syntax->datum #'fun))
+                  (x  (syntax->datum #'arg))
+                  (g  (gensym "var"))]
+              `(lambda(,g) (,fn ,g ,x)) ))] ))
+\end{verbatim}
+\end{quote}
+Let us recall our goal: We want to perform a syntax
+transformation of programs. As Greg Hendershott said,
+we could translate syntax into the sexpr form, and
+apply the desired transformation using only \verb|car|,
+\verb|cdr| and \verb|cons|. However, this is very
+tedious. A less error prone strategy is perform pattern
+matching. What is a pattern matching? The unification
+that you use to process Prolog lists is a kind of pattern
+matching. Consider the program below. The Prolog expression
+\verb/[H|T]/ is a pattern that selects lists with at least
+one element.
+\begin{quote}\index{scheme macros!syntax->datum}
+	\begin{verbatim}
+	%% (load "-f utilities.pl").
+
+	applst([], L, L).
+	applst([H|T], L, [H|U]) :- applst(T, L, U).
+	\end{verbatim}\index{scheme macros!datum->syntax}
+\end{quote}\verb|scheme macros!pattern match|
+In the Scheme macro above, \verb|syntax-case| matches
+\verb|stx| into a syntax pattern \verb|(kwd fun arg)|.
+Then, the definition uses \verb|(syntax->datum #'fun)|
+and \verb|(syntax->datum #'arg)| put \verb|arg| and
+\verb|fun| into the sexpr form, and perform the
+following transformation:
+\begin{quote}
+\verb|`(lambda(,g) (,fn ,g ,x)) ))|
+\end{quote}
+Finally, the macro applies \verb|datum->syntax| to the
+transformed expression, so that the computer will
+understand it. The macro passes \verb|#'kwd| to the
+\verb|datum->syntax| in order to provide context for
+error messages.
+
+One last thing, \verb|#'kwd| is short for \verb|(syntax kwd)|,
+which you can use, if you think that it is clearer.
+\index{scheme macros!syntax directive}
 
 \chapter{Recursion}\label{chapter:Recursion}
 \index{Recursion}
